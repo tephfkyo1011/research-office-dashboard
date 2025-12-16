@@ -4,15 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Research Office Portal | ศูนย์รวมระบบสารสนเทศ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --accent-color: #3498db;
-            --bg-color: #f4f6f9;
+            /* Palette สี: ปรับโทนให้ดูทันสมัยและสบายตา */
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* ม่วง-ฟ้า */
+            --bg-color: #f8f9fc;
             --card-bg: #ffffff;
+            --text-main: #2d3748;
+            --text-sub: #718096;
+            
+            /* สีประจำหมวดหมู่ (ใช้สีพาสเทลจางๆ รองพื้นไอคอน) */
+            --bg-icon-it: #e3f2fd;   --color-icon-it: #1976d2;
+            --bg-icon-hr: #fce4ec;   --color-icon-hr: #c2185b;
+            --bg-icon-admin: #fff3e0; --color-icon-admin: #f57c00;
+            --bg-icon-personal: #f3e5f5; --color-icon-personal: #7b1fa2;
         }
 
         body {
@@ -20,146 +28,185 @@
             background-color: var(--bg-color);
             margin: 0;
             padding: 0;
-            color: #333;
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Header */
+        /* --- HEADER --- */
         header {
-            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            background: var(--primary-gradient);
             color: white;
-            padding: 40px 20px;
+            padding: 60px 20px 80px; /* เพิ่มพื้นที่ด้านล่างให้ Search box ทับ */
             text-align: center;
-            border-bottom-left-radius: 30px;
-            border-bottom-right-radius: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            box-shadow: 0 10px 30px rgba(118, 75, 162, 0.2);
+            position: relative;
         }
 
-        h1 { margin: 0; font-size: 1.8rem; font-weight: 600; }
-        p.subtitle { margin: 10px 0 20px; opacity: 0.9; }
+        h1 {
+            font-family: 'Prompt', sans-serif;
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        p.subtitle {
+            font-family: 'Sarabun', sans-serif;
+            margin: 10px 0 0;
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
 
-        /* Search Box */
+        /* --- SEARCH BOX --- */
         .search-container {
             max-width: 600px;
-            margin: -25px auto 30px;
+            margin: -35px auto 40px; /* ดึงขึ้นไปทับ Header */
             padding: 0 20px;
+            position: relative;
+            z-index: 10;
         }
         .search-box {
             width: 100%;
-            padding: 15px 25px;
+            padding: 18px 30px;
             border-radius: 50px;
             border: none;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             font-size: 1rem;
-            font-family: 'Sarabun', sans-serif;
+            font-family: 'Prompt', sans-serif;
             outline: none;
+            transition: all 0.3s ease;
+        }
+        .search-box:focus {
+            box-shadow: 0 15px 35px rgba(118, 75, 162, 0.2);
+            transform: scale(1.02);
         }
 
-        /* Container */
+        /* --- CONTAINER --- */
         .container {
-            max-width: 1200px;
+            max-width: 1100px; /* บีบให้แคบลงนิดนึงเพื่อให้อ่านง่าย */
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 20px 60px;
         }
 
-        /* Section Headers */
+        /* --- SECTION HEADERS --- */
         .section-header {
             display: flex;
             align-items: center;
-            margin: 40px 0 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e0e0e0;
-        }
-        .section-header i {
-            font-size: 1.5rem;
-            margin-right: 10px;
-            color: var(--accent-color);
+            margin: 50px 0 25px;
+            padding-left: 15px;
+            border-left: 5px solid #764ba2; /* เส้นข้างหัวข้อ */
         }
         .section-header h2 {
+            font-family: 'Prompt', sans-serif;
             font-size: 1.4rem;
             margin: 0;
-            color: var(--primary-color);
+            color: var(--text-main);
+            font-weight: 600;
         }
 
-        /* Grid System */
+        /* --- GRID --- */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* การ์ดขนาดกำลังดี */
             gap: 20px;
         }
 
-        /* Card Style */
+        /* --- CARD DESIGN (Highlight) --- */
         .card {
             background: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
+            border-radius: 20px;
+            padding: 25px 20px;
             text-decoration: none;
-            color: #444;
-            transition: transform 0.2s, box-shadow 0.2s;
-            border: 1px solid #eee;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             position: relative;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
-            height: 100%; /* ให้การ์ดสูงเท่ากัน */
+            align-items: center;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02); /* เงาปกติจางๆ */
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-            border-color: var(--accent-color);
+            transform: translateY(-8px); /* ลอยขึ้นสูงกว่าเดิม */
+            box-shadow: 0 15px 30px rgba(0,0,0,0.08); /* เงาฟุ้งสวย */
+            border-color: #e2e8f0;
         }
 
-        .card-icon {
-            font-size: 2.5rem;
+        /* Icon Bubble Styling */
+        .icon-wrapper {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 15px;
-            color: var(--accent-color);
+            font-size: 1.8rem;
+            transition: transform 0.3s;
+        }
+        
+        .card:hover .icon-wrapper {
+            transform: scale(1.1) rotate(5deg); /* ลูกเล่นหมุนนิดๆ ตอนชี้ */
         }
 
+        /* Title & Desc */
         .card-title {
+            font-family: 'Prompt', sans-serif;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1rem;
+            color: var(--text-main);
             margin-bottom: 5px;
             line-height: 1.4;
         }
-
         .card-desc {
             font-size: 0.85rem;
-            color: #888;
-            margin-top: auto; /* ดันคำอธิบายไปล่างสุด */
+            color: var(--text-sub);
+            font-weight: 300;
         }
 
-        /* Badge สำหรับลิงก์ภายใน (LAN Only) */
+        /* --- COLORS MAPPING --- */
+        /* IT Section */
+        .sec-it .icon-wrapper { background: var(--bg-icon-it); color: var(--color-icon-it); }
+        .sec-it .section-header { border-color: var(--color-icon-it); }
+        
+        /* HR Section */
+        .sec-hr .icon-wrapper { background: var(--bg-icon-hr); color: var(--color-icon-hr); }
+        .sec-hr .section-header { border-color: var(--color-icon-hr); }
+
+        /* Admin Section */
+        .sec-admin .icon-wrapper { background: var(--bg-icon-admin); color: var(--color-icon-admin); }
+        .sec-admin .section-header { border-color: var(--color-icon-admin); }
+
+        /* Personal Section */
+        .sec-personal .icon-wrapper { background: var(--bg-icon-personal); color: var(--color-icon-personal); }
+        .sec-personal .section-header { border-color: var(--color-icon-personal); }
+
+        /* --- BADGE LAN ONLY --- */
         .badge-lan {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #ffebee;
-            color: #c62828;
-            font-size: 0.7rem;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-weight: bold;
+            top: 15px;
+            right: 15px;
+            background: #fff0f0;
+            color: #d32f2f;
+            font-size: 0.65rem;
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: 'Prompt', sans-serif;
             border: 1px solid #ffcdd2;
         }
 
-        /* Custom Colors per section */
-        .sec-it .card-icon { color: #00897b; }
-        .sec-hr .card-icon { color: #d81b60; }
-        .sec-admin .card-icon { color: #f57f17; }
-        .sec-personal .card-icon { color: #8e24aa; }
-
-        /* Footer */
+        /* --- FOOTER --- */
         .footer {
             text-align: center;
-            margin-top: 50px;
-            padding: 20px;
-            color: #999;
+            padding: 30px;
+            color: #a0aec0;
             font-size: 0.8rem;
-        }
-        
-        /* Mobile adjustment */
-        @media (max-width: 600px) {
-            .grid { grid-template-columns: 1fr; }
+            font-weight: 300;
         }
     </style>
 </head>
@@ -167,232 +214,227 @@
 
     <header>
         <h1>สำนักงานวิจัยวิทยาศาสตร์สุขภาพ</h1>
-        <p class="subtitle">E-Service Portal ศูนย์รวมลิงก์ระบบสารสนเทศเพื่อการปฏิบัติงาน</p>
+        <p class="subtitle">E-Service Portal ศูนย์รวมลิงก์ระบบสารสนเทศ</p>
     </header>
 
     <div class="search-container">
-        <input type="text" id="searchInput" class="search-box" placeholder="🔍 พิมพ์เพื่อค้นหา (เช่น ลา, ซ่อม, หวย, แอร์)...">
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 ค้นหาระบบที่ต้องการ (เช่น จองห้อง, ลา, แอร์)...">
     </div>
 
     <div class="container">
 
         <div class="section-header sec-it">
-            <i class="fa-solid fa-laptop-medical"></i>
-            <h2>IT, ครุภัณฑ์ & อาคารสถานที่</h2>
+            <h2>💻 IT, ครุภัณฑ์ & อาคารสถานที่</h2>
         </div>
-        <div class="grid" id="grid-it">
+        <div class="grid sec-it">
             <a href="https://www.appsheet.com/start/54d31000-2358-4abc-bd52-44472a9275c6?platform=desktop#appName=NewApp-454736422" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-solid fa-boxes-stacked"></i></div>
-                <div class="card-title">User ครุภัณฑ์สำนักงานวิจัย</div>
+                <div class="icon-wrapper"><i class="fa-solid fa-boxes-stacked"></i></div>
+                <div class="card-title">User ครุภัณฑ์</div>
                 <div class="card-desc">AppSheet ระบบครุภัณฑ์</div>
             </a>
             <a href="http://10.6.22.52/ramapro/index.php?ret_link=%2Framapro%2Fdefault.php&type=notLogged" target="_blank" class="card">
                 <span class="badge-lan">LAN Only</span>
-                <div class="card-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-screwdriver-wrench"></i></div>
                 <div class="card-title">แจ้งซ่อมวิศวกรรม</div>
                 <div class="card-desc">แจ้งซ่อมออนไลน์ (ESD)</div>
             </a>
             <a href="http://intranet.rama.mahidol.ac.th/MI/Materials/list.htm" target="_blank" class="card">
                 <span class="badge-lan">LAN Only</span>
-                <div class="card-icon"><i class="fa-solid fa-print"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-print"></i></div>
                 <div class="card-title">วัสดุคอมพิวเตอร์</div>
                 <div class="card-desc">หมึกพิมพ์ คลังเวชสารสนเทศ</div>
             </a>
             <a href="https://docs.google.com/spreadsheets/d/19i4hVR8ZRbuoAjNNxV6wWfn8wj9_u66UAXQbSv1JOyA/edit?gid=872930443#gid=872930443" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-solid fa-fan"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-fan"></i></div>
                 <div class="card-title">ข้อมูลแอร์</div>
                 <div class="card-desc">รายละเอียดเครื่องปรับอากาศ</div>
             </a>
             <a href="https://script.google.com/macros/s/AKfycbwSpX9iDz1wWLjQfNyJbWLfreGyHDl0vYasnF27DhiyLnYz8UZs7aZfz9ct5fNTKH-m/exec" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-solid fa-fire-burner"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-fire-burner"></i></div>
                 <div class="card-title">ระบบแก๊ส & Stock</div>
                 <div class="card-desc">บริหารจัดการแก๊ส</div>
             </a>
             <a href="https://www.appsheet.com/start/6e4cdc1f-da32-4ae1-87c6-3e7a0d81929f?platform=desktop" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-solid fa-database"></i></div>
-                <div class="card-title">APP ฐานข้อมูลครุภัณฑ์</div>
-                <div class="card-desc">Research Center Digital Assets</div>
+                <div class="icon-wrapper"><i class="fa-solid fa-database"></i></div>
+                <div class="card-title">ฐานข้อมูลครุภัณฑ์</div>
+                <div class="card-desc">Digital Assets</div>
             </a>
             <a href="https://script.google.com/macros/s/AKfycbwYbLgv2hYbwSgsy4G2yC9EUBoHXmOkOvEPHTjEldz6BvJeW8wYv4KyfwSyJNpdm96u/exec" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-solid fa-chart-pie"></i></div>
-                <div class="card-title">Dashboard สรุปครุภัณฑ์</div>
+                <div class="icon-wrapper"><i class="fa-solid fa-chart-pie"></i></div>
+                <div class="card-title">Dashboard ครุภัณฑ์</div>
                 <div class="card-desc">ภาพรวมข้อมูลทรัพย์สิน</div>
             </a>
             <a href="https://10-6-155-150.rcnas1838.direct.quickconnect.to:9443/#/signin" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-solid fa-server"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-server"></i></div>
                 <div class="card-title">NAS Synology</div>
-                <div class="card-desc">QuickConnect ID เข้าถึงข้อมูล</div>
+                <div class="card-desc">QuickConnect ID</div>
             </a>
             <a href="https://softwaredownload.mahidol.ac.th/" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-brands fa-windows"></i></div>
-                <div class="card-title">ดาวน์โหลดโปรแกรม</div>
-                <div class="card-desc">Software Download Mahidol</div>
+                <div class="icon-wrapper"><i class="fa-brands fa-windows"></i></div>
+                <div class="card-title">โหลดโปรแกรม</div>
+                <div class="card-desc">Software Download</div>
             </a>
              <a href="http://192.168.1.150/" target="_blank" class="card">
                 <span class="badge-lan">LAN Only</span>
-                <div class="card-icon"><i class="fa-solid fa-temperature-high"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-temperature-high"></i></div>
                 <div class="card-title">XWEB ตรวจอุณหภูมิ</div>
                 <div class="card-desc">เช็คอุณหภูมิออนไลน์</div>
             </a>
         </div>
 
         <div class="section-header sec-hr">
-            <i class="fa-solid fa-users-gear"></i>
-            <h2>HR & บุคลากร</h2>
+            <h2>👤 HR & บุคลากร</h2>
         </div>
-        <div class="grid">
+        <div class="grid sec-hr">
             <a href="http://n-rfid.rama.mahidol.ac.th/Time/Login" target="_blank" class="card">
                 <span class="badge-lan">LAN Only</span>
-                <div class="card-icon"><i class="fa-solid fa-id-card-clip"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-id-card-clip"></i></div>
                 <div class="card-title">ตอกบัตรเข้า-ออก</div>
                 <div class="card-desc">ระบบ RFID รามาฯ</div>
             </a>
             <a href="https://www3.ra.mahidol.ac.th/leaveRama/index.jsp" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-solid fa-business-time"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-business-time"></i></div>
                 <div class="card-title">ลาออนไลน์</div>
                 <div class="card-desc">ระบบลา คณะแพทยศาสตร์ฯ</div>
             </a>
             <a href="https://script.google.com/macros/s/AKfycbzO_77wN89GjfbaoqkcH_j9iziyK-_mbKP_8PGnUuvPOsnjkyx2HZWo1naZJWwuuo8wVg/exec" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-regular fa-clock"></i></div>
+                <div class="icon-wrapper"><i class="fa-regular fa-clock"></i></div>
                 <div class="card-title">ลงเวลานอกราชการ</div>
-                <div class="card-desc">บันทึกเวลาเข้า-ออก สนง.วิจัย</div>
+                <div class="card-desc">สนง.วิจัย (OT)</div>
             </a>
             <a href="https://intra9.rama.mahidol.ac.th/hc/" target="_blank" class="card">
                 <span class="badge-lan">LAN Only</span>
-                <div class="card-icon"><i class="fa-solid fa-user-tie"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-user-tie"></i></div>
                 <div class="card-title">บริหารทุนมนุษย์</div>
-                <div class="card-desc">Link ฝ่าย HR คณะฯ</div>
+                <div class="card-desc">ฝ่าย HR คณะฯ</div>
             </a>
              <a href="https://idp.mahidol.ac.th/adfs/oauth2/authorize/?client_id=c3dd06c3-cd83-4783-a570-38232c6ce67d" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-hand-holding-heart"></i></div>
                 <div class="card-title">Flexible Benefit</div>
                 <div class="card-desc">สวัสดิการมหิดล</div>
             </a>
             <a href="https://www.si.mahidol.ac.th/musaving/index.asp" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-solid fa-piggy-bank"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-piggy-bank"></i></div>
                 <div class="card-title">สหกรณ์ออมทรัพย์</div>
                 <div class="card-desc">มหาวิทยาลัยมหิดล</div>
             </a>
              <a href="https://script.google.com/macros/s/AKfycbxuLfi1MDq-TO5cU68KfeR1SLvL2TmIjS296nxbyMGpqcd1yJMqMiEtwbmga2A4PBVT/exec" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-file-invoice-dollar"></i></div>
                 <div class="card-title">ค่ารักษาพยาบาล</div>
                 <div class="card-desc">บันทึกค่ารักษาฯ ครอบครัว</div>
             </a>
         </div>
 
         <div class="section-header sec-admin">
-            <i class="fa-solid fa-building-user"></i>
-            <h2>ธุรการ & การเข้าถึง</h2>
+            <h2>📞 ธุรการ & การเข้าถึง</h2>
         </div>
-        <div class="grid">
+        <div class="grid sec-admin">
             <a href="http://10.6.155.94/RAI/index.php" target="_blank" class="card">
                 <span class="badge-lan">LAN Only</span>
-                <div class="card-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-calendar-check"></i></div>
                 <div class="card-title">จองห้องประชุม</div>
-                <div class="card-desc">Research Center Meeting Room</div>
+                <div class="card-desc">Research Center Meeting</div>
             </a>
             <a href="https://script.google.com/macros/s/AKfycbxprHKO3pzWfYU9oZ2cQl-ynTWTzUp8P8LY3Ens7WwP8mS1k4amv6hLnRhq2C2jb9YN/exec" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-solid fa-phone-volume"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-phone-volume"></i></div>
                 <div class="card-title">Phone Book</div>
                 <div class="card-desc">เบอร์ประสานงาน สนง.วิจัย</div>
             </a>
             <a href="https://sites.google.com/view/rc-rama" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-solid fa-folder-open"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-folder-open"></i></div>
                 <div class="card-title">ธุรการบริหารทั่วไป</div>
-                <div class="card-desc">Site สนง.วิจัย (RC-Rama)</div>
+                <div class="card-desc">Google Site (RC-Rama)</div>
             </a>
             <a href="https://docs.google.com/spreadsheets/d/1RKZ_2ovlxldT9m5HT7StiVaYxyoQvM4T/edit?gid=176877453#gid=176877453" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-solid fa-key"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-key"></i></div>
                 <div class="card-title">กุญแจห้อง</div>
                 <div class="card-desc">อาคารวิจัยและสวัสดิการ</div>
             </a>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLScYM8hJbXEhOFuXlU0zet2dqHfX8dSqLjcBNKSov0BMgnbPLQ/viewform" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-solid fa-list-check"></i></div>
-                <div class="card-title">แบบฟอร์มเช็คลิสต์</div>
-                <div class="card-desc">Check List ออนไลน์</div>
+                <div class="icon-wrapper"><i class="fa-solid fa-list-check"></i></div>
+                <div class="card-title">Check List</div>
+                <div class="card-desc">แบบฟอร์มเช็คลิสต์</div>
             </a>
             <a href="https://script.google.com/macros/s/AKfycbymVbym9Xf6_9xgHWtl-DdVKGCJ6NQra7j9UcSOilKrThNYs7PKHLKbzrQwyYLDy-J2_A/exec" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-solid fa-snowflake"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-snowflake"></i></div>
                 <div class="card-title">Liquid Nitrogen</div>
                 <div class="card-desc">บันทึกการรับ-ส่ง</div>
             </a>
              <a href="https://docs.google.com/forms/d/e/1FAIpQLSfvbmmBQiKiBhxSI15sjVilYxFuxHhc5S1i8IFnir9jzAtvGw/viewform" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-solid fa-truck-ramp-box"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-truck-ramp-box"></i></div>
                 <div class="card-title">ขอขนย้ายของ</div>
                 <div class="card-desc">แบบฟอร์มขนย้ายออนไลน์</div>
             </a>
             <a href="http://10.6.155.38/" target="_blank" class="card">
                 <span class="badge-lan">LAN Only</span>
-                <div class="card-icon"><i class="fa-solid fa-door-open"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-door-open"></i></div>
                 <div class="card-title">ประตูหน้า สนง. (38)</div>
                 <div class="card-desc">ระบบเข้า-ออกประตู</div>
             </a>
             <a href="http://10.6.155.225/" target="_blank" class="card">
                 <span class="badge-lan">LAN Only</span>
-                <div class="card-icon"><i class="fa-solid fa-flask"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-flask"></i></div>
                 <div class="card-title">ประตู LAB 225</div>
                 <div class="card-desc">ระบบเข้า-ออกประตู</div>
             </a>
             <a href="http://10.6.155.226/" target="_blank" class="card">
                 <span class="badge-lan">LAN Only</span>
-                <div class="card-icon"><i class="fa-solid fa-flask-vial"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-flask-vial"></i></div>
                 <div class="card-title">ประตู LAB 226</div>
                 <div class="card-desc">ระบบเข้า-ออกประตู</div>
             </a>
             <a href="https://www.appsheet.com/start/2e8cd042-246d-4b55-abb8-a5884ba0c60d?platform=desktop" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-solid fa-vial"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-vial"></i></div>
                 <div class="card-title">HSR Specimen</div>
                 <div class="card-desc">Banking V2</div>
             </a>
              <a href="https://intra9.rama.mahidol.ac.th/inventory/th/miniecat/miniecatbook" target="_blank" class="card">
                 <span class="badge-lan">LAN Only</span>
-                <div class="card-icon"><i class="fa-solid fa-book"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-book"></i></div>
                 <div class="card-title">Mini Ecat Book</div>
                 <div class="card-desc">ระบบพัสดุ</div>
             </a>
         </div>
 
         <div class="section-header sec-admin">
-            <i class="fa-solid fa-globe"></i>
-            <h2>เว็บคณะ & ลิงก์ส่วนกลาง</h2>
+            <h2>🌐 เว็บคณะ & ลิงก์ส่วนกลาง</h2>
         </div>
-        <div class="grid">
+        <div class="grid sec-admin">
             <a href="https://www.rama.mahidol.ac.th/research/th" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-solid fa-sitemap"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-sitemap"></i></div>
                 <div class="card-title">เว็บสำนักงานวิจัย</div>
                 <div class="card-desc">วิชาการและนวัตกรรม</div>
             </a>
             <a href="https://intra9.rama.mahidol.ac.th/online_requests" target="_blank" class="card">
                 <span class="badge-lan">LAN Only</span>
-                <div class="card-icon"><i class="fa-solid fa-computer-mouse"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-computer-mouse"></i></div>
                 <div class="card-title">บริการออนไลน์ รพ.</div>
                 <div class="card-desc">Online Requests Rama</div>
             </a>
             <a href="https://myinternet.mahidol.ac.th/" target="_blank" class="card">
-                <div class="card-icon"><i class="fa-solid fa-wifi"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-wifi"></i></div>
                 <div class="card-title">MyInternet</div>
                 <div class="card-desc">จัดการเน็ตมหิดล</div>
             </a>
              <a href="https://intra9.rama.mahidol.ac.th/rama/office" target="_blank" class="card">
                 <span class="badge-lan">LAN Only</span>
-                <div class="card-icon"><i class="fa-solid fa-hospital"></i></div>
+                <div class="icon-wrapper"><i class="fa-solid fa-hospital"></i></div>
                 <div class="card-title">หน่วยงานใน รพ.</div>
                 <div class="card-desc">รายชื่อหน่วยงานรามาฯ</div>
             </a>
         </div>
 
         <div class="section-header sec-personal">
-            <i class="fa-solid fa-gamepad"></i>
-            <h2>ส่วนตัว & บันเทิง (By KYO GI)</h2>
+            <h2>🎮 ส่วนตัว & บันเทิง</h2>
         </div>
-        <div class="grid">
-            <a href="https://www.appsheet.com/start/5a0dbaf8-5f2f-43c4-8b1a-482728632309?platform=desktop" target="_blank" class="card" style="border-color: #e91e63;">
-                <div class="card-icon"><i class="fa-solid fa-film"></i></div>
+        <div class="grid sec-personal">
+            <a href="https://www.appsheet.com/start/5a0dbaf8-5f2f-43c4-8b1a-482728632309?platform=desktop" target="_blank" class="card">
+                <div class="icon-wrapper"><i class="fa-solid fa-film"></i></div>
                 <div class="card-title">Movie Anime</div>
                 <div class="card-desc">APP ดูหนัง/ซีรีย์ By KYO GI</div>
             </a>
-            <a href="https://script.google.com/a/macros/mahidol.ac.th/s/AKfycbws9LKwF_WssZCVV5x_dK1xkGRy3_Cecpz7MGPDi4uLJ7d22OgNIsJjbaDrBtZOfYv8vA/exec" target="_blank" class="card" style="border-color: #ffca28;">
-                <div class="card-icon"><i class="fa-solid fa-ticket"></i></div>
+            <a href="https://script.google.com/a/macros/mahidol.ac.th/s/AKfycbws9LKwF_WssZCVV5x_dK1xkGRy3_Cecpz7MGPDi4uLJ7d22OgNIsJjbaDrBtZOfYv8vA/exec" target="_blank" class="card">
+                <div class="icon-wrapper"><i class="fa-solid fa-ticket"></i></div>
                 <div class="card-title">เลขพารวย Pro</div>
                 <div class="card-desc">งวดละครั้ง (ลุ้นโชค)</div>
             </a>
