@@ -1,96 +1,169 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Research Office Portal</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Research Office Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Sarabun:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- COLOR PALETTE (V.Categorized) --- */
+        :root {
+            /* Header: สีน้ำเงินเข้ม เป็นทางการ */
+            --primary-grad: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-sub: #6c757d;
+            --gold: #ffc107;
+            
+            /* Category Colors Variables */
+            --col-it: #007bff;      /* ฟ้า */
+            --col-hr: #e83e8c;      /* ชมพู */
+            --col-admin: #fd7e14;   /* ส้ม */
+            --col-central: #20c997; /* เขียว */
+            --col-fun: #6f42c1;     /* ม่วง */
+        }
 
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Sarabun:wght@300;400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            padding-bottom: 40px;
+        }
 
+        /* --- HEADER --- */
+        header {
+            background: var(--primary-grad);
+            padding: 30px 20px 70px;
+            text-align: center;
+            color: white;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        h1 { font-family: 'Prompt', sans-serif; font-size: 1.6rem; margin: 0; font-weight: 600; }
+        p.subtitle { font-size: 0.85rem; margin-top: 5px; opacity: 0.9; font-weight: 300; }
 
-<style>
-:root {
---primary-grad: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
---bg-color: #f4f6f9;
---card-bg: #ffffff;
---text-main: #2c3e50;
---text-sub: #6c757d;
---gold: #ffc107;
+        /* --- SEARCH --- */
+        .search-wrapper { position: sticky; top: 15px; z-index: 100; padding: 0 15px; margin-top: -45px; }
+        .search-box {
+            width: 100%; padding: 15px 20px; border-radius: 30px; border: none;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            font-family: 'Prompt', sans-serif; font-size: 1rem; outline: none;
+            background: rgba(255, 255, 255, 0.98);
+        }
 
+        /* --- CONTAINER & NOTICE --- */
+        .container { padding: 20px 15px; max-width: 800px; margin: 0 auto; }
+        .notice {
+            background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba;
+            padding: 15px; border-radius: 15px; margin-bottom: 25px;
+            font-size: 0.85rem; line-height: 1.5; text-align: center;
+        }
 
---col-it: #007bff;
---col-hr: #e83e8c;
---col-admin: #fd7e14;
---col-central: #20c997;
---col-fun: #6f42c1;
-}
+        /* --- SECTIONS --- */
+        .section-title {
+            font-family: 'Prompt', sans-serif;
+            font-size: 1.2rem;
+            color: var(--text-main);
+            margin: 35px 0 15px;
+            display: flex; align-items: center; font-weight: 600;
+            border-left: 5px solid #ccc;
+            padding-left: 10px;
+        }
+        .section-title i { margin-right: 10px; }
 
+        /* Color Coding for Section Titles */
+        .container > .section-title:nth-of-type(1) { border-color: var(--col-it); color: var(--col-it); }
+        .container > .section-title:nth-of-type(2) { border-color: var(--col-hr); color: var(--col-hr); }
+        .container > .section-title:nth-of-type(3) { border-color: var(--col-admin); color: var(--col-admin); }
+        .container > .section-title:nth-of-type(4) { border-color: var(--col-central); color: var(--col-central); }
+        .container > .section-title:nth-of-type(5) { border-color: var(--col-fun); color: var(--col-fun); }
 
-* { box-sizing: border-box; }
-body {
-font-family: 'Sarabun', sans-serif;
-background-color: var(--bg-color);
-margin: 0;
-padding-bottom: 40px;
-}
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
+        /* --- CARD --- */
+        .card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 20px 10px;
+            text-decoration: none;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.05);
+            transition: transform 0.2s; position: relative;
+            height: 100%; min-height: 140px; cursor: pointer;
+            border-top: 4px solid transparent;
+        }
+        .card:active { transform: scale(0.97); }
 
-header {
-background: var(--primary-grad);
-padding: 30px 20px 70px;
-text-align: center;
-color: white;
-border-bottom-left-radius: 30px;
-border-bottom-right-radius: 30px;
-box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-}
-h1 { font-family: 'Prompt', sans-serif; font-size: 1.6rem; margin: 0; }
-p.subtitle { font-size: 0.85rem; opacity: .9; }
+        /* Category Styles */
+        .cat-it .card { border-top-color: var(--col-it); }
+        .cat-it .icon-circle { background: #e3f2fd; color: var(--col-it); }
 
+        .cat-hr .card { border-top-color: var(--col-hr); }
+        .cat-hr .icon-circle { background: #fce4ec; color: var(--col-hr); }
 
-.search-wrapper {
-position: sticky;
-top: 15px;
-z-index: 100;
-padding: 0 15px;
-margin-top: -45px;
-}
-.search-box {
-width: 100%;
-padding: 15px 20px;
-border-radius: 30px;
-border: none;
-box-shadow: 0 8px 25px rgba(0,0,0,.1);
-font-family: 'Prompt', sans-serif;
-font-size: 1rem;
-}
+        .cat-admin .card { border-top-color: var(--col-admin); }
+        .cat-admin .icon-circle { background: #fff3e0; color: var(--col-admin); }
 
+        .cat-central .card { border-top-color: var(--col-central); }
+        .cat-central .icon-circle { background: #e0f2f1; color: var(--col-central); }
 
-.container {
-padding: 20px 15px;
-max-width: 900px;
-margin: auto;
-}
+        .cat-fun .card { border-top-color: var(--col-fun); }
+        .cat-fun .icon-circle { background: #f3e5f5; color: var(--col-fun); }
 
+        /* Icon Circle */
+        .icon-circle {
+            width: 55px; height: 55px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem; margin-bottom: 12px; margin-top: 5px;
+        }
 
-.notice {
-background: #fff3cd;
-color: #856404;
-border: 1px solid #ffeeba;
-padding: 15px;
-border-radius: 15px;
-margin-bottom: 25px;
-text-align: center;
-font-size: .85rem;
-}
+        /* Text */
+        .card-title {
+            font-family: 'Prompt', sans-serif; font-size: 0.9rem;
+            color: var(--text-main); font-weight: 500;
+            line-height: 1.3; margin-bottom: 5px;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .card-desc { font-size: 0.7rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; opacity: 0.8; }
 
+        /* Pin & Badge */
+        .pin { position: absolute; top: 8px; right: 8px; font-size: 1.2rem; color: #eee; cursor: pointer; z-index: 10; padding: 5px; }
+        .card.pinned { background: #fffff5; border: 2px solid var(--gold); border-top: 2px solid var(--gold); }
+        .card.pinned .pin { color: var(--gold); text-shadow: 0 0 3px rgba(255,193,7,0.5); }
 
-.section-title {
-font-family: 'Prompt', sans-serif;
-font-size: 1.2rem;
-</div>
+        .badge-lan {
+            position: absolute; top: 8px; left: 8px; font-size: 0.6rem;
+            background: #ffebee; color: #c62828; padding: 2px 6px;
+            border-radius: 4px; font-weight: 700;
+        }
+
+        .footer { text-align: center; font-size: 0.75rem; color: #ccc; margin-top: 50px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Research Office Portal</h1>
+        <p class="subtitle">ศูนย์รวมระบบสารสนเทศเพื่อการปฏิบัติงาน</p>
+    </header>
+
+    <div class="search-wrapper">
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 ค้นหาเมนู (เช่น HR, IT, จองห้อง)...">
+    </div>
+
+    <div class="container">
+
+        <div class="notice">
+            ⚠️ <b>หมายเหตุ:</b> ระบบหรือเว็บไซต์ที่มีคำว่า <b>LAN</b> หรือเกี่ยวกับ <b>WiFi ของคณะ</b><br>
+            จำเป็นต้องเชื่อมต่อเครือข่าย <b>LAN / WiFi ภายในที่ทำงาน</b> เท่านั้นจึงจะสามารถเข้าใช้งานได้
+        </div>
 
         <div class="section-title"><i class="fa-solid fa-laptop-medical"></i> IT & ครุภัณฑ์</div>
         <div class="grid cat-it" data-section="it ไอที คอมพิวเตอร์ ครุภัณฑ์ system hardware software">
