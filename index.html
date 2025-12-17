@@ -1,374 +1,504 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Research Office Portal</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Research Office Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Sarabun:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-grad: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-main: #333;
+            --text-sub: #777;
+            --gold: #ffc107; /* สีดาว */
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Sarabun:wght@300;400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-<style>
-:root{
-  --primary-grad:linear-gradient(135deg,#4facfe,#00f2fe);
-  --bg:#f0f2f5;--card:#fff;--txt:#333;--sub:#777;
-}
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            padding-bottom: 40px;
+        }
 
-*{box-sizing:border-box}
-body{margin:0;font-family:'Sarabun',sans-serif;background:var(--bg);padding-bottom:60px}
+        /* --- HEADER --- */
+        header {
+            background: var(--primary-grad);
+            padding: 30px 20px 70px;
+            text-align: center;
+            color: white;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,198,251,0.3);
+        }
 
-/* HEADER */
-header{
-  background:var(--primary-grad);
-  padding:30px 20px 90px;
-  text-align:center;color:#fff;
-  border-radius:0 0 30px 30px;
-}
-h1{font-family:'Prompt';margin:0;font-size:1.5rem}
-.subtitle{font-size:.85rem;opacity:.9}
+        h1 {
+            font-family: 'Prompt', sans-serif;
+            font-size: 1.5rem;
+            margin: 0;
+            font-weight: 600;
+        }
 
-/* SEARCH */
-.search-wrapper{position:sticky;top:15px;z-index:99;margin-top:-45px;padding:0 15px}
-.search-box{
-  width:100%;padding:15px 20px;border-radius:30px;border:none;
-  box-shadow:0 8px 20px rgba(0,0,0,.15);
-  font-size:1rem;outline:none
-}
+        p.subtitle {
+            font-size: 0.85rem;
+            margin-top: 5px;
+            opacity: 0.9;
+        }
 
-/* NOTE LAN */
-.notice{
-  background:#fff3e0;border-left:5px solid #fb8c00;
-  padding:10px 15px;margin:20px 15px;border-radius:8px;
-  font-size:.75rem;color:#555
-}
+        /* --- STICKY SEARCH BAR --- */
+        .search-wrapper {
+            position: sticky;
+            top: 15px;
+            z-index: 100;
+            padding: 0 15px;
+            margin-top: -45px;
+        }
 
-/* CONTAINER */
-.container{padding:20px 15px;max-width:1000px;margin:auto}
+        .search-box {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 30px;
+            border: none;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            font-family: 'Prompt', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
 
-/* SECTION */
-.section-title{
-  font-family:'Prompt';font-size:1.1rem;font-weight:600;
-  margin:25px 0 15px;display:flex;align-items:center
-}
-.section-title i{margin-right:8px;color:#00c6fb}
+        /* --- CONTAINER --- */
+        .container {
+            padding: 20px 15px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
 
-/* GRID */
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        /* --- SECTION --- */
+        .section-title {
+            font-family: 'Prompt', sans-serif;
+            font-size: 1.1rem;
+            color: #444;
+            margin: 25px 0 15px;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+        .section-title i { margin-right: 8px; color: #00c6fb; }
 
-/* CARD */
-.card{
-  background:var(--card);border-radius:16px;padding:15px 10px;
-  text-decoration:none;color:inherit;
-  display:flex;flex-direction:column;align-items:center;
-  text-align:center;min-height:130px;position:relative;
-  box-shadow:0 2px 5px rgba(0,0,0,.05)
-}
-.card:active{transform:scale(.96)}
+        /* --- GRID --- */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
 
-@media(min-width:768px){
-  .grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
-  .card:hover{transform:translateY(-5px)}
-}
+        /* --- CARD --- */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 15px 10px;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.1s;
+            position: relative; /* สำคัญสำหรับ Pin และ Badge */
+            height: 100%;
+            min-height: 130px;
+            cursor: pointer;
+        }
 
-/* ICON */
-.icon-circle{
-  width:50px;height:50px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.4rem;margin-bottom:10px
-}
-.cat-it .icon-circle{background:#e3f2fd;color:#1565c0}
-.cat-hr .icon-circle{background:#ffebee;color:#c62828}
-.cat-admin .icon-circle{background:#fff3e0;color:#ef6c00}
-.cat-fun .icon-circle{background:#f3e5f5;color:#8e24aa}
+        .card:active {
+            transform: scale(0.96);
+            background: #f9f9f9;
+        }
 
-/* TEXT */
-.card-title{
-  font-family:'Prompt';font-size:.9rem;font-weight:500;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
-  overflow:hidden
-}
-.card-desc{font-size:.7rem;color:var(--sub);white-space:nowrap;overflow:hidden}
+        /* --- PIN STAR (มุมขวาบน) --- */
+        .pin {
+            position: absolute;
+            top: 5px;
+            right: 8px;
+            font-size: 1.2rem;
+            color: #ddd; /* สีตอนยังไม่กด */
+            cursor: pointer;
+            z-index: 10;
+            transition: color 0.2s;
+            padding: 5px; /* เพิ่มพื้นที่กด */
+        }
+        
+        .card.pinned {
+            border: 2px solid var(--gold);
+            background: #fffcf0;
+        }
 
-/* BADGE LAN */
-.badge-lan{
-  position:absolute;top:8px;right:8px;font-size:.6rem;
-  background:#ffebee;color:#d32f2f;padding:2px 6px;border-radius:4px
-}
+        .card.pinned .pin {
+            color: var(--gold); /* สีตอนกดแล้ว */
+            text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
+        }
 
-/* PIN */
-.pin{
-  position:absolute;bottom:6px;right:8px;font-size:.8rem;
-  opacity:.5;cursor:pointer
-}
-.pin.active{color:#ff9800;opacity:1}
+        /* --- BADGE LAN (มุมซ้ายบน) --- */
+        .badge-lan {
+            position: absolute;
+            top: 8px;
+            left: 8px; /* ย้ายมาซ้าย ไม่ให้ทับดาว */
+            font-size: 0.6rem;
+            background: #ffebee;
+            color: #d32f2f;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #ffcdd2;
+            font-weight: 600;
+        }
 
-/* FOOTER */
-.footer{text-align:center;font-size:.75rem;color:#aaa;margin-top:40px}
-</style>
+        /* Icon Circle */
+        .icon-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            margin-top: 10px; /* ขยับลงหนีดาวนิดนึง */
+            background: #e1f5fe;
+            color: #0288d1;
+        }
+
+        /* Colors */
+        .cat-it .icon-circle { background: #e3f2fd; color: #1565c0; }
+        .cat-hr .icon-circle { background: #ffebee; color: #c62828; }
+        .cat-admin .icon-circle { background: #fff3e0; color: #ef6c00; }
+        .cat-fun .icon-circle { background: #f3e5f5; color: #8e24aa; }
+
+        /* Text */
+        .card-title {
+            font-family: 'Prompt', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            font-weight: 500;
+            line-height: 1.3;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-desc {
+            font-size: 0.7rem;
+            color: var(--text-sub);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #aaa;
+            margin-top: 40px;
+        }
+    </style>
 </head>
-
 <body>
 
-<header>
-  <h1>Research Office Portal</h1>
-  <p class="subtitle">ศูนย์รวมระบบสารสนเทศเพื่อการปฏิบัติงาน</p>
-</header>
+    <header>
+        <h1>Research Office Portal</h1>
+        <p class="subtitle">ศูนย์รวมระบบสารสนเทศเพื่อการปฏิบัติงาน</p>
+    </header>
 
-<div class="search-wrapper">
-  <input id="searchInput" class="search-box" placeholder="🔍 ค้นหา (ชื่อ / หมวด / คำอธิบาย)">
-</div>
+    <div class="search-wrapper">
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 ค้นหาเมนู...">
+    </div>
 
-<div class="notice">
-⚠️ <b>หมายเหตุ:</b> ระบบหรือเว็บไซต์ที่มีคำว่า <b>LAN</b> หรือเกี่ยวกับ <b>WiFi ของคณะ</b>  
-จำเป็นต้องเชื่อมต่อเครือข่าย <b>LAN / WiFi ภายในที่ทำงาน</b> เท่านั้นจึงจะสามารถเข้าใช้งานได้
-</div>
-
-<div class="container">
-
-<!-- ⭐ FAVORITE -->
-<div id="favSection" style="display:none">
-  <div class="section-title"><i class="fa-solid fa-star"></i> เมนูโปรด</div>
-  <div class="grid cat-admin" id="favGrid"></div>
-</div>
+    <div class="container">
 
         <div class="section-title"><i class="fa-solid fa-laptop-medical"></i> IT & ครุภัณฑ์</div>
-        <div class="grid cat-it" data-section="it ครุภัณฑ์ computer">
-            <a href="https://www.appsheet.com/start/54d31000-2358-4abc-bd52-44472a9275c6?platform=desktop#appName=NewApp-454736422" class="card" data-name="User ครุภัณฑ์">
+        <div class="grid cat-it">
+            <a href="https://www.appsheet.com/start/54d31000-2358-4abc-bd52-44472a9275c6?platform=desktop#appName=NewApp-454736422" 
+               target="_blank" rel="noopener" class="card" data-name="User ครุภัณฑ์">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-boxes-stacked"></i></div>
                 <div class="card-title">User ครุภัณฑ์</div>
-                <div class="card-desc">ระบบครุภัณฑ์</div>
-                <div class="pin">⭐</div>
+                <div class="card-desc">AppSheet ระบบครุภัณฑ์</div>
             </a>
-            <a href="http://10.6.22.52/ramapro/index.php?ret_link=%2Framapro%2Fdefault.php&type=notLogged" target="_blank" class="card">
+            <a href="http://10.6.22.52/ramapro/index.php?ret_link=%2Framapro%2Fdefault.php&type=notLogged" 
+               target="_blank" rel="noopener" class="card" data-name="แจ้งซ่อม">
                 <span class="badge-lan">LAN</span>
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-screwdriver-wrench"></i></div>
                 <div class="card-title">แจ้งซ่อม (ESD)</div>
                 <div class="card-desc">วิศวกรรมบริการ</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="http://intranet.rama.mahidol.ac.th/MI/Materials/list.htm" target="_blank" class="card">
+            <a href="http://intranet.rama.mahidol.ac.th/MI/Materials/list.htm" 
+               target="_blank" rel="noopener" class="card" data-name="วัสดุคอมพิวเตอร์">
                 <span class="badge-lan">LAN</span>
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-print"></i></div>
                 <div class="card-title">วัสดุคอมพิวเตอร์</div>
                 <div class="card-desc">หมึกพิมพ์/อุปกรณ์</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://docs.google.com/spreadsheets/d/19i4hVR8ZRbuoAjNNxV6wWfn8wj9_u66UAXQbSv1JOyA/edit?gid=872930443#gid=872930443" target="_blank" class="card">
+            <a href="https://docs.google.com/spreadsheets/d/19i4hVR8ZRbuoAjNNxV6wWfn8wj9_u66UAXQbSv1JOyA/edit?gid=872930443#gid=872930443" 
+               target="_blank" rel="noopener" class="card" data-name="ข้อมูลแอร์">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-fan"></i></div>
                 <div class="card-title">ข้อมูลแอร์</div>
                 <div class="card-desc">รายละเอียดแอร์</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://script.google.com/macros/s/AKfycbwSpX9iDz1wWLjQfNyJbWLfreGyHDl0vYasnF27DhiyLnYz8UZs7aZfz9ct5fNTKH-m/exec" target="_blank" class="card">
+            <a href="https://script.google.com/macros/s/AKfycbwSpX9iDz1wWLjQfNyJbWLfreGyHDl0vYasnF27DhiyLnYz8UZs7aZfz9ct5fNTKH-m/exec" 
+               target="_blank" rel="noopener" class="card" data-name="ระบบแก๊ส">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-fire-burner"></i></div>
                 <div class="card-title">ระบบแก๊ส & Stock</div>
                 <div class="card-desc">จัดการแก๊ส</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://www.appsheet.com/start/6e4cdc1f-da32-4ae1-87c6-3e7a0d81929f?platform=desktop" target="_blank" class="card">
+            <a href="https://www.appsheet.com/start/6e4cdc1f-da32-4ae1-87c6-3e7a0d81929f?platform=desktop" 
+               target="_blank" rel="noopener" class="card" data-name="ฐานข้อมูลครุภัณฑ์">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-database"></i></div>
                 <div class="card-title">ฐานข้อมูลครุภัณฑ์</div>
                 <div class="card-desc">Digital Assets</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://script.google.com/macros/s/AKfycbwYbLgv2hYbwSgsy4G2yC9EUBoHXmOkOvEPHTjEldz6BvJeW8wYv4KyfwSyJNpdm96u/exec" target="_blank" class="card">
+            <a href="https://script.google.com/macros/s/AKfycbwYbLgv2hYbwSgsy4G2yC9EUBoHXmOkOvEPHTjEldz6BvJeW8wYv4KyfwSyJNpdm96u/exec" 
+               target="_blank" rel="noopener" class="card" data-name="Dashboard">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-chart-pie"></i></div>
                 <div class="card-title">Dashboard</div>
                 <div class="card-desc">สรุปข้อมูลครุภัณฑ์</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://10-6-155-150.rcnas1838.direct.quickconnect.to:9443/#/signin" target="_blank" class="card">
+            <a href="https://10-6-155-150.rcnas1838.direct.quickconnect.to:9443/#/signin" 
+               target="_blank" rel="noopener" class="card" data-name="NAS Synology">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-server"></i></div>
                 <div class="card-title">NAS Synology</div>
                 <div class="card-desc">QuickConnect</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://softwaredownload.mahidol.ac.th/" target="_blank" class="card">
+            <a href="https://softwaredownload.mahidol.ac.th/" 
+               target="_blank" rel="noopener" class="card" data-name="โหลดโปรแกรม">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-brands fa-windows"></i></div>
                 <div class="card-title">โหลดโปรแกรม</div>
                 <div class="card-desc">Software Download</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="http://192.168.1.150/" target="_blank" class="card">
+            <a href="http://192.168.1.150/" 
+               target="_blank" rel="noopener" class="card" data-name="XWEB อุณหภูมิ">
                 <span class="badge-lan">LAN</span>
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-temperature-high"></i></div>
                 <div class="card-title">XWEB อุณหภูมิ</div>
                 <div class="card-desc">เช็คอุณหภูมิ</div>
-                <div class="pin">⭐</div>
             </a>
         </div>
 
         <div class="section-title"><i class="fa-solid fa-users"></i> HR & บุคลากร</div>
         <div class="grid cat-hr">
-            <a href="http://n-rfid.rama.mahidol.ac.th/Time/Login" target="_blank" class="card">
+            <a href="http://n-rfid.rama.mahidol.ac.th/Time/Login" 
+               target="_blank" rel="noopener" class="card" data-name="ตอกบัตร">
                 <span class="badge-lan">LAN</span>
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-id-card-clip"></i></div>
                 <div class="card-title">ตอกบัตรเข้า-ออก</div>
                 <div class="card-desc">ระบบ RFID</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://www3.ra.mahidol.ac.th/leaveRama/index.jsp" target="_blank" class="card">
+            <a href="https://www3.ra.mahidol.ac.th/leaveRama/index.jsp" 
+               target="_blank" rel="noopener" class="card" data-name="ลาออนไลน์">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-business-time"></i></div>
                 <div class="card-title">ลาออนไลน์</div>
                 <div class="card-desc">ระบบลา คณะฯ</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://script.google.com/macros/s/AKfycbzO_77wN89GjfbaoqkcH_j9iziyK-_mbKP_8PGnUuvPOsnjkyx2HZWo1naZJWwuuo8wVg/exec" target="_blank" class="card">
+            <a href="https://script.google.com/macros/s/AKfycbzO_77wN89GjfbaoqkcH_j9iziyK-_mbKP_8PGnUuvPOsnjkyx2HZWo1naZJWwuuo8wVg/exec" 
+               target="_blank" rel="noopener" class="card" data-name="ลงเวลานอกราชการ">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-regular fa-clock"></i></div>
                 <div class="card-title">ลงเวลานอกราชการ</div>
                 <div class="card-desc">OT สนง.วิจัย</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://intra9.rama.mahidol.ac.th/hc/" target="_blank" class="card">
+            <a href="https://intra9.rama.mahidol.ac.th/hc/" 
+               target="_blank" rel="noopener" class="card" data-name="บริหารทุนมนุษย์">
                 <span class="badge-lan">LAN</span>
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-user-tie"></i></div>
                 <div class="card-title">บริหารทุนมนุษย์</div>
                 <div class="card-desc">HR คณะฯ</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://idp.mahidol.ac.th/adfs/oauth2/authorize/?client_id=c3dd06c3-cd83-4783-a570-38232c6ce67d" target="_blank" class="card">
+            <a href="https://idp.mahidol.ac.th/adfs/oauth2/authorize/?client_id=c3dd06c3-cd83-4783-a570-38232c6ce67d" 
+               target="_blank" rel="noopener" class="card" data-name="Flexible Benefit">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-hand-holding-heart"></i></div>
                 <div class="card-title">Flexible Benefit</div>
                 <div class="card-desc">สวัสดิการมหิดล</div>
             </a>
-            <a href="https://www.si.mahidol.ac.th/musaving/index.asp" target="_blank" class="card">
+            <a href="https://www.si.mahidol.ac.th/musaving/index.asp" 
+               target="_blank" rel="noopener" class="card" data-name="สหกรณ์ออมทรัพย์">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-piggy-bank"></i></div>
                 <div class="card-title">สหกรณ์ออมทรัพย์</div>
                 <div class="card-desc">มหิดล</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://script.google.com/macros/s/AKfycbxuLfi1MDq-TO5cU68KfeR1SLvL2TmIjS296nxbyMGpqcd1yJMqMiEtwbmga2A4PBVT/exec" target="_blank" class="card">
+            <a href="https://script.google.com/macros/s/AKfycbxuLfi1MDq-TO5cU68KfeR1SLvL2TmIjS296nxbyMGpqcd1yJMqMiEtwbmga2A4PBVT/exec" 
+               target="_blank" rel="noopener" class="card" data-name="ค่ารักษาพยาบาล">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-file-invoice-dollar"></i></div>
                 <div class="card-title">ค่ารักษาพยาบาล</div>
                 <div class="card-desc">ครอบครัว</div>
-                <div class="pin">⭐</div>
             </a>
         </div>
 
         <div class="section-title"><i class="fa-solid fa-building"></i> ธุรการ & ทั่วไป</div>
         <div class="grid cat-admin">
-            <a href="http://10.6.155.94/RAI/index.php" target="_blank" class="card">
+            <a href="http://10.6.155.94/RAI/index.php" 
+               target="_blank" rel="noopener" class="card" data-name="จองห้องประชุม">
                 <span class="badge-lan">LAN</span>
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-calendar-check"></i></div>
                 <div class="card-title">จองห้องประชุม</div>
                 <div class="card-desc">RC Meeting</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://script.google.com/macros/s/AKfycbxprHKO3pzWfYU9oZ2cQl-ynTWTzUp8P8LY3Ens7WwP8mS1k4amv6hLnRhq2C2jb9YN/exec" target="_blank" class="card">
+            <a href="https://script.google.com/macros/s/AKfycbxprHKO3pzWfYU9oZ2cQl-ynTWTzUp8P8LY3Ens7WwP8mS1k4amv6hLnRhq2C2jb9YN/exec" 
+               target="_blank" rel="noopener" class="card" data-name="Phone Book">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-phone-volume"></i></div>
                 <div class="card-title">Phone Book</div>
                 <div class="card-desc">เบอร์ภายใน</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://sites.google.com/view/rc-rama" target="_blank" class="card">
+            <a href="https://sites.google.com/view/rc-rama" 
+               target="_blank" rel="noopener" class="card" data-name="ธุรการทั่วไป">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-folder-open"></i></div>
                 <div class="card-title">ธุรการทั่วไป</div>
                 <div class="card-desc">RC-Rama Site</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://docs.google.com/spreadsheets/d/1RKZ_2ovlxldT9m5HT7StiVaYxyoQvM4T/edit?gid=176877453#gid=176877453" target="_blank" class="card">
+            <a href="https://docs.google.com/spreadsheets/d/1RKZ_2ovlxldT9m5HT7StiVaYxyoQvM4T/edit?gid=176877453#gid=176877453" 
+               target="_blank" rel="noopener" class="card" data-name="กุญแจห้อง">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-key"></i></div>
                 <div class="card-title">กุญแจห้อง</div>
                 <div class="card-desc">อาคารวิจัย</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLScYM8hJbXEhOFuXlU0zet2dqHfX8dSqLjcBNKSov0BMgnbPLQ/viewform" target="_blank" class="card">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLScYM8hJbXEhOFuXlU0zet2dqHfX8dSqLjcBNKSov0BMgnbPLQ/viewform" 
+               target="_blank" rel="noopener" class="card" data-name="Check List">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-list-check"></i></div>
                 <div class="card-title">Check List</div>
                 <div class="card-desc">แบบฟอร์ม</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://script.google.com/macros/s/AKfycbymVbym9Xf6_9xgHWtl-DdVKGCJ6NQra7j9UcSOilKrThNYs7PKHLKbzrQwyYLDy-J2_A/exec" target="_blank" class="card">
+            <a href="https://script.google.com/macros/s/AKfycbymVbym9Xf6_9xgHWtl-DdVKGCJ6NQra7j9UcSOilKrThNYs7PKHLKbzrQwyYLDy-J2_A/exec" 
+               target="_blank" rel="noopener" class="card" data-name="Liquid Nitrogen">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-snowflake"></i></div>
                 <div class="card-title">Liquid Nitrogen</div>
                 <div class="card-desc">รับ-ส่ง</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfvbmmBQiKiBhxSI15sjVilYxFuxHhc5S1i8IFnir9jzAtvGw/viewform" target="_blank" class="card">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfvbmmBQiKiBhxSI15sjVilYxFuxHhc5S1i8IFnir9jzAtvGw/viewform" 
+               target="_blank" rel="noopener" class="card" data-name="ขอขนย้ายของ">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-truck-ramp-box"></i></div>
                 <div class="card-title">ขอขนย้ายของ</div>
                 <div class="card-desc">แบบฟอร์ม</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="http://10.6.155.38/" target="_blank" class="card">
+            <a href="http://10.6.155.38/" 
+               target="_blank" rel="noopener" class="card" data-name="ประตูหน้า">
                 <span class="badge-lan">LAN</span>
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-door-open"></i></div>
                 <div class="card-title">ประตูหน้า (38)</div>
                 <div class="card-desc">เข้า-ออก สนง.</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="http://10.6.155.225/" target="_blank" class="card">
+            <a href="http://10.6.155.225/" 
+               target="_blank" rel="noopener" class="card" data-name="ประตู LAB 225">
                 <span class="badge-lan">LAN</span>
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-flask"></i></div>
                 <div class="card-title">ประตู LAB 225</div>
                 <div class="card-desc">เข้า-ออก LAB</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="http://10.6.155.226/" target="_blank" class="card">
+            <a href="http://10.6.155.226/" 
+               target="_blank" rel="noopener" class="card" data-name="ประตู LAB 226">
                 <span class="badge-lan">LAN</span>
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-flask-vial"></i></div>
                 <div class="card-title">ประตู LAB 226</div>
                 <div class="card-desc">เข้า-ออก LAB</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://www.appsheet.com/start/2e8cd042-246d-4b55-abb8-a5884ba0c60d?platform=desktop" target="_blank" class="card">
+            <a href="https://www.appsheet.com/start/2e8cd042-246d-4b55-abb8-a5884ba0c60d?platform=desktop" 
+               target="_blank" rel="noopener" class="card" data-name="Specimen Bank">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-vial"></i></div>
                 <div class="card-title">Specimen Bank</div>
                 <div class="card-desc">HSR Banking</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://intra9.rama.mahidol.ac.th/inventory/th/miniecat/miniecatbook" target="_blank" class="card">
+            <a href="https://intra9.rama.mahidol.ac.th/inventory/th/miniecat/miniecatbook" 
+               target="_blank" rel="noopener" class="card" data-name="Mini Ecat Book">
                 <span class="badge-lan">LAN</span>
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-book"></i></div>
                 <div class="card-title">Mini Ecat Book</div>
                 <div class="card-desc">ระบบพัสดุ</div>
-                <div class="pin">⭐</div>
             </a>
         </div>
 
         <div class="section-title"><i class="fa-solid fa-globe"></i> ส่วนกลาง</div>
         <div class="grid cat-admin">
-            <a href="https://www.rama.mahidol.ac.th/research/th" target="_blank" class="card">
+            <a href="https://www.rama.mahidol.ac.th/research/th" 
+               target="_blank" rel="noopener" class="card" data-name="เว็บ สนง.วิจัย">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-sitemap"></i></div>
                 <div class="card-title">เว็บ สนง.วิจัย</div>
                 <div class="card-desc">Official Web</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://intra9.rama.mahidol.ac.th/online_requests" target="_blank" class="card">
+            <a href="https://intra9.rama.mahidol.ac.th/online_requests" 
+               target="_blank" rel="noopener" class="card" data-name="บริการออนไลน์ รพ.">
                 <span class="badge-lan">LAN</span>
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-computer-mouse"></i></div>
                 <div class="card-title">บริการออนไลน์ รพ.</div>
                 <div class="card-desc">Online Requests</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://myinternet.mahidol.ac.th/" target="_blank" class="card">
+            <a href="https://myinternet.mahidol.ac.th/" 
+               target="_blank" rel="noopener" class="card" data-name="MyInternet">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-wifi"></i></div>
                 <div class="card-title">MyInternet</div>
                 <div class="card-desc">เน็ตมหิดล</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://intra9.rama.mahidol.ac.th/rama/office" target="_blank" class="card">
+            <a href="https://intra9.rama.mahidol.ac.th/rama/office" 
+               target="_blank" rel="noopener" class="card" data-name="หน่วยงานใน รพ.">
                 <span class="badge-lan">LAN</span>
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-hospital"></i></div>
                 <div class="card-title">หน่วยงานใน รพ.</div>
                 <div class="card-desc">รายชื่อหน่วยงาน</div>
-                <div class="pin">⭐</div>
             </a>
         </div>
 
         <div class="section-title"><i class="fa-solid fa-gamepad"></i> บันเทิง (By KYO GI)</div>
         <div class="grid cat-fun">
-            <a href="https://www.appsheet.com/start/5a0dbaf8-5f2f-43c4-8b1a-482728632309?platform=desktop" target="_blank" class="card">
+            <a href="https://www.appsheet.com/start/5a0dbaf8-5f2f-43c4-8b1a-482728632309?platform=desktop" 
+               target="_blank" rel="noopener" class="card" data-name="Movie Anime">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-film"></i></div>
                 <div class="card-title">Movie Anime</div>
                 <div class="card-desc">APP ดูหนัง/ซีรีย์</div>
-                <div class="pin">⭐</div>
             </a>
-            <a href="https://script.google.com/a/macros/mahidol.ac.th/s/AKfycbws9LKwF_WssZCVV5x_dK1xkGRy3_Cecpz7MGPDi4uLJ7d22OgNIsJjbaDrBtZOfYv8vA/exec" target="_blank" class="card">
+            <a href="https://script.google.com/a/macros/mahidol.ac.th/s/AKfycbws9LKwF_WssZCVV5x_dK1xkGRy3_Cecpz7MGPDi4uLJ7d22OgNIsJjbaDrBtZOfYv8vA/exec" 
+               target="_blank" rel="noopener" class="card" data-name="เลขพารวย">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-ticket"></i></div>
                 <div class="card-title">เลขพารวย Pro</div>
                 <div class="card-desc">ลุ้นโชค</div>
-                <div class="pin">⭐</div>
             </a>
         </div>
 
@@ -379,55 +509,77 @@ h1{font-family:'Prompt';margin:0;font-size:1.5rem}
     </div>
 
     <script>
-/* ================= SEARCH (ขั้นสูง) ================= */
-const searchInput=document.getElementById('searchInput');
-const cards=[...document.querySelectorAll('.card')];
+        // 1. Search Logic
+        const searchInput = document.getElementById('searchInput');
+        const cards = document.querySelectorAll('.card');
 
-searchInput.addEventListener('input',e=>{
-  const t=e.target.value.toLowerCase();
-  cards.forEach(c=>{
-    const title=c.querySelector('.card-title')?.innerText.toLowerCase()||'';
-    const desc=c.querySelector('.card-desc')?.innerText.toLowerCase()||'';
-    const sec=c.closest('.grid')?.dataset.section||'';
-    c.style.display=(title+desc+sec).includes(t)?'flex':'none';
-  });
-});
+        searchInput.addEventListener('keyup', (e) => {
+            const term = e.target.value.toLowerCase();
+            cards.forEach(card => {
+                const title = card.querySelector('.card-title').innerText.toLowerCase();
+                const desc = card.querySelector('.card-desc').innerText.toLowerCase();
+                const nameData = card.dataset.name ? card.dataset.name.toLowerCase() : '';
+                
+                if(title.includes(term) || desc.includes(term) || nameData.includes(term)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
 
-/* ================= PIN FAVORITE ================= */
-const favGrid=document.getElementById('favGrid');
-const favSection=document.getElementById('favSection');
-let favs=JSON.parse(localStorage.getItem('favMenu')||'[]');
+        // 2. Pin Logic
+        function togglePin(event, card) {
+            event.preventDefault(); // ป้องกันการกด Link
+            event.stopPropagation();
 
-function renderFav(){
-  favGrid.innerHTML='';
-  favs.forEach(html=>favGrid.insertAdjacentHTML('beforeend',html));
-  favSection.style.display=favs.length?'block':'none';
-}
-renderFav();
+            const cardName = card.dataset.name;
+            if(!cardName) return; // กัน Error ถ้าลืมใส่ data-name
 
-document.addEventListener('click',e=>{
-  if(!e.target.classList.contains('pin'))return;
-  e.preventDefault();
-  const card=e.target.closest('.card');
-  const html=card.outerHTML.replace('active','');
-  if(e.target.classList.toggle('active')){
-    favs.push(html);
-  }else{
-    favs=favs.filter(h=>!h.includes(card.dataset.name));
-  }
-  localStorage.setItem('favMenu',JSON.stringify(favs));
-  renderFav();
-});
+            card.classList.toggle('pinned');
+            
+            // Save to LocalStorage
+            let pinnedItems = JSON.parse(localStorage.getItem('pinnedCards')) || [];
+            
+            if (card.classList.contains('pinned')) {
+                if (!pinnedItems.includes(cardName)) {
+                    pinnedItems.push(cardName);
+                }
+            } else {
+                pinnedItems = pinnedItems.filter(item => item !== cardName);
+            }
+            localStorage.setItem('pinnedCards', JSON.stringify(pinnedItems));
+            
+            // Re-sort (Optional: ถ้าอยากให้เด้งขึ้นบนทันที ให้เรียก sortCards())
+            // sortCards(); 
+        }
 
-/* ================= CLICK LOG (LOCAL) ================= */
-cards.forEach(c=>{
-  c.addEventListener('click',()=>{
-    const logs=JSON.parse(localStorage.getItem('clickLog')||'[]');
-    logs.push({name:c.querySelector('.card-title').innerText,time:new Date()});
-    localStorage.setItem('clickLog',JSON.stringify(logs));
-  });
-});
-</script>
+        function loadPins() {
+            const pinnedItems = JSON.parse(localStorage.getItem('pinnedCards')) || [];
+            cards.forEach(card => {
+                if (pinnedItems.includes(card.dataset.name)) {
+                    card.classList.add('pinned');
+                }
+            });
+            sortCards(); // เรียงลำดับตอนโหลดหน้าเว็บ
+        }
+
+        function sortCards() {
+            const grids = document.querySelectorAll('.grid');
+            grids.forEach(grid => {
+                const items = Array.from(grid.children);
+                items.sort((a, b) => {
+                    const aPinned = a.classList.contains('pinned');
+                    const bPinned = b.classList.contains('pinned');
+                    return bPinned - aPinned; // Pinned มาก่อน
+                });
+                items.forEach(item => grid.appendChild(item));
+            });
+        }
+
+        // Run on load
+        window.addEventListener('DOMContentLoaded', loadPins);
+    </script>
 
 </body>
 </html>
