@@ -80,6 +80,20 @@
             margin: 0 auto;
         }
 
+        /* --- NOTICE BOX --- */
+        .notice {
+            background-color: #fff3cd; /* สีเหลืองอ่อน */
+            color: #856404; /* สีตัวหนังสือเหลืองเข้ม */
+            border: 1px solid #ffeeba;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px; /* เว้นระยะห่างด้านล่าง */
+            font-size: 0.85rem;
+            line-height: 1.5;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
         /* --- SECTION --- */
         .section-title {
             font-family: 'Prompt', sans-serif;
@@ -111,7 +125,7 @@
             text-align: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             transition: transform 0.1s;
-            position: relative; /* สำคัญสำหรับ Pin และ Badge */
+            position: relative;
             height: 100%;
             min-height: 130px;
             cursor: pointer;
@@ -122,17 +136,17 @@
             background: #f9f9f9;
         }
 
-        /* --- PIN STAR (มุมขวาบน) --- */
+        /* --- PIN STAR --- */
         .pin {
             position: absolute;
             top: 5px;
             right: 8px;
             font-size: 1.2rem;
-            color: #ddd; /* สีตอนยังไม่กด */
+            color: #ddd;
             cursor: pointer;
             z-index: 10;
             transition: color 0.2s;
-            padding: 5px; /* เพิ่มพื้นที่กด */
+            padding: 5px;
         }
         
         .card.pinned {
@@ -141,15 +155,15 @@
         }
 
         .card.pinned .pin {
-            color: var(--gold); /* สีตอนกดแล้ว */
+            color: var(--gold);
             text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
         }
 
-        /* --- BADGE LAN (มุมซ้ายบน) --- */
+        /* --- BADGE LAN --- */
         .badge-lan {
             position: absolute;
             top: 8px;
-            left: 8px; /* ย้ายมาซ้าย ไม่ให้ทับดาว */
+            left: 8px;
             font-size: 0.6rem;
             background: #ffebee;
             color: #d32f2f;
@@ -169,7 +183,7 @@
             justify-content: center;
             font-size: 1.4rem;
             margin-bottom: 10px;
-            margin-top: 10px; /* ขยับลงหนีดาวนิดนึง */
+            margin-top: 10px;
             background: #e1f5fe;
             color: #0288d1;
         }
@@ -223,9 +237,12 @@
         <input type="text" id="searchInput" class="search-box" placeholder="🔍 ค้นหาเมนู...">
     </div>
 
-    <div class="notice"> ⚠️ <b>หมายเหตุ:</b> ระบบหรือเว็บไซต์ที่มีคำว่า <b>LAN</b> หรือเกี่ยวกับ <b>WiFi ของคณะ</b> จำเป็นต้องเชื่อมต่อเครือข่าย <b>LAN / WiFi ภายในที่ทำงาน</b> เท่านั้นจึงจะสามารถเข้าใช้งานได้ </div>
-
     <div class="container">
+
+        <div class="notice">
+            ⚠️ <b>หมายเหตุ:</b> ระบบหรือเว็บไซต์ที่มีคำว่า <b>LAN</b> หรือเกี่ยวกับ <b>WiFi ของคณะ</b><br>
+            จำเป็นต้องเชื่อมต่อเครือข่าย <b>LAN / WiFi ภายในที่ทำงาน</b> เท่านั้นจึงจะสามารถเข้าใช้งานได้
+        </div>
 
         <div class="section-title"><i class="fa-solid fa-laptop-medical"></i> IT & ครุภัณฑ์</div>
         <div class="grid cat-it">
@@ -552,8 +569,7 @@
             }
             localStorage.setItem('pinnedCards', JSON.stringify(pinnedItems));
             
-            // Re-sort (Optional: ถ้าอยากให้เด้งขึ้นบนทันที ให้เรียก sortCards())
-            // sortCards(); 
+            // Re-sort (Optional)
         }
 
         function loadPins() {
