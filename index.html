@@ -8,22 +8,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-    /* --- NEW COLOR PALETTE --- */
+    /* --- NEW COLOR PALETTE (V.Categorized) --- */
     :root {
-        /* Header Gradient: ปรับให้ดูสุขุม ลึกซึ้ง และเป็นทางการมากขึ้น */
-        --primary-grad: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        
-        /* Backgrounds: ปรับให้ขาวสะอาด สบายตา */
-        --bg-color: #f8f9fa;
+        /* Header: คงสีน้ำเงินเข้มไว้ เพื่อความเป็นทางการและเชื่อถือได้ */
+        --primary-grad: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+        --bg-color: #f4f6f9;
         --card-bg: #ffffff;
+        --text-main: #2c3e50;
+        --text-sub: #6c757d;
+        --gold: #ffc107;
         
-        /* Text Colors: เพิ่มคอนทราสต์ให้อ่านง่ายขึ้น */
-        --text-main: #2c3e50; /* สีน้ำเงินเข้มเกือบดำ */
-        --text-sub: #6c757d;  /* สีเทากลาง */
-        
-        /* Accent Colors */
-        --gold: #ffc107;       /* สีดาว (คงเดิม) */
-        --section-icon: #1e3c72; /* สีไอคอนหัวข้อหมวดหมู่ (ให้เข้ากับ Header) */
+        /* Category Colors Variables (กำหนดสีหลักของแต่ละหมวด) */
+        --col-it: #007bff;      /* ฟ้า */
+        --col-hr: #e83e8c;      /* ชมพู */
+        --col-admin: #fd7e14;   /* ส้ม */
+        --col-central: #20c997; /* เขียว */
+        --col-fun: #6f42c1;     /* ม่วง */
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -31,7 +31,6 @@
     body {
         font-family: 'Sarabun', sans-serif;
         background-color: var(--bg-color);
-        color: var(--text-main);
         margin: 0;
         padding: 0;
         padding-bottom: 40px;
@@ -45,227 +44,121 @@
         color: white;
         border-bottom-left-radius: 30px;
         border-bottom-right-radius: 30px;
-        /* ปรับเงาให้ดูนุ่มนวลขึ้น */
-        box-shadow: 0 10px 25px rgba(30, 60, 114, 0.2);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
     }
+    h1 { font-family: 'Prompt', sans-serif; font-size: 1.6rem; margin: 0; font-weight: 600; }
+    p.subtitle { font-size: 0.85rem; margin-top: 5px; opacity: 0.9; font-weight: 300; }
 
-    h1 {
-        font-family: 'Prompt', sans-serif;
-        font-size: 1.5rem;
-        margin: 0;
-        font-weight: 600;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.1); /* เพิ่มมิติให้ตัวหนังสือเล็กน้อย */
-    }
-
-    p.subtitle {
-        font-size: 0.85rem;
-        margin-top: 5px;
-        opacity: 0.95;
-        font-weight: 300;
-    }
-
-    /* --- STICKY SEARCH BAR --- */
-    .search-wrapper {
-        position: sticky;
-        top: 15px;
-        z-index: 100;
-        padding: 0 15px;
-        margin-top: -45px;
-    }
-
+    /* --- SEARCH --- */
+    .search-wrapper { position: sticky; top: 15px; z-index: 100; padding: 0 15px; margin-top: -45px; }
     .search-box {
-        width: 100%;
-        padding: 15px 20px;
-        border-radius: 30px;
-        border: none;
-        /* เงาสีเข้มขึ้นนิดหน่อยเพื่อให้ลอยเด่น */
+        width: 100%; padding: 15px 20px; border-radius: 30px; border: none;
         box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        font-family: 'Prompt', sans-serif;
-        font-size: 1rem;
-        outline: none;
+        font-family: 'Prompt', sans-serif; font-size: 1rem; outline: none;
         background: rgba(255, 255, 255, 0.98);
-        backdrop-filter: blur(15px);
-        color: var(--text-main);
-    }
-    .search-box::placeholder { color: #adb5bd; }
-
-    /* --- CONTAINER --- */
-    .container {
-        padding: 20px 15px;
-        max-width: 800px;
-        margin: 0 auto;
     }
 
-    /* --- NOTICE BOX --- */
+    /* --- CONTAINER & NOTICE --- */
+    .container { padding: 20px 15px; max-width: 800px; margin: 0 auto; }
     .notice {
-        background-color: #fff8e1; /* สีครีมเหลืองนวลๆ */
-        color: #856404;
-        border: 1px solid #ffeeba;
-        padding: 15px;
-        border-radius: 15px;
-        margin-bottom: 25px;
-        font-size: 0.85rem;
-        line-height: 1.5;
-        text-align: center;
+        background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba;
+        padding: 15px; border-radius: 15px; margin-bottom: 25px;
+        font-size: 0.85rem; line-height: 1.5; text-align: center;
     }
-    .notice b { color: #533f03; }
 
-    /* --- SECTION --- */
+    /* --- SECTIONS --- */
     .section-title {
         font-family: 'Prompt', sans-serif;
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         color: var(--text-main);
-        margin: 30px 0 15px;
-        display: flex;
-        align-items: center;
-        font-weight: 600;
+        margin: 35px 0 15px;
+        display: flex; align-items: center; font-weight: 600;
+        border-left: 5px solid #ccc; /* แถบสีด้านซ้ายหัวข้อ */
+        padding-left: 10px;
     }
-    /* เปลี่ยนสีไอคอนหัวข้อให้เข้ากับธีมหลัก */
-    .section-title i { margin-right: 10px; color: var(--section-icon); }
+    .section-title i { margin-right: 10px; }
 
-    /* --- GRID --- */
-    .grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px; /* เพิ่มช่องว่างนิดหน่อย */
-    }
+    /* แยกสีหัวข้อตามหมวด (ต้องใช้ nth-of-type หรือใส่ class เพิ่มที่ HTML) 
+       แต่เพื่อให้ง่าย ผมใช้ CSS Selector เลือกตามลำดับหัวข้อครับ */
+    
+    /* หัวข้อที่ 1 (IT) */
+    .container > .section-title:nth-of-type(1) { border-color: var(--col-it); color: var(--col-it); }
+    /* หัวข้อที่ 2 (HR) */
+    .container > .section-title:nth-of-type(2) { border-color: var(--col-hr); color: var(--col-hr); }
+    /* หัวข้อที่ 3 (Admin) */
+    .container > .section-title:nth-of-type(3) { border-color: var(--col-admin); color: var(--col-admin); }
+    /* หัวข้อที่ 4 (Central) */
+    .container > .section-title:nth-of-type(4) { border-color: var(--col-central); color: var(--col-central); }
+    /* หัวข้อที่ 5 (Fun) */
+    .container > .section-title:nth-of-type(5) { border-color: var(--col-fun); color: var(--col-fun); }
+
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
     /* --- CARD --- */
     .card {
         background: var(--card-bg);
-        border-radius: 18px; /* โค้งมนขึ้นอีกนิด */
-        padding: 20px 15px;
+        border-radius: 18px;
+        padding: 20px 10px;
         text-decoration: none;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        /* เงาที่ดูสะอาดตาและทันสมัย */
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 0 1px rgba(0,0,0,0.1);
-        transition: all 0.2s ease;
-        position: relative;
-        height: 100%;
-        min-height: 140px;
-        cursor: pointer;
-        border: 1px solid transparent; /* เตรียมไว้สำหรับ hover */
+        display: flex; flex-direction: column; align-items: center; text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.05);
+        transition: transform 0.2s; position: relative;
+        height: 100%; min-height: 140px; cursor: pointer;
+        border-top: 4px solid transparent; /* เตรียมพื้นที่สำหรับแถบสีด้านบน */
     }
+    .card:active { transform: scale(0.97); }
 
-    .card:active {
-        transform: scale(0.97);
-        background: #f1f3f5;
-    }
+    /* --- CATEGORY STYLES (สีแยกตามหมวด) --- */
     
-    /* เพิ่ม Hover effect ในจอใหญ่ */
-    @media(hover: hover) {
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.06);
-            border-color: #e9ecef;
-        }
-    }
+    /* 1. IT (Blue) */
+    .cat-it .card { border-top-color: var(--col-it); }
+    .cat-it .icon-circle { background: #e3f2fd; color: var(--col-it); }
 
-    /* --- PIN STAR --- */
-    .pin {
-        position: absolute;
-        top: 8px;
-        right: 10px;
-        font-size: 1.2rem;
-        color: #e9ecef; /* สีเทาอ่อนมากๆ ตอนยังไม่กด */
-        cursor: pointer;
-        z-index: 10;
-        transition: color 0.2s;
-        padding: 5px;
-    }
-    
-    .card.pinned {
-        border: 2px solid var(--gold);
-        background: #fffbf2; /* พื้นหลังสีครีมทองจางๆ */
-        box-shadow: 0 4px 12px rgba(255, 193, 7, 0.15);
-    }
+    /* 2. HR (Pink) */
+    .cat-hr .card { border-top-color: var(--col-hr); }
+    .cat-hr .icon-circle { background: #fce4ec; color: var(--col-hr); }
 
-    .card.pinned .pin {
-        color: var(--gold);
-        filter: drop-shadow(0 0 2px rgba(255, 193, 7, 0.5));
-    }
+    /* 3. Admin (Orange) */
+    .cat-admin .card { border-top-color: var(--col-admin); }
+    .cat-admin .icon-circle { background: #fff3e0; color: var(--col-admin); }
 
-    /* --- BADGE LAN --- */
-    .badge-lan {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        font-size: 0.65rem;
-        background: #fee2e2; /* แดงอ่อนที่ดูนุ่มนวลขึ้น */
-        color: #b91c1c;       /* แดงเข้ม */
-        padding: 3px 8px;
-        border-radius: 6px;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-    }
+    /* 4. Central (Green/Teal) - ต้องแก้ HTML class เป็น cat-central */
+    .cat-central .card { border-top-color: var(--col-central); }
+    .cat-central .icon-circle { background: #e0f2f1; color: var(--col-central); }
 
-    /* --- ICON CIRCLE (หัวใจสำคัญของการปรับสี) --- */
+    /* 5. Fun (Purple) */
+    .cat-fun .card { border-top-color: var(--col-fun); }
+    .cat-fun .icon-circle { background: #f3e5f5; color: var(--col-fun); }
+
+
+    /* --- ICON CIRCLE --- */
     .icon-circle {
-        width: 52px;
-        height: 52px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        margin-bottom: 12px;
-        margin-top: 8px;
-        transition: all 0.2s ease;
+        width: 55px; height: 55px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.6rem; margin-bottom: 12px; margin-top: 5px;
     }
 
-    /* Color Palette ใหม่: 
-       ใช้พื้นหลังสีจางๆ (Tint) + ไอคอนสีสด (Vibrant)
-       ทำให้ดูสะอาดตาและทันสมัยกว่าเดิม
-    */
-    
-    /* IT: Tech Blue */
-    .cat-it .icon-circle { background: #eef2ff; color: #3b82f6; }
-    
-    /* HR: Rose Pink */
-    .cat-hr .icon-circle { background: #fff1f2; color: #ec4899; }
-    
-    /* Admin: Amber Orange */
-    .cat-admin .icon-circle { background: #fff7ed; color: #f59e0b; }
-    
-    /* Fun: Vibrant Violet */
-    .cat-fun .icon-circle { background: #f5f3ff; color: #8b5cf6; }
-
-
-    /* Text */
+    /* --- TEXT --- */
     .card-title {
-        font-family: 'Prompt', sans-serif;
-        font-size: 0.95rem;
-        color: var(--text-main);
-        font-weight: 600; /* เพิ่มน้ำหนักให้หัวข้อชัดขึ้น */
-        line-height: 1.3;
-        margin-bottom: 6px;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+        font-family: 'Prompt', sans-serif; font-size: 0.9rem;
+        color: var(--text-main); font-weight: 500;
+        line-height: 1.3; margin-bottom: 5px;
+        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .card-desc { font-size: 0.7rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; opacity: 0.8; }
+
+    /* --- PIN & BADGE --- */
+    .pin { position: absolute; top: 8px; right: 8px; font-size: 1.2rem; color: #eee; cursor: pointer; z-index: 10; padding: 5px; }
+    .card.pinned { background: #fffff5; border: 2px solid var(--gold); border-top: 2px solid var(--gold); } /* Override top border if pinned */
+    .card.pinned .pin { color: var(--gold); text-shadow: 0 0 3px rgba(255,193,7,0.5); }
+
+    .badge-lan {
+        position: absolute; top: 8px; left: 8px; font-size: 0.6rem;
+        background: #ffebee; color: #c62828; padding: 2px 6px;
+        border-radius: 4px; font-weight: 700;
     }
 
-    .card-desc {
-        font-size: 0.75rem;
-        color: var(--text-sub);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        width: 100%;
-        opacity: 0.9;
-    }
-
-    /* Footer */
-    .footer {
-        text-align: center;
-        font-size: 0.75rem;
-        color: #adb5bd;
-        margin-top: 50px;
-        font-weight: 300;
-    }
+    .footer { text-align: center; font-size: 0.75rem; color: #ccc; margin-top: 50px; }
 </style>
 </head>
 <body>
@@ -419,7 +312,7 @@
         </div>
 
         <div class="section-title"><i class="fa-solid fa-building"></i> ธุรการ & ทั่วไป</div>
-        <div class="grid cat-admin">
+        <div class="grid cat-central">
             <a href="http://10.6.155.94/RAI/index.php" 
                target="_blank" rel="noopener" class="card" data-name="จองห้องประชุม">
                 <span class="badge-lan">LAN</span>
@@ -512,7 +405,7 @@
         </div>
 
         <div class="section-title"><i class="fa-solid fa-globe"></i> ส่วนกลาง</div>
-        <div class="grid cat-admin">
+        <div class="grid cat-central">
             <a href="https://www.rama.mahidol.ac.th/research/th" 
                target="_blank" rel="noopener" class="card" data-name="เว็บ สนง.วิจัย">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
