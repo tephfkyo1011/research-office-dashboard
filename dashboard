@@ -47,7 +47,7 @@
 </head>
 <body>
 
-    <iframe src="URL_APPS_SCRIPT_ตรงนี้" allow="fullscreen"></iframe>
+    <iframe src="https://script.google.com/a/macros/mahidol.ac.th/s/AKfycbxbcCDzD5mabYhFnw0MP00-ZkOoCJg4bZc-daedF9GhHIq0xVUMMIKmB7l4_69oyNQ/exec" allow="fullscreen"></iframe>
     
     <script>
         if ('service-worker' in navigator) {
