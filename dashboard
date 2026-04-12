@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard ครุภัณฑ์ HSR</title>
+    
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="ครุภัณฑ์ HSR">
+
+    <link rel="icon" type="image/jpeg" href="https://raw.githubusercontent.com/tephfkyo1011/research-office-dashboard/main/logo-hsr-dashboard.jpg">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/tephfkyo1011/research-office-dashboard/main/logo-hsr-dashboard.jpg">
+
+    <link rel="manifest" href='data:application/manifest+json,{
+      "name": "Dashboard สรุปข้อมูลครุภัณฑ์",
+      "short_name": "ครุภัณฑ์ HSR",
+      "display": "standalone",
+      "start_url": ".",
+      "background_color": "#ffffff",
+      "theme_color": "#2563eb",
+      "icons": [
+        {
+          "src": "https://raw.githubusercontent.com/tephfkyo1011/research-office-dashboard/main/logo-hsr-dashboard.jpg",
+          "sizes": "any",
+          "type": "image/jpeg",
+          "purpose": "any maskable"
+        }
+      ]
+    }'>
+
+    <style>
+        /* รีเซ็ตขอบและทำให้ Iframe เต็มจอ 100% */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden; 
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <iframe src="URL_APPS_SCRIPT_ตรงนี้" allow="fullscreen"></iframe>
+    
+    <script>
+        if ('service-worker' in navigator) {
+            const swCode = `self.addEventListener('fetch', function() {});`;
+            const blob = new Blob([swCode], {type: 'text/javascript'});
+            navigator.serviceWorker.register(URL.createObjectURL(blob));
+        }
+    </script>
+
+</body>
+</html>
