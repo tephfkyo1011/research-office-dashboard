@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบตรวจสอบตู้แช่ & LN2</title> 
+    
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="ตรวจสอบตู้แช่">
+
+    <link rel="icon" type="image/png" href="https://tephfkyo1011.github.io/research-office-dashboard/logo-freezer-check.png">
+    <link rel="apple-touch-icon" href="https://tephfkyo1011.github.io/research-office-dashboard/logo-freezer-check.png">
+
+    <link rel="manifest" href='data:application/manifest+json,{
+      "name": "ระบบตรวจสอบตู้แช่ & LN2",
+      "short_name": "ตรวจสอบตู้แช่",
+      "display": "standalone",
+      "start_url": ".",
+      "background_color": "#ffffff",
+      "theme_color": "#2563eb",
+      "icons": [
+        {
+          "src": "https://tephfkyo1011.github.io/research-office-dashboard/logo-freezer-check.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "any maskable"
+        }
+      ]
+    }'>
+
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f4f6f9; }
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+
+    <iframe src="https://script.google.com/a/macros/mahidol.ac.th/s/AKfycbzPxW-MM3P4RpWlPq4n3hP2iwf8DtHBgydaBWngDZ9sho9K4MC2seH5t8eGMZWRjmvy/exec" allow="fullscreen"></iframe>
+    
+    <script>
+        // โค้ด Service Worker เปล่าๆ เพื่อหลอกให้เบราว์เซอร์ยอมให้ติดตั้งแอป
+        if ('service-worker' in navigator) {
+            const swCode = `self.addEventListener('fetch', function() {});`;
+            const blob = new Blob([swCode], {type: 'text/javascript'});
+            navigator.serviceWorker.register(URL.createObjectURL(blob));
+        }
+    </script>
+
+</body>
+</html>
