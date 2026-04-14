@@ -67,14 +67,22 @@
         }
         .btn-darkmode:hover { background: rgba(255, 255, 255, 0.3); transform: scale(1.05); }
 
-        .search-wrapper { position: sticky; top: 15px; z-index: 100; padding: 0 15px; margin-top: -35px; }
+        .search-wrapper { position: sticky; top: 15px; z-index: 100; padding: 0 15px; margin-top: -35px; max-width: 630px; margin-left: auto; margin-right: auto;}
         .search-box {
-            width: 100%; max-width: 600px; display: block; margin: 0 auto;
-            padding: 15px 25px; border-radius: 30px; border: none; box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            width: 100%; display: block; margin: 0 auto;
+            padding: 15px 40px 15px 25px; border-radius: 30px; border: none; box-shadow: 0 8px 25px rgba(0,0,0,0.15);
             font-family: 'Prompt', sans-serif; font-size: 1rem; outline: none;
             background-color: var(--card-bg); color: var(--text-main);
             transition: background-color 0.3s ease, color 0.3s ease;
         }
+
+        /* 💡 Clear Search UX */
+        .clear-search {
+            position: absolute; right: 30px; top: 50%; transform: translateY(-50%);
+            cursor: pointer; color: var(--text-sub); font-size: 1.2rem;
+            display: none; transition: color 0.2s;
+        }
+        .clear-search:hover { color: #e74c3c; }
 
         .container { padding: 20px 15px; max-width: 900px; margin: 0 auto; }
         
@@ -93,39 +101,35 @@
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); } }
 
         /* 🎨 Card Animation & Style */
-.card {
-    background: var(--card-bg); border-radius: 15px; padding: 15px 10px;
-    text-decoration: none; display: flex; flex-direction: column; align-items: center; text-align: center;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.02); 
-    transition: all 0.25s ease; /* 👈 ตัวนี้ทำให้ Hover นุ่มนวล */
-    position: relative;
-    min-height: 140px; border-top: 4px solid transparent; color: var(--text-main);
-    
-    /* ⚡ แก้ไข: เปลี่ยนมาใช้ backwards เพื่อไม่ให้มันล็อคการขยับ */
-    animation: fadeInCard 0.5s ease backwards;
-}
+        .card {
+            background: var(--card-bg); border-radius: 15px; padding: 15px 10px;
+            text-decoration: none; display: flex; flex-direction: column; align-items: center; text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02); 
+            transition: all 0.25s ease;
+            position: relative;
+            min-height: 140px; border-top: 4px solid transparent; color: var(--text-main);
+            animation: fadeInCard 0.5s ease backwards;
+        }
 
-@keyframes fadeInCard {
-    0% { opacity: 0; transform: translateY(15px); }
-    100% { opacity: 1; transform: translateY(0); }
-}
+        @keyframes fadeInCard {
+            0% { opacity: 0; transform: translateY(15px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
 
-.card:hover { 
-    transform: translateY(-6px); /* 👈 เลื่อนขึ้นเมื่อเอาเมาส์ชี้ */
-    box-shadow: 0 12px 25px rgba(0,0,0,0.08); 
-}
+        .card:hover { 
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.08); 
+        }
 
-body.dark .card:hover { box-shadow: 0 12px 25px rgba(0,0,0,0.4); }
+        body.dark .card:hover { box-shadow: 0 12px 25px rgba(0,0,0,0.4); }
+        .card:active { transform: scale(0.95); }
 
-.card:active { 
-    transform: scale(0.95); /* 👈 ยุบตัวลงเมื่อกดคลิก */
-}
+        /* 🧠 Last Used Highlight */
+        .card.last-used {
+            outline: 2px solid #28a745;
+            outline-offset: -2px;
+        }
 
-/* 🧠 Last Used Highlight */
-.card.last-used {
-    outline: 2px solid #28a745;
-    outline-offset: -2px;
-}
         .icon-circle {
             width: 60px; height: 60px; border-radius: 18px;
             display: flex; align-items: center; justify-content: center;
@@ -141,9 +145,16 @@ body.dark .card:hover { box-shadow: 0 12px 25px rgba(0,0,0,0.4); }
         .badge-lan { position: absolute; top: 5px; left: 5px; font-size: 0.6rem; background: #ffebee; color: #c62828; padding: 1px 5px; border-radius: 4px; font-weight: bold; }
         body.dark .badge-lan { background: #5c1818; color: #ffb3b3; }
         
-        .pin { position: absolute; top: 5px; right: 5px; font-size: 1rem; color: #eee; cursor: pointer; padding: 2px; transition: color 0.2s; }
+        .pin { position: absolute; top: 5px; right: 5px; font-size: 1rem; color: #eee; cursor: pointer; padding: 2px; transition: color 0.2s; z-index: 10; }
         body.dark .pin { color: #444; }
-        .card.pinned { border: 1px solid var(--gold); }
+
+        /* 🧠 UX ระดับโปร: Pin Animation */
+        .card.pinned { border: 1px solid var(--gold); animation: pinPop 0.3s ease; }
+        @keyframes pinPop {
+            0% { transform: scale(0.9); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
         body:not(.dark) .card.pinned { background: #fffdf0; }
         body.dark .card.pinned { background: #353018; }
         .card.pinned .pin { color: var(--gold); }
@@ -161,6 +172,7 @@ body.dark .card:hover { box-shadow: 0 12px 25px rgba(0,0,0,0.4); }
 
     <div class="search-wrapper">
         <input type="text" id="searchInput" class="search-box" placeholder="🔍 ค้นหาชื่อระบบหรือแอป...">
+        <span id="clearSearch" class="clear-search"><i class="fa-solid fa-xmark"></i></span>
     </div>
 
     <div class="container">
@@ -178,103 +190,103 @@ body.dark .card:hover { box-shadow: 0 12px 25px rgba(0,0,0,0.4); }
         <div class="grid" id="grid-it">
             <a href="https://www.appsheet.com/start/6e4cdc1f-da32-4ae1-87c6-3e7a0d81929f" target="_blank" class="card" data-name="HSR Database">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
-                <div class="icon-circle"><img src="logo-hsr-db.png" onerror="this.src='https://ui-avatars.com/api/?name=HS&background=0D8ABC&color=fff'"></div>
+                <div class="icon-circle"><img src="logo-hsr-db.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=HS&background=0D8ABC&color=fff'"></div>
                 <div class="card-title">ระบบฐานข้อมูลครุภัณฑ์ HSR</div>
                 <div class="card-desc">AppSheet Online</div>
             </a>
             <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-dashboard.html" target="_blank" class="card" data-name="Dashboard ครุภัณฑ์">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
-                <div class="icon-circle"><img src="logo-hsr-dashboard.png" onerror="this.src='https://ui-avatars.com/api/?name=DB&background=f39c12&color=fff'"></div>
+                <div class="icon-circle"><img src="logo-hsr-dashboard.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=DB&background=f39c12&color=fff'"></div>
                 <div class="card-title">Dashboard ครุภัณฑ์</div>
                 <div class="card-desc">สรุปข้อมูลสำนักงานวิจัย</div>
             </a>
             <a href="https://www.appsheet.com/start/54d31000-2358-4abc-bd52-44472a9275c6" target="_blank" class="card" data-name="USER ครุภัณฑ์">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
-                <div class="icon-circle"><img src="logo-hsr-user.png" onerror="this.src='https://ui-avatars.com/api/?name=User&background=3498db&color=fff'"></div>
+                <div class="icon-circle"><img src="logo-hsr-user.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=User&background=3498db&color=fff'"></div>
                 <div class="card-title">USER ครุภัณฑ์</div>
                 <div class="card-desc">สำนักงานวิจัย</div>
             </a>
             <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-health-family.html" target="_blank" class="card" data-name="Health Family">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
-                <div class="icon-circle"><img src="logo-health-family.png" onerror="this.src='https://ui-avatars.com/api/?name=HF&background=e74c3c&color=fff'"></div>
+                <div class="icon-circle"><img src="logo-health-family.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=HF&background=e74c3c&color=fff'"></div>
                 <div class="card-title">Health Family By CG</div>
                 <div class="card-desc">Version 17</div>
             </a>
             <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-tumor-bank.html" target="_blank" class="card" data-name="Tumor Bank">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
-                <div class="icon-circle"><img src="logo-tumor-bank.png" onerror="this.src='https://ui-avatars.com/api/?name=TB&background=2ecc71&color=fff'"></div>
+                <div class="icon-circle"><img src="logo-tumor-bank.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=TB&background=2ecc71&color=fff'"></div>
                 <div class="card-title">Tumor Bank Transport</div>
                 <div class="card-desc">ระบบขนส่ง</div>
             </a>
             <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-ot-time.html" target="_blank" class="card" data-name="OT Time">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
-                <div class="icon-circle"><img src="logo-ot-time.png" onerror="this.src='https://ui-avatars.com/api/?name=OT&background=9b59b6&color=fff'"></div>
+                <div class="icon-circle"><img src="logo-ot-time.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=OT&background=9b59b6&color=fff'"></div>
                 <div class="card-title">ระบบลงเวลานอกราชการ</div>
                 <div class="card-desc">OT สนง.วิจัย</div>
             </a>
             <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-gas-stock.html" target="_blank" class="card" data-name="Gas Stock">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
-                <div class="icon-circle"><img src="logo-gas-stock.png" onerror="this.src='https://ui-avatars.com/api/?name=GAS&background=34495e&color=fff'"></div>
+                <div class="icon-circle"><img src="logo-gas-stock.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=GAS&background=34495e&color=fff'"></div>
                 <div class="card-title">ระบบแก๊ส & Stock</div>
                 <div class="card-desc">การจัดการคลังแก๊ส</div>
             </a>
             <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-ln2-log.html" target="_blank" class="card" data-name="LN2 Log">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
-                <div class="icon-circle"><img src="logo-ln2-log.png" onerror="this.src='https://ui-avatars.com/api/?name=LN2&background=1abc9c&color=fff'"></div>
+                <div class="icon-circle"><img src="logo-ln2-log.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=LN2&background=1abc9c&color=fff'"></div>
                 <div class="card-title">บันทึก Liquid Nitrogen</div>
                 <div class="card-desc">ระบบบันทึกข้อมูล</div>
             </a>
             <a href="https://www.appsheet.com/start/2e8cd042-246d-4b55-abb8-a5884ba0c60d" target="_blank" class="card" data-name="Specimen Bank">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
-                <div class="icon-circle"><img src="logo-specimen-bank.png" onerror="this.src='https://ui-avatars.com/api/?name=SB&background=e67e22&color=fff'"></div>
+                <div class="icon-circle"><img src="logo-specimen-bank.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=SB&background=e67e22&color=fff'"></div>
                 <div class="card-title">HSR Specimen Banking</div>
                 <div class="card-desc">ระบบจัดเก็บตัวอย่าง</div>
             </a>
             <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-specimen-dashboard.html" target="_blank" class="card" data-name="Specimen Dash">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
-                <div class="icon-circle"><img src="logo-specimen-dashboard.png" onerror="this.src='https://ui-avatars.com/api/?name=DS&background=d35400&color=fff'"></div>
+                <div class="icon-circle"><img src="logo-specimen-dashboard.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=DS&background=d35400&color=fff'"></div>
                 <div class="card-title">HSR Banking Dashboard</div>
                 <div class="card-desc">สรุปผลการจัดเก็บ</div>
             </a>
             <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-freezer-check.html" target="_blank" class="card" data-name="Freezer Check">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
-                <div class="icon-circle"><img src="logo-freezer-check.png" onerror="this.src='https://ui-avatars.com/api/?name=FZ&background=2980b9&color=fff'"></div>
+                <div class="icon-circle"><img src="logo-freezer-check.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=FZ&background=2980b9&color=fff'"></div>
                 <div class="card-title">ตรวจสอบตู้แช่ & LN2</div>
                 <div class="card-desc">Monitoring System</div>
             </a>
             <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-withdraw-specimen.html" target="_blank" class="card" data-name="Withdraw Spec">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
-                <div class="icon-circle"><img src="logo-withdraw-specimen.png" onerror="this.src='https://ui-avatars.com/api/?name=WD&background=27ae60&color=fff'"></div>
+                <div class="icon-circle"><img src="logo-withdraw-specimen.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=WD&background=27ae60&color=fff'"></div>
                 <div class="card-title">ระบบเบิก-จ่ายตัวอย่าง</div>
                 <div class="card-desc">Management System</div>
             </a>
             <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-lms-lab.html" target="_blank" class="card" data-name="LMS Lab">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
-                <div class="icon-circle"><img src="logo-lms-lab.png" onerror="this.src='https://ui-avatars.com/api/?name=LMS&background=16a085&color=fff'"></div>
+                <div class="icon-circle"><img src="logo-lms-lab.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=LMS&background=16a085&color=fff'"></div>
                 <div class="card-title">LMS จองเครื่องมือ Lab</div>
                 <div class="card-desc">Lab Management</div>
             </a>
             <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-lms-dashboard.html" target="_blank" class="card" data-name="LMS Dash">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
-                <div class="icon-circle"><img src="logo-lms-dashboard.png" onerror="this.src='https://ui-avatars.com/api/?name=LD&background=7f8c8d&color=fff'"></div>
+                <div class="icon-circle"><img src="logo-lms-dashboard.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=LD&background=7f8c8d&color=fff'"></div>
                 <div class="card-title">Dashboard จองเครื่องมือ</div>
                 <div class="card-desc">LMS Summary</div>
             </a>
             <a href="https://www.appsheet.com/start/c9f22d36-e90e-46aa-9aba-f26f59aff364" target="_blank" class="card" data-name="Guest ครุภัณฑ์">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
-                <div class="icon-circle"><img src="logo-hsr-guest.png" onerror="this.src='https://ui-avatars.com/api/?name=G&background=95a5a6&color=fff'"></div>
+                <div class="icon-circle"><img src="logo-hsr-guest.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=G&background=95a5a6&color=fff'"></div>
                 <div class="card-title">Guest ครุภัณฑ์</div>
                 <div class="card-desc">สำนักงานวิจัย</div>
             </a>
             <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-spore-test.html" target="_blank" class="card" data-name="Spore Test">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
-                <div class="icon-circle"><img src="logo-spore-test.png" onerror="this.src='https://ui-avatars.com/api/?name=ST&background=c0392b&color=fff'"></div>
+                <div class="icon-circle"><img src="logo-spore-test.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=ST&background=c0392b&color=fff'"></div>
                 <div class="card-title">ระบบ Spore Test</div>
                 <div class="card-desc">ทดสอบคุณภาพ</div>
             </a>
             <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-spore-dashboard.html" target="_blank" class="card" data-name="Spore Dash">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
-                <div class="icon-circle"><img src="logo-spore-dashboard.png" onerror="this.src='https://ui-avatars.com/api/?name=SD&background=7f8c8d&color=fff'"></div>
+                <div class="icon-circle"><img src="logo-spore-dashboard.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=SD&background=7f8c8d&color=fff'"></div>
                 <div class="card-title">Dashboard Spore Test</div>
                 <div class="card-desc">สรุปผลทดสอบ</div>
             </a>
@@ -358,6 +370,7 @@ body.dark .card:hover { box-shadow: 0 12px 25px rgba(0,0,0,0.4); }
 
     <script>
         const searchInput = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('clearSearch');
         const cards = document.querySelectorAll('.card');
 
         /* =========================
@@ -371,21 +384,43 @@ body.dark .card:hover { box-shadow: 0 12px 25px rgba(0,0,0,0.4); }
         }
 
         /* =========================
-           🔍 SEARCH (อัปเกรด Title, Desc, Name)
+           ⚡ BUG FIX: DEEP SEARCH + GROUP AWARE
         ========================= */
         searchInput.addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
-            cards.forEach(card => {
-                const title = card.querySelector('.card-title').innerText.toLowerCase();
-                const desc = card.querySelector('.card-desc').innerText.toLowerCase();
-                const name = (card.dataset.name || '').toLowerCase();
+            clearBtn.style.display = term.length > 0 ? 'block' : 'none';
 
-                if (title.includes(term) || desc.includes(term) || name.includes(term)) {
-                    card.style.display = 'flex';
+            document.querySelectorAll('.grid').forEach(grid => {
+                let hasVisible = false;
+
+                grid.querySelectorAll('.card').forEach(card => {
+                    const title = card.querySelector('.card-title').innerText.toLowerCase();
+                    const desc = card.querySelector('.card-desc').innerText.toLowerCase();
+                    const name = (card.dataset.name || '').toLowerCase();
+
+                    const match = title.includes(term) || desc.includes(term) || name.includes(term);
+
+                    card.style.display = match ? 'flex' : 'none';
+                    if (match) hasVisible = true;
+                });
+
+                // ซ่อนทั้ง Section (รวมถึงหัวข้อ) ถ้าไม่มีผลลัพธ์ในหมวดนั้น
+                if (grid.id === 'grid-pinned') {
+                    document.getElementById('pinned-section').style.display = hasVisible ? 'block' : 'none';
                 } else {
-                    card.style.display = 'none';
+                    const sectionTitle = grid.previousElementSibling;
+                    if (sectionTitle && sectionTitle.classList.contains('section-title')) {
+                        sectionTitle.style.display = hasVisible ? 'flex' : 'none';
+                    }
                 }
             });
+        });
+
+        /* 💡 CLEAR SEARCH EVENT */
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            searchInput.dispatchEvent(new Event('input'));
+            searchInput.focus();
         });
 
         /* =========================
@@ -398,11 +433,15 @@ body.dark .card:hover { box-shadow: 0 12px 25px rgba(0,0,0,0.4); }
             const cardName = card.dataset.name;
             if (!cardName) return; 
 
-            card.classList.toggle('pinned');
+            // ลบ class แอนิเมชันเก่าออกก่อน (เพื่อกดย้ำๆ แล้วเด้งได้)
+            card.classList.remove('pinned');
+            void card.offsetWidth; // Force reflow
+
             let pinnedItems = JSON.parse(localStorage.getItem('pinnedCards')) || [];
 
-            if (card.classList.contains('pinned')) {
-                if (!pinnedItems.includes(cardName)) pinnedItems.push(cardName);
+            if (!pinnedItems.includes(cardName)) {
+                pinnedItems.push(cardName);
+                card.classList.add('pinned'); // ใส่ class ให้เกิด animation pinPop
             } else {
                 pinnedItems = pinnedItems.filter(item => item !== cardName);
             }
@@ -416,17 +455,21 @@ body.dark .card:hover { box-shadow: 0 12px 25px rgba(0,0,0,0.4); }
             const pinnedSection = document.getElementById('pinned-section');
 
             document.querySelectorAll('.card').forEach(card => {
-                if (card.classList.contains('pinned')) {
-                    // ย้ายเข้าหมวด Pinned
+                const isPinned = JSON.parse(localStorage.getItem('pinnedCards') || '[]').includes(card.dataset.name);
+                
+                if (isPinned) {
+                    card.classList.add('pinned');
                     pinnedGrid.appendChild(card);
-                } else if (card.dataset.parent) {
-                    // ถ้ายกเลิก Pin ให้เด้งกลับไปกริดเดิมของมัน (ฉลาดขึ้น!)
-                    document.getElementById(card.dataset.parent).appendChild(card);
+                } else {
+                    card.classList.remove('pinned');
+                    if (card.dataset.parent) {
+                        document.getElementById(card.dataset.parent).appendChild(card);
+                    }
                 }
             });
 
-            // ซ่อน/แสดง หมวด Pinned ด้านบน
-            pinnedSection.style.display = pinnedGrid.children.length > 0 ? 'block' : 'none';
+            // Trigger Search ใหม่เพื่อให้การแสดงผล Group ถูกต้องหลังการย้าย
+            searchInput.dispatchEvent(new Event('input'));
         }
 
         /* =========================
@@ -446,14 +489,6 @@ body.dark .card:hover { box-shadow: 0 12px 25px rgba(0,0,0,0.4); }
                 }
             });
 
-            // โหลด Pinned Items
-            const pinnedItems = JSON.parse(localStorage.getItem('pinnedCards')) || [];
-            cards.forEach(card => {
-                if (pinnedItems.includes(card.dataset.name)) {
-                    card.classList.add('pinned');
-                }
-            });
-
             sortCards();
 
             // 🧠 Smart UX: ไฮไลท์ Card ล่าสุดที่เพิ่งกดใช้
@@ -466,6 +501,9 @@ body.dark .card:hover { box-shadow: 0 12px 25px rgba(0,0,0,0.4); }
                     localStorage.setItem('lastUsed', card.dataset.name);
                 });
             });
+
+            // เผื่อรูปที่ใช้ tag html ไม่ติด เพิ่ม fallback ให้ JS (Lazy Load)
+            document.querySelectorAll('img').forEach(img => img.loading = 'lazy');
         });
 
         /* =========================
@@ -473,23 +511,25 @@ body.dark .card:hover { box-shadow: 0 12px 25px rgba(0,0,0,0.4); }
         ========================= */
         if ('service-worker' in navigator) {
             const swCode = `
-            const CACHE_NAME = 'ro-portal-v1';
-            const urlsToCache = [
-                './',
-                'index.html'
-            ];
-
+            const CACHE_NAME = 'ro-portal-v2-prod';
+            
             self.addEventListener('install', event => {
-                event.waitUntil(
-                    caches.open(CACHE_NAME)
-                        .then(cache => cache.addAll(urlsToCache))
-                );
+                self.skipWaiting();
             });
 
             self.addEventListener('fetch', event => {
                 event.respondWith(
-                    caches.match(event.request)
-                        .then(response => response || fetch(event.request))
+                    fetch(event.request)
+                        .then(res => {
+                            const clone = res.clone();
+                            caches.open(CACHE_NAME).then(cache => {
+                                if(event.request.url.startsWith('http')) {
+                                    cache.put(event.request, clone);
+                                }
+                            });
+                            return res;
+                        })
+                        .catch(() => caches.match(event.request))
                 );
             });
             `;
@@ -499,35 +539,34 @@ body.dark .card:hover { box-shadow: 0 12px 25px rgba(0,0,0,0.4); }
         }
 
         /* =========================
-           📱 PWA INSTALL BUTTON
+           📱 PWA INSTALL BUTTON (บังคับโชว์ + Alert เทส)
         ========================= */
         let deferredPrompt;
+        const installBtn = document.createElement('button');
+        installBtn.id = 'pwaInstallBtn';
+        installBtn.innerHTML = '<i class="fa-solid fa-download"></i> 📲 ติดตั้งแอป';
+        installBtn.style = 'position:fixed; bottom:20px; right:20px; padding:12px 18px; border:none; border-radius:15px; background:var(--col-it); color:#fff; font-family:"Prompt", sans-serif; font-size:1rem; box-shadow:0 8px 20px rgba(0,0,0,0.3); cursor:pointer; z-index:1000; transition: transform 0.2s ease; display: block;';
+        
+        installBtn.onmouseover = () => installBtn.style.transform = 'scale(1.05)';
+        installBtn.onmouseout = () => installBtn.style.transform = 'scale(1)';
+        document.body.appendChild(installBtn);
+
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-
-            // เช็คก่อนว่าเคยสร้างปุ่มไว้หรือยัง เพื่อไม่ให้ปุ่มซ้ำ
-            if(!document.getElementById('pwaInstallBtn')) {
-                const btn = document.createElement('button');
-                btn.id = 'pwaInstallBtn';
-                btn.innerHTML = '<i class="fa-solid fa-download"></i> 📲 ติดตั้งแอป';
-                btn.style = 'position:fixed; bottom:20px; right:20px; padding:12px 18px; border:none; border-radius:15px; background:var(--col-it); color:#fff; font-family:"Prompt", sans-serif; font-size:1rem; box-shadow:0 8px 20px rgba(0,0,0,0.3); cursor:pointer; z-index:1000; transition: transform 0.2s ease;';
-                
-                btn.onmouseover = () => btn.style.transform = 'scale(1.05)';
-                btn.onmouseout = () => btn.style.transform = 'scale(1)';
-
-                btn.onclick = async () => {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                        btn.style.display = 'none';
-                    }
-                    deferredPrompt = null;
-                };
-
-                document.body.appendChild(btn);
-            }
+            installBtn.style.display = 'block';
         });
+
+        installBtn.onclick = async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') installBtn.style.display = 'none';
+                deferredPrompt = null;
+            } else {
+                alert('ปุ่มทำงานปกติครับ! \\nแต่การจะติดตั้งได้จริง ต้องรันบน Server (HTTPS) หรือโฮสต์จริงก่อนครับ 🚀');
+            }
+        };
     </script>
 </body>
 </html>
