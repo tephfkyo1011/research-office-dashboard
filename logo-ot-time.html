@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบลงเวลาปฏิบัติงานนอกเวลา</title> 
+    
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="ลงเวลา OT">
+
+    <link rel="icon" type="image/png" href="https://tephfkyo1011.github.io/research-office-dashboard/logo-ot-time.png">
+    <link rel="apple-touch-icon" href="https://tephfkyo1011.github.io/research-office-dashboard/logo-ot-time.png">
+
+    <link rel="manifest" href='data:application/manifest+json,{
+      "name": "ระบบลงเวลาปฏิบัติงานนอกเวลา",
+      "short_name": "ลงเวลา OT",
+      "display": "standalone",
+      "start_url": ".",
+      "background_color": "#ffffff",
+      "theme_color": "#2563eb",
+      "icons": [
+        {
+          "src": "https://tephfkyo1011.github.io/research-office-dashboard/logo-ot-time.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "any maskable"
+        }
+      ]
+    }'>
+
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #ffffff; }
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+
+    <iframe src="https://script.google.com/macros/s/AKfycbzO_77wN89GjfbaoqkcH_j9iziyK-_mbKP_8PGnUuvPOsnjkyx2HZWo1naZJWwuuo8wVg/exec" allow="fullscreen"></iframe>
+    
+    <script>
+        if ('service-worker' in navigator) {
+            const swCode = `self.addEventListener('fetch', function(event) {});`;
+            const blob = new Blob([swCode], {type: 'text/javascript'});
+            navigator.serviceWorker.register(URL.createObjectURL(blob));
+        }
+    </script>
+
+</body>
+</html>
