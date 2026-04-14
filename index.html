@@ -7,6 +7,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Sarabun:wght@300;400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <link rel="manifest" href='data:application/manifest+json,{
+      "name": "Research Office Portal",
+      "short_name": "RO Portal",
+      "display": "standalone",
+      "start_url": ".",
+      "background_color": "#f4f6f9",
+      "theme_color": "#0f2027",
+      "icons": [{ "src": "logo-portal.png", "sizes": "512x512", "type": "image/png" }]
+    }'>
+
     <style>
         :root {
             --primary-grad: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
@@ -21,21 +31,49 @@
             --col-fun: #6f42c1;
         }
 
+        /* 🌙 Dark Mode Variables */
+        body.dark {
+            --bg-color: #1e1e2f;
+            --card-bg: #2a2a3d;
+            --text-main: #ffffff;
+            --text-sub: #bbbbbb;
+        }
+
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Sarabun', sans-serif; background-color: var(--bg-color); margin: 0; padding-bottom: 40px; }
+        body { 
+            font-family: 'Sarabun', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-main);
+            margin: 0; 
+            padding-bottom: 40px; 
+            transition: background-color 0.3s ease, color 0.3s ease; 
+        }
 
         header {
             background: var(--primary-grad); padding: 40px 20px 80px; text-align: center; color: white;
             border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            position: relative;
         }
         h1 { font-family: 'Prompt', sans-serif; font-size: 1.6rem; margin: 0; font-weight: 600; }
         p.subtitle { font-size: 0.9rem; margin-top: 5px; opacity: 0.9; }
 
+        /* 🌙 Dark Mode Toggle Button */
+        .btn-darkmode {
+            position: absolute; top: 15px; right: 20px;
+            padding: 8px 12px; border: none; border-radius: 12px;
+            cursor: pointer; background: rgba(255, 255, 255, 0.2);
+            color: white; font-size: 1.2rem; backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+        .btn-darkmode:hover { background: rgba(255, 255, 255, 0.3); transform: scale(1.05); }
+
         .search-wrapper { position: sticky; top: 15px; z-index: 100; padding: 0 15px; margin-top: -35px; }
         .search-box {
             width: 100%; max-width: 600px; display: block; margin: 0 auto;
-            padding: 15px 25px; border-radius: 30px; border: none; box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            padding: 15px 25px; border-radius: 30px; border: none; box-shadow: 0 8px 25px rgba(0,0,0,0.15);
             font-family: 'Prompt', sans-serif; font-size: 1rem; outline: none;
+            background-color: var(--card-bg); color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .container { padding: 20px 15px; max-width: 900px; margin: 0 auto; }
@@ -44,6 +82,7 @@
             background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba;
             padding: 15px; border-radius: 12px; margin-bottom: 20px; font-size: 0.85rem; text-align: center; line-height: 1.6;
         }
+        body.dark .notice { background-color: #4a3a10; color: #ffeb99; border-color: #665010; }
 
         .section-title {
             font-family: 'Prompt', sans-serif; font-size: 1.1rem; margin: 30px 0 15px;
@@ -53,12 +92,18 @@
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); } }
 
+        /* 🎨 Card Animation & Style */
         .card {
             background: var(--card-bg); border-radius: 15px; padding: 15px 10px;
             text-decoration: none; display: flex; flex-direction: column; align-items: center; text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: all 0.2s; position: relative;
-            min-height: 140px; border-top: 4px solid transparent;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: all 0.25s ease; position: relative;
+            min-height: 140px; border-top: 4px solid transparent; color: var(--text-main);
         }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+        }
+        body.dark .card:hover { box-shadow: 0 12px 25px rgba(0,0,0,0.4); }
         .card:active { transform: scale(0.95); }
 
         .icon-circle {
@@ -67,22 +112,29 @@
             font-size: 1.6rem; margin-bottom: 10px; background: #f8f9fa;
             overflow: hidden;
         }
+        body.dark .icon-circle { background: #3a3a52; }
         .icon-circle img { width: 100%; height: 100%; object-fit: cover; }
 
-        .card-title { font-family: 'Prompt', sans-serif; font-size: 0.85rem; color: var(--text-main); font-weight: 500; line-height: 1.2; margin-bottom: 4px; }
+        .card-title { font-family: 'Prompt', sans-serif; font-size: 0.85rem; font-weight: 500; line-height: 1.2; margin-bottom: 4px; }
         .card-desc { font-size: 0.7rem; color: var(--text-sub); }
 
         .badge-lan { position: absolute; top: 5px; left: 5px; font-size: 0.6rem; background: #ffebee; color: #c62828; padding: 1px 5px; border-radius: 4px; font-weight: bold; }
-        .pin { position: absolute; top: 5px; right: 5px; font-size: 1rem; color: #eee; cursor: pointer; padding: 2px; }
-        .card.pinned { background: #fffdf0; border: 1px solid var(--gold); }
+        body.dark .badge-lan { background: #5c1818; color: #ffb3b3; }
+        
+        .pin { position: absolute; top: 5px; right: 5px; font-size: 1rem; color: #eee; cursor: pointer; padding: 2px; transition: color 0.2s; }
+        body.dark .pin { color: #444; }
+        .card.pinned { border: 1px solid var(--gold); }
+        body:not(.dark) .card.pinned { background: #fffdf0; }
+        body.dark .card.pinned { background: #353018; }
         .card.pinned .pin { color: var(--gold); }
 
-        .footer { text-align: center; font-size: 0.7rem; color: #999; margin-top: 40px; padding: 20px; line-height: 1.5; }
+        .footer { text-align: center; font-size: 0.7rem; color: var(--text-sub); margin-top: 40px; padding: 20px; line-height: 1.5; }
     </style>
 </head>
 <body>
 
     <header>
+        <button class="btn-darkmode" onclick="toggleDark()" id="darkModeBtn">🌙</button>
         <h1>Research Office Portal</h1>
         <p class="subtitle">ศูนย์รวมระบบสารสนเทศเพื่อการปฏิบัติงาน</p>
     </header>
@@ -257,25 +309,29 @@
 
         <div class="section-title" style="color:var(--col-central); border-color:var(--col-central);"><i class="fa-solid fa-hotel"></i> ส่วนกลาง</div>
         <div class="grid">
-            <a href="http://10.6.155.94/RAI/index.php" target="_blank" class="card">
+            <a href="http://10.6.155.94/RAI/index.php" target="_blank" class="card" data-name="จองห้องประชุม สนง.วิจัย">
                 <span class="badge-lan">LAN</span>
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-calendar-check"></i></div>
                 <div class="card-title">จองห้องประชุม สนง.วิจัย</div>
                 <div class="card-desc">ระบบจองห้อง</div>
             </a>
-            <a href="http://10.6.22.52/ramapro/index.php" target="_blank" class="card">
+            <a href="http://10.6.22.52/ramapro/index.php" target="_blank" class="card" data-name="ซ่อมบำรุงวิศวกรรม">
                 <span class="badge-lan">LAN</span>
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-screwdriver-wrench"></i></div>
                 <div class="card-title">ซ่อมบำรุงวิศวกรรม</div>
                 <div class="card-desc">Rama Pro</div>
             </a>
-            <a href="https://10-6-155-150.rcnas1838.direct.quickconnect.to:9443" target="_blank" class="card">
+            <a href="https://10-6-155-150.rcnas1838.direct.quickconnect.to:9443" target="_blank" class="card" data-name="Synology NAS">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-hard-drive"></i></div>
                 <div class="card-title">Synology NAS</div>
                 <div class="card-desc">QuickConnect</div>
             </a>
-            <a href="http://192.168.1.150/" target="_blank" class="card">
+            <a href="http://192.168.1.150/" target="_blank" class="card" data-name="XWEB ตรวจเช็คอุณหภูมิ">
                 <span class="badge-lan">LAN</span>
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-temperature-arrow-up"></i></div>
                 <div class="card-title">XWEB ตรวจเช็คอุณหภูมิ</div>
                 <div class="card-desc">Monitor ออนไลน์</div>
@@ -284,18 +340,21 @@
 
         <div class="section-title" style="color:var(--col-hr); border-color:var(--col-hr);"><i class="fa-solid fa-user-tie"></i> HR & บุคลากร</div>
         <div class="grid">
-            <a href="http://n-rfid.rama.mahidol.ac.th/Time/Login" target="_blank" class="card">
+            <a href="http://n-rfid.rama.mahidol.ac.th/Time/Login" target="_blank" class="card" data-name="รายงานตอกบัตร">
                 <span class="badge-lan">LAN</span>
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-id-card"></i></div>
                 <div class="card-title">รายงานตอกบัตร</div>
                 <div class="card-desc">RFID เข้า-ออกงาน</div>
             </a>
-            <a href="https://www3.ra.mahidol.ac.th/leaveRama/index.jsp" target="_blank" class="card">
+            <a href="https://www3.ra.mahidol.ac.th/leaveRama/index.jsp" target="_blank" class="card" data-name="ลาออนไลน์">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-calendar-xmark"></i></div>
                 <div class="card-title">ลาออนไลน์ คณะฯ</div>
                 <div class="card-desc">ระบบลาป่วย/ลาพักร้อน</div>
             </a>
-            <a href="https://mypms.mahidol.ac.th/" target="_blank" class="card">
+            <a href="https://mypms.mahidol.ac.th/" target="_blank" class="card" data-name="ระบบ PMS">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-star"></i></div>
                 <div class="card-title">ระบบ PMS</div>
                 <div class="card-desc">ประเมินผลปฏิบัติงาน</div>
@@ -304,12 +363,14 @@
 
         <div class="section-title" style="color:var(--col-fun); border-color:var(--col-fun);"><i class="fa-solid fa-icons"></i> บันเทิง</div>
         <div class="grid">
-            <a href="https://www.appsheet.com/start/5a0dbaf8-5f2f-43c4-8b1a-482728632309" target="_blank" class="card">
+            <a href="https://www.appsheet.com/start/5a0dbaf8-5f2f-43c4-8b1a-482728632309" target="_blank" class="card" data-name="Movie Anime">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-play"></i></div>
                 <div class="card-title">Movie & Anime</div>
                 <div class="card-desc">BY KYO GI</div>
             </a>
-            <a href="https://script.google.com/macros/s/AKfycbz7ShCyT1GzwMtKdJUyGLJTBFKEjR-_axTuUkK1D4jDpYzbLzHCneFncu5wRwt1kRNmNA/exec" target="_blank" class="card">
+            <a href="https://script.google.com/macros/s/AKfycbz7ShCyT1GzwMtKdJUyGLJTBFKEjR-_axTuUkK1D4jDpYzbLzHCneFncu5wRwt1kRNmNA/exec" target="_blank" class="card" data-name="วงล้อเสี่ยงโชค">
+                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-rotate"></i></div>
                 <div class="card-title">วงล้อเสี่ยงโชค</div>
                 <div class="card-desc">กิจกรรมเสี่ยงดวง</div>
@@ -326,40 +387,103 @@
         const searchInput = document.getElementById('searchInput');
         const cards = document.querySelectorAll('.card');
 
+        /* =========================
+           🌙 DARK MODE TOGGLE
+        ========================= */
+        function toggleDark() {
+            document.body.classList.toggle('dark');
+            const isDark = document.body.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark);
+            document.getElementById('darkModeBtn').innerText = isDark ? '☀️' : '🌙';
+        }
+
+        /* =========================
+           🔍 SEARCH (อัปเกรด)
+        ========================= */
         searchInput.addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
+
             cards.forEach(card => {
                 const title = card.querySelector('.card-title').innerText.toLowerCase();
-                if(title.includes(term)) card.style.display = 'flex';
-                else card.style.display = 'none';
+                const desc = card.querySelector('.card-desc').innerText.toLowerCase();
+                const name = (card.dataset.name || '').toLowerCase();
+
+                if (title.includes(term) || desc.includes(term) || name.includes(term)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
             });
         });
 
+        /* =========================
+           📌 PIN (ไม่ reload)
+        ========================= */
         function togglePin(event, card) {
-            event.preventDefault(); event.stopPropagation();
+            event.preventDefault();
+            event.stopPropagation();
+
             const cardName = card.dataset.name;
+            if (!cardName) return; // Prevent pinning if data-name is missing
+
             card.classList.toggle('pinned');
+
             let pinnedItems = JSON.parse(localStorage.getItem('pinnedCards')) || [];
+
             if (card.classList.contains('pinned')) {
                 if (!pinnedItems.includes(cardName)) pinnedItems.push(cardName);
             } else {
                 pinnedItems = pinnedItems.filter(item => item !== cardName);
             }
+
             localStorage.setItem('pinnedCards', JSON.stringify(pinnedItems));
-            location.reload(); 
+
+            sortCards(); // 👉 เรียงใหม่ทันที
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const pinnedItems = JSON.parse(localStorage.getItem('pinnedCards')) || [];
-            cards.forEach(card => {
-                if (pinnedItems.includes(card.dataset.name)) card.classList.add('pinned');
-            });
+        /* =========================
+           📊 SORT FUNCTION
+        ========================= */
+        function sortCards() {
             document.querySelectorAll('.grid').forEach(grid => {
                 const items = Array.from(grid.children);
-                items.sort((a, b) => b.classList.contains('pinned') - a.classList.contains('pinned'));
+
+                items.sort((a, b) => {
+                    return b.classList.contains('pinned') - a.classList.contains('pinned');
+                });
+
                 items.forEach(item => grid.appendChild(item));
             });
+        }
+
+        /* =========================
+           🚀 INITIALIZE APP
+        ========================= */
+        window.addEventListener('DOMContentLoaded', () => {
+            // Load Dark Mode
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark');
+                document.getElementById('darkModeBtn').innerText = '☀️';
+            }
+
+            // Load Pinned Items
+            const pinnedItems = JSON.parse(localStorage.getItem('pinnedCards')) || [];
+            cards.forEach(card => {
+                if (pinnedItems.includes(card.dataset.name)) {
+                    card.classList.add('pinned');
+                }
+            });
+
+            // Sort Cards
+            sortCards();
         });
+
+        // Service Worker สำหรับ PWA
+        if ('service-worker' in navigator) {
+            const swCode = `self.addEventListener('fetch', function(event) {});`;
+            const blob = new Blob([swCode], {type: 'text/javascript'});
+            navigator.serviceWorker.register(URL.createObjectURL(blob));
+        }
     </script>
 </body>
 </html>
