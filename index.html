@@ -426,32 +426,37 @@
         }
 
         /* =========================
-           📱 PWA INSTALL BUTTON
-        ========================= */
-        let deferredPrompt;
-        const installBtn = document.createElement('button');
-        installBtn.id = 'pwaInstallBtn';
-        installBtn.innerHTML = '<i class="fa-solid fa-download"></i> 📲 ติดตั้งแอป';
-        installBtn.style = 'position:fixed; bottom:20px; right:20px; padding:12px 18px; border:none; border-radius:15px; background:var(--col-it); color:#fff; font-family:"Prompt", sans-serif; font-size:1rem; box-shadow:0 8px 20px rgba(0,0,0,0.3); cursor:pointer; z-index:1000; transition: transform 0.2s ease; display: none;';
+   📱 PWA INSTALL BUTTON (บังคับโชว์ปุ่ม)
+========================= */
+let deferredPrompt;
+const installBtn = document.createElement('button');
+installBtn.id = 'pwaInstallBtn';
+installBtn.innerHTML = '<i class="fa-solid fa-download"></i> 📲 ติดตั้งแอป';
+
+// 👇 แก้ตรงท้ายบรรทัดนี้ จาก display: none; เป็น display: block;
+installBtn.style = 'position:fixed; bottom:20px; right:20px; padding:12px 18px; border:none; border-radius:15px; background:var(--col-it); color:#fff; font-family:"Prompt", sans-serif; font-size:1rem; box-shadow:0 8px 20px rgba(0,0,0,0.3); cursor:pointer; z-index:1000; transition: transform 0.2s ease; display: block;';
         
-        installBtn.onmouseover = () => installBtn.style.transform = 'scale(1.05)';
-        installBtn.onmouseout = () => installBtn.style.transform = 'scale(1)';
-        document.body.appendChild(installBtn);
+installBtn.onmouseover = () => installBtn.style.transform = 'scale(1.05)';
+installBtn.onmouseout = () => installBtn.style.transform = 'scale(1)';
+document.body.appendChild(installBtn);
 
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installBtn.style.display = 'block';
-        });
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = 'block';
+});
 
-        installBtn.onclick = async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') installBtn.style.display = 'none';
-                deferredPrompt = null;
-            }
-        };
+installBtn.onclick = async () => {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') installBtn.style.display = 'none';
+        deferredPrompt = null;
+    } else {
+        // 👇 เพิ่มเงื่อนไขนี้ เพื่อให้แจ้งเตือนตอนเราทดสอบกดปุ่มครับ
+        alert('ปุ่มทำงานปกติครับ! \nแต่การจะติดตั้งได้จริง ต้องรันบน Server (HTTPS) หรือโฮสต์จริงก่อนครับ 🚀');
+    }
+};
     </script>
 </body>
 </html>
