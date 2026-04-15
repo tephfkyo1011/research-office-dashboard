@@ -101,7 +101,8 @@ self.addEventListener('fetch', e => {
         
         const fetchPromise = fetch(e.request).then(async networkRes => {
           if (networkRes && networkRes.status === 200 && networkRes.type === 'basic') {
-            const targetCache = STATIC_ASSETS.includes(url.pathname) ? STATIC_CACHE : DYNAMIC_CACHE;
+            const staticPaths = STATIC_ASSETS.map(asset => new URL(asset, self.location.origin).pathname);
+            const targetCache = staticPaths.includes(url.pathname) ? STATIC_CACHE : DYNAMIC_CACHE;
             const cache = await caches.open(targetCache);
             cache.put(e.request, networkRes.clone());
             if (targetCache === DYNAMIC_CACHE) await trimCache(DYNAMIC_CACHE, MAX_DYNAMIC_ITEMS);
