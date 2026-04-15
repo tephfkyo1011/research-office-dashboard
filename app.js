@@ -113,10 +113,6 @@ async function initApp() {
                 } catch(e) {}
             });
 
-            const pinBtn = card.querySelector('.pin');
-            if (pinBtn) pinBtn.addEventListener('click', (e) => togglePin(e, card));
-        });
-
         sortCards();
         smartCheck(); // เริ่มระบบ Check
     } catch(e) { console.warn('Init App Storage Error:', e); sortCards(); }
@@ -322,3 +318,19 @@ window.addEventListener('appinstalled', () => {
     if(installBtn) installBtn.style.display = 'none';
     showToast('ติดตั้งแอปพลิเคชันลงเครื่องเรียบร้อย! 🎉');
 });
+
+/* =========================
+   📌 Global Event Delegation (Capture Phase)
+========================= */
+document.addEventListener('click', (e) => {
+    // เช็คว่าจุดที่คลิกคือปุ่ม pin หรือไม่
+    const pinBtn = e.target.closest('.pin');
+    
+    if (pinBtn) {
+        e.preventDefault();  // 🟢 หยุด! ไม่ให้เปิดลิงก์
+        e.stopPropagation(); // 🟢 หยุด! ไม่ให้คลิกทะลุลงไปที่ตัวการ์ด (แท็ก <a>)
+        
+        const card = pinBtn.closest('.card');
+        if (card) togglePin(e, card);
+    }
+}, true); // 🔥 พระเอกอยู่ตรงนี้: ใส่ true เพื่อให้ดักจับ Event แบบ Capture Phase (ขาลง)
