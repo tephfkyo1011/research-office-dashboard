@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v17'; // 🟢 อัปเดตเป็น v16 เพื่อบังคับเคลียร์แคชเก่า ดึง app.js ตัวใหม่
+const CACHE_VERSION = 'v18'; // 🟢 อัปเดตเป็น v18 เพื่อบังคับเคลียร์แคชเก่า ดึง app.js ตัวใหม่
 const STATIC_CACHE = `kyogi-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `kyogi-dynamic-${CACHE_VERSION}`;
 const OFFLINE_URL = './offline.html';
@@ -8,7 +8,7 @@ const MAX_DYNAMIC_ITEMS = 100;
 const STATIC_ASSETS = [
   './',
   './index.html',
-  './app.js',
+  './app.js?v=18', // 🟢 อัปเดตเป็น v18 เพื่อบังคับเคลียร์แคชเก่า ดึง app.js ตัวใหม่
   './offline.html',
   './ping.txt',
   './libs/fuse.min.js',
