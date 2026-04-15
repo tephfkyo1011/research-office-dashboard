@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v14'; 
+const CACHE_VERSION = 'v15'; 
 const STATIC_CACHE = `kyogi-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `kyogi-dynamic-${CACHE_VERSION}`;
 const OFFLINE_URL = './offline.html';
