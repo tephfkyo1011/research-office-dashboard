@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v16'; // 🟢 อัปเดตเป็น v16 เพื่อบังคับเคลียร์แคชเก่า ดึง app.js ตัวใหม่
+const CACHE_VERSION = 'v17'; // 🟢 อัปเดตเป็น v16 เพื่อบังคับเคลียร์แคชเก่า ดึง app.js ตัวใหม่
 const STATIC_CACHE = `kyogi-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `kyogi-dynamic-${CACHE_VERSION}`;
 const OFFLINE_URL = './offline.html';
