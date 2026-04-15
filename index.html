@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Research Office Portal - KYOGI</title>
     
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https:;">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Sarabun:wght@300;400&display=swap" as="style">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Sarabun:wght@300;400&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" type="image/png" href="https://tephfkyo1011.github.io/research-office-dashboard/Research_Office_KYOGI.png">
-    <link rel="apple-touch-icon" href="https://tephfkyo1011.github.io/research-office-dashboard/Research_Office_KYOGI.png">
     
-    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2/dist/fuse.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
+    <script src="./libs/fuse.min.js"></script>
+    <script src="./libs/localforage.min.js"></script>
 
     <style>
         :root {
@@ -26,9 +27,6 @@
             --text-sub: #6c757d;
             --gold: #ffc107;
             --col-it: #007bff;
-            --col-hr: #e83e8c;
-            --col-central: #20c997;
-            --col-fun: #6f42c1;
             --hl-bg: rgba(255, 193, 7, 0.4);
         }
 
@@ -64,16 +62,8 @@
         }
         #updateBanner.show { transform: translateY(0); }
         .update-actions { display: flex; gap: 10px; }
-        .update-btn-action {
-            background: white; color: #007bff; border: none; padding: 6px 15px; border-radius: 8px;
-            font-weight: 600; cursor: pointer; transition: transform 0.2s;
-        }
-        .update-btn-dismiss {
-            background: rgba(255,255,255,0.2); color: white; border: none; padding: 6px 10px; 
-            border-radius: 8px; cursor: pointer; transition: background 0.2s;
-        }
-        .update-btn-dismiss:hover { background: rgba(255,255,255,0.3); }
-        .update-btn-action:active { transform: scale(0.95); }
+        .update-btn-action { background: white; color: #007bff; border: none; padding: 6px 15px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .update-btn-dismiss { background: rgba(255,255,255,0.2); color: white; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer; }
 
         header {
             background: var(--primary-grad); padding: 50px 20px 90px; text-align: center; color: white;
@@ -83,9 +73,8 @@
 
         .portal-main-logo {
             max-width: 100px; height: auto; border-radius: 20px; background: white; padding: 5px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 15px; transition: transform 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 15px;
         }
-        .portal-main-logo:hover { transform: scale(1.05) rotate(-3deg); }
 
         h1 { font-family: 'Prompt', sans-serif; font-size: 1.6rem; margin: 0; font-weight: 600; }
         p.subtitle { font-size: 0.9rem; margin-top: 5px; opacity: 0.9; }
@@ -93,9 +82,7 @@
         .btn-header {
             position: absolute; top: 15px; padding: 8px 12px; border: none; border-radius: 12px;
             cursor: pointer; background: rgba(255, 255, 255, 0.2); color: white; font-size: 1.2rem; backdrop-filter: blur(5px);
-            transition: all 0.3s ease; display: flex; align-items: center; gap: 5px; font-family: 'Prompt', sans-serif;
         }
-        .btn-header:hover { background: rgba(255, 255, 255, 0.3); transform: scale(1.05); }
         .btn-darkmode { right: 20px; }
         .btn-install { right: 75px; font-size: 0.9rem; display: none; }
 
@@ -103,7 +90,6 @@
             position: sticky; top: 15px; z-index: 100; padding: 0 15px; margin-top: -35px;
             max-width: 630px; margin-left: auto; margin-right: auto;
         }
-        
         .search-box {
             width: 100%; display: block; margin: 0 auto;
             padding: 15px 40px 15px 25px; border-radius: 30px; border: none; box-shadow: 0 8px 25px rgba(0,0,0,0.15);
@@ -114,35 +100,21 @@
 
         .clear-search {
             position: absolute; right: 30px; top: 50%; transform: translateY(-50%);
-            cursor: pointer; color: #6c757d; font-size: 1.2rem; display: none; transition: color 0.2s;
+            cursor: pointer; color: #6c757d; font-size: 1.2rem; display: none;
         }
 
         .container { padding: 20px 15px; max-width: 900px; margin: 0 auto; }
-        
-        .notice {
-            background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba;
-            padding: 15px; border-radius: 12px; margin-bottom: 20px; font-size: 0.85rem; text-align: center; line-height: 1.6;
-        }
-        body.dark .notice { background-color: #4a3a10; color: #ffeb99; border-color: #665010; }
-
-        .section-title {
-            font-family: 'Prompt', sans-serif; font-size: 1.1rem; margin: 30px 0 15px;
-            display: flex; align-items: center; font-weight: 600; border-left: 5px solid #ccc; padding-left: 10px;
-        }
-
+        .section-title { font-family: 'Prompt', sans-serif; font-size: 1.1rem; margin: 30px 0 15px; display: flex; align-items: center; font-weight: 600; border-left: 5px solid #ccc; padding-left: 10px; }
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); } }
 
         .card {
             border-radius: 15px; padding: 15px 10px; text-decoration: none; display: flex; flex-direction: column; align-items: center; text-align: center;
             box-shadow: 0 4px 6px rgba(0,0,0,0.02); min-height: 140px; border-top: 4px solid transparent; color: var(--text-main);
-            backdrop-filter: blur(10px); background: rgba(255,255,255,0.8); position: relative;
-            transition: all 0.3s ease, transform 0.25s ease; order: 999;
+            backdrop-filter: blur(10px); background: rgba(255,255,255,0.8); position: relative; transition: all 0.3s ease; order: 999;
         }
         body.dark .card { background: rgba(40,40,60,0.6); }
-        .card:hover { transform: translateY(-6px); box-shadow: 0 12px 25px rgba(0,0,0,0.08), 0 0 0 1px rgba(255,255,255,0.1) inset; }
-        body.dark .card:hover { box-shadow: 0 12px 25px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05) inset; }
-        
+        .card:hover { transform: translateY(-6px); box-shadow: 0 12px 25px rgba(0,0,0,0.08); }
         .card.last-used { outline: 2px solid #28a745; outline-offset: -2px; }
 
         .icon-circle {
@@ -155,26 +127,22 @@
         .card-title { font-family: 'Prompt', sans-serif; font-size: 0.85rem; font-weight: 500; line-height: 1.2; margin-bottom: 4px; }
         .card-desc { font-size: 0.7rem; color: var(--text-sub); }
 
-        .badge-lan { position: absolute; top: 5px; left: 5px; font-size: 0.6rem; background: #ffebee; color: #c62828; padding: 1px 5px; border-radius: 4px; font-weight: bold; }
-        body.dark .badge-lan { background: #5c1818; color: #ffb3b3; }
-        
         .pin { position: absolute; top: 5px; right: 5px; font-size: 1rem; color: #ccc; cursor: pointer; padding: 2px; z-index: 10; }
         .card.pinned { border: 1px solid var(--gold); }
         body:not(.dark) .card.pinned { background: rgba(255,253,240,0.9); }
         body.dark .card.pinned { background: rgba(53,48,24,0.8); }
         .card.pinned .pin { color: var(--gold); }
 
+        /* 🟢 Search Highlight CSS */
         mark { background-color: var(--hl-bg); color: inherit; padding: 0 2px; border-radius: 4px; font-weight: bold; }
 
         .footer { text-align: center; font-size: 0.7rem; color: var(--text-sub); margin-top: 40px; padding: 20px; line-height: 1.5; }
         .app-version { display: inline-block; background: rgba(0,0,0,0.1); padding: 2px 8px; border-radius: 10px; margin-top: 5px; }
-        body.dark .app-version { background: rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
 
     <div id="offlineBadge"><i class="fa-solid fa-wifi" style="text-decoration: line-through;"></i> Offline Mode</div>
-
     <div id="updateBanner">
         <div><i class="fa-solid fa-cloud-arrow-down"></i> มีเวอร์ชันใหม่!</div>
         <div class="update-actions">
@@ -190,7 +158,7 @@
             <img src="https://tephfkyo1011.github.io/research-office-dashboard/Research_Office_KYOGI.png" alt="Logo" class="portal-main-logo" loading="lazy">
             <div class="brand-text">
                 <h1>Research Office Portal</h1>
-                <p class="subtitle">ศูนย์รวมระบบสารสนเทศเพื่อการปฏิบัติงาน โดย KYOGI</p>
+                <p class="subtitle">ศูนย์รวมระบบสารสนเทศเพื่อการปฏิบัติงาน</p>
             </div>
         </div>
     </header>
@@ -201,10 +169,6 @@
     </div>
 
     <div class="container">
-        <div class="notice">
-            ⚠️ <b>หมายเหตุ:</b> ระบบหรือเว็บไซต์ที่มีคำว่า <b>LAN</b> จำเป็นต้องเชื่อมต่อเครือข่าย <b>LAN / WiFi ภายใน</b> เท่านั้น
-        </div>
-
         <div id="pinned-section" style="display:none;">
             <div class="section-title" style="color:var(--gold); border-color:var(--gold);"><i class="fa-solid fa-star"></i> รายการโปรด</div>
             <div class="grid" id="grid-pinned"></div>
@@ -212,13 +176,13 @@
 
         <div class="section-title" style="color:var(--col-it); border-color:var(--col-it);"><i class="fa-solid fa-code"></i> System by Kyo Gi</div>
         <div class="grid" id="grid-it">
-            <a href="https://www.appsheet.com/start/6e4cdc1f-da32-4ae1-87c6-3e7a0d81929f" target="_blank" class="card" data-name="HSR Database" data-keywords="ครุภัณฑ์ asset inventory equipment ของ">
+            <a href="#" class="card" data-name="HSR Database" data-keywords="ครุภัณฑ์ asset inventory equipment ของ">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-db.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=HS&background=0D8ABC&color=fff'"></div>
                 <div class="card-title">ระบบฐานข้อมูลครุภัณฑ์ HSR</div>
                 <div class="card-desc">AppSheet Online</div>
             </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-dashboard.html" target="_blank" class="card" data-name="Dashboard ครุภัณฑ์" data-keywords="สรุป กราฟ chart report">
+            <a href="#" class="card" data-name="Dashboard ครุภัณฑ์" data-keywords="สรุป กราฟ chart report">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-dashboard.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=DB&background=f39c12&color=fff'"></div>
                 <div class="card-title">Dashboard ครุภัณฑ์</div>
@@ -383,26 +347,15 @@
 
     <div class="footer">
         © 2026 <b>Research Office Portal</b><br>
-        Developed & Updated by <b>KYO GI</b><br>
-        <span class="app-version"><i class="fa-solid fa-code-branch"></i> Version 11 (Enterprise)</span>
+        <span class="app-version"><i class="fa-solid fa-rocket"></i> Version 12 (God Mode)</span>
     </div>
 
     <script>
-        const APP_VERSION = 'v11-Enterprise';
+        const APP_VERSION = 'v12-GodMode';
         console.log(`🚀 App Version: ${APP_VERSION}`);
 
-        // 🟢 Dictionary ของคำค้นหาที่เกี่ยวข้องกัน เพื่อช่วยให้ Fuse.js หาเจอแม้พิมพ์คำที่ไม่ได้อยู่ใน Title
-        const synonyms = {
-            "แก๊ส": ["gas", "ถัง"],
-            "จอง": ["booking", "reserve", "ประชุม"],
-            "ตู้แช่": ["freezer", "ln2", "ไนโตรเจน", "อุณหภูมิ"],
-            "ซ่อม": ["repair", "fix", "แอร์", "วิศวกรรม"],
-            "ลา": ["leave", "ป่วย", "พักร้อน"],
-            "ครุภัณฑ์": ["asset", "ของ"]
-        };
-
         /* =========================
-           🧠 Adaptive Battery Check (เซฟแบต/ประหยัด Request)
+           🔋 Visibility Aware Battery Check
         ========================= */
         const offlineBadge = document.getElementById('offlineBadge');
         let checkInterval = 15000; 
@@ -414,12 +367,13 @@
                 await fetch(`./?_cb=${Date.now()}`, { method: 'HEAD', cache: 'no-store', signal: controller.signal });
                 clearTimeout(id);
                 return true;
-            } catch {
-                return false;
-            }
+            } catch { return false; }
         }
 
         async function smartCheck() {
+            // 🟢 หยุดยิง Request ถ้าซ่อนหน้าจออยู่ (เซฟแบต + เซฟ Server)
+            if (document.hidden) return; 
+
             if (!navigator.onLine) {
                 offlineBadge.style.display = 'flex';
                 checkInterval = 5000; 
@@ -431,12 +385,17 @@
             setTimeout(smartCheck, checkInterval);
         }
         smartCheck(); 
+        
+        // 🟢 ตื่นมาเช็คทันทีเมื่อเปิดจอกลับมา
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) smartCheck();
+        });
 
         window.addEventListener('online', () => { checkInterval = 5000; smartCheck(); });
         window.addEventListener('offline', () => { offlineBadge.style.display = 'flex'; });
 
         /* =========================
-           🚀 Enterprise Search (Fuse.js) + IndexedDB (LocalForage)
+           🚀 Enterprise Search & IndexedDB (Time Decay)
         ========================= */
         const searchInput = document.getElementById('searchInput');
         const clearBtn = document.getElementById('clearSearch');
@@ -444,13 +403,29 @@
         let usage = {};
         let pinnedCards = [];
         let fuse; 
-        let cardsData = []; 
+        let cardsData = []; // ประกาศตัวแปรไว้
 
         async function initApp() {
-            // สลับไปใช้ IndexedDB ให้อัตโนมัติ (ทะลุขีดจำกัด 5MB ของ LocalStorage)
             localforage.config({ name: 'KyogiPortal', storeName: 'portal_data' });
             
-            usage = (await localforage.getItem('usage')) || {};
+            // 🟢 เคลียร์ Array ป้องกัน Memory Leak เวลารันซ้ำ
+            cardsData = [];
+
+            // 🟢 อ่าน Data แบบมี Structure และ TTL (Cleanup ข้อมูลเก่าเกิน 30 วัน)
+            const storedUsage = await localforage.getItem('usageV2');
+            const now = Date.now();
+            
+            if (storedUsage && storedUsage.data) {
+                if (now - storedUsage.ts > 30 * 24 * 60 * 60 * 1000) {
+                    await localforage.removeItem('usageV2'); // Expired
+                    usage = {};
+                } else {
+                    usage = storedUsage.data;
+                }
+            } else {
+                usage = {};
+            }
+
             pinnedCards = (await localforage.getItem('pinnedCards')) || [];
             const lastUsed = await localforage.getItem('lastUsed');
             const isDark = await localforage.getItem('darkMode');
@@ -460,35 +435,25 @@
                 document.getElementById('darkModeBtn').innerText = '☀️';
             }
 
-            const maxUsage = Math.max(...Object.values(usage), 1);
-
             document.querySelectorAll('.card').forEach(card => {
                 const name = card.dataset.name || '';
                 const title = card.querySelector('.card-title')?.innerText || '';
                 const desc = card.querySelector('.card-desc')?.innerText || '';
                 let keywords = card.dataset.keywords || '';
-                
-                // ฉีดคำที่มีความหมายเหมือนกันลงไปใน Keywords ให้ Fuse.js หาเจอง่ายขึ้น
-                Object.entries(synonyms).forEach(([key, syns]) => {
-                    const allText = `${name} ${title} ${desc} ${keywords}`.toLowerCase();
-                    if (allText.includes(key) || syns.some(s => allText.includes(s))) {
-                        keywords += ` ${key} ${syns.join(' ')}`;
-                    }
-                });
 
+                // Time Decay Scoring (สมมติจำลองผ่าน log + recency check เล็กๆ)
                 const useCount = usage[name] || 0;
+                const recencyBoost = (name === lastUsed) ? 15 : 0; // เพิ่งใช้ล่าสุดให้ Boost หนักๆ
+                const userBoost = (Math.log(useCount + 1) * 10) + recencyBoost;
                 
-                // Math.log Scale Analytics
-                const userBoost = Math.log(useCount + 1) * 10;
                 card.dataset.defaultOrder = 1000 - Math.round(userBoost);
                 
                 if(card.parentElement) card.dataset.parent = card.parentElement.id;
                 if (name === lastUsed) card.classList.add('last-used');
 
-                // เตรียมข้อมูลโยนให้ Fuse.js
                 cardsData.push({
                     id: name,
-                    title: title,
+                    title: title, // เก็บ Title ต้นฉบับไว้สำหรับ Highlight
                     desc: desc,
                     keywords: keywords,
                     element: card
@@ -497,18 +462,15 @@
                 card.addEventListener('click', async () => {
                     if (navigator.vibrate) navigator.vibrate(30);
                     usage[name] = (usage[name] || 0) + 1;
+                    
+                    // 🟢 เซฟแบบมี Structure
+                    await localforage.setItem('usageV2', { data: usage, ts: Date.now() });
                     await localforage.setItem('lastUsed', name);
-                    await localforage.setItem('usage', usage);
                 });
             });
 
-            // สร้าง Search Engine Instance
             fuse = new Fuse(cardsData, {
-                keys: [
-                    { name: 'title', weight: 0.6 },
-                    { name: 'keywords', weight: 0.3 },
-                    { name: 'desc', weight: 0.1 }
-                ],
+                keys: [ { name: 'title', weight: 0.6 }, { name: 'keywords', weight: 0.3 }, { name: 'desc', weight: 0.1 } ],
                 threshold: 0.3, 
                 ignoreLocation: true, 
                 useExtendedSearch: true
@@ -517,18 +479,30 @@
             sortCards();
         }
 
+        // 🟢 ฟังก์ชัน Highlight คำค้นหา
+        function highlightText(text, term) {
+            if (!term) return text;
+            const regex = new RegExp(`(${term})`, 'gi');
+            return text.replace(regex, '<mark>$1</mark>');
+        }
+
         let debounceTimer;
         searchInput.addEventListener('input', (e) => {
             clearTimeout(debounceTimer);
+            // 🟢 อัปเกรดเป็น 250ms ลดอาการกระตุกตอนพิมพ์บนมือถือเก่าๆ
             debounceTimer = setTimeout(() => {
                 performSearch(e.target.value.toLowerCase().trim());
-            }, 100); 
+            }, 250); 
         });
 
         function performSearch(term) {
             clearBtn.style.display = term.length > 0 ? 'block' : 'none';
             
-            cardsData.forEach(item => item.element.style.display = 'none');
+            cardsData.forEach(item => {
+                item.element.style.display = 'none';
+                // Reset Highlight กลับเป็นปกติก่อน
+                item.element.querySelector('.card-title').innerHTML = item.title;
+            });
             
             if (term === '') {
                 cardsData.forEach(item => {
@@ -536,10 +510,13 @@
                     item.element.style.order = item.element.dataset.defaultOrder;
                 });
             } else {
-                const results = fuse.search(term);
+                // 🟢 Limit การแสดงผล 20 อันดับแรก ลดโหลด DOM
+                const results = fuse.search(term, { limit: 20 });
                 results.forEach((result, index) => {
                     result.item.element.style.display = 'flex';
                     result.item.element.style.order = index;
+                    // 🔥 ใส่ Highlight ตรงคำที่เจอ
+                    result.item.element.querySelector('.card-title').innerHTML = highlightText(result.item.title, term);
                 });
             }
 
@@ -628,7 +605,7 @@
         window.addEventListener('DOMContentLoaded', initApp);
 
         /* =========================
-           ⚙️ PWA Install & SW Update
+           ⚙️ SW UPDATE & DISMISS (Fixed)
         ========================= */
         let deferredPrompt;
         const installBtn = document.getElementById('installPwaBtn');
@@ -661,10 +638,10 @@
                         }
                     });
                 });
-                setInterval(() => reg.update(), 60 * 60 * 1000);
             });
 
             document.getElementById('updateBtn').addEventListener('click', () => {
+                // 🟢 โพสต์ Message ไปบอก SW ให้ตื่นและข้ามสถานะ Waiting ซะ!
                 if (newWorker) newWorker.postMessage({ type: 'SKIP_WAITING' });
             });
 
