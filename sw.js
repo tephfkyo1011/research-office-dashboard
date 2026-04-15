@@ -1,21 +1,21 @@
-const CACHE_NAME = 'kyogi-portal-v9'; // 🟢 เปลี่ยนเวอร์ชัน
+const CACHE_NAME = 'kyogi-portal-v10'; // 🟢 อัปเดต Version
 const MAX_ITEMS = 50;
 const OFFLINE_URL = './offline.html';
 
-const urlsToCache = [
+// 🟢 3. Fix Version CDN ป้องกัน Layout พังตอน CDN อัปเดต
+const STATIC_ASSETS = [
   './',
   './index.html',
-  OFFLINE_URL
+  OFFLINE_URL,
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
 ];
 
 self.addEventListener('install', e => {
-  // 🟢 เอา self.skipWaiting() ออก เพื่อให้รอ User กดปุ่มอัปเดตก่อน
   e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+    caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS))
   );
 });
 
-// 🟢 รับคำสั่งข้ามการรอ (Skip Waiting) จากปุ่มอัปเดตใน UI
 self.addEventListener('message', (e) => {
   if (e.data && e.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
@@ -33,14 +33,23 @@ self.addEventListener('activate', e => {
   );
 });
 
-// 🟢 1. แก้ไข trimCache แบบโคตรเป๊ะ (อัปเดต keys ทุกรอบ)
 async function trimCache(cacheName, maxItems) {
   const cache = await caches.open(cacheName);
   let keys = await cache.keys();
   while (keys.length > maxItems) {
     await cache.delete(keys[0]);
-    keys = await cache.keys(); // refresh
+    keys = await cache.keys();
   }
+}
+
+// 🟢 2. เพิ่ม Fetch Timeout ป้องกัน UI Freeze
+function fetchWithTimeout(request, timeout = 4000) {
+  return Promise.race([
+    fetch(request),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('timeout')), timeout)
+    )
+  ]);
 }
 
 self.addEventListener('fetch', e => {
@@ -48,14 +57,17 @@ self.addEventListener('fetch', e => {
 
   e.respondWith(
     caches.match(e.request).then(cacheRes => {
-      const fetchPromise = fetch(e.request).then(networkRes => {
+      // 🟢 6. Optimization: ถ้ามี Cache ให้ Return เลย ไม่ต้องลุ้น Fetch ซ้ำ (ลด Network Load)
+      if (cacheRes) return cacheRes;
+
+      const fetchPromise = fetchWithTimeout(e.request).then(networkRes => {
         const url = e.request.url;
         
+        // กรองเฉพาะสิ่งที่เราอยาก Cache แบบ Dynamic
         if (
           url.startsWith(self.location.origin) ||
           url.includes('fonts.googleapis.com') ||
           url.includes('fonts.gstatic.com') ||
-          url.includes('cdnjs.cloudflare.com') ||
           url.includes('tephfkyo1011.github.io') ||
           url.includes('ui-avatars.com')
         ) {
@@ -66,15 +78,14 @@ self.addEventListener('fetch', e => {
         }
         return networkRes;
       }).catch(() => {
-        // 🟢 2. Fallback หน้า Offline เฉพาะตอนขอไฟล์ HTML เท่านั้น
+        // Fallback หน้า Offline
         const acceptHeader = e.request.headers.get('accept');
         if (acceptHeader && acceptHeader.includes('text/html')) {
-          return cacheRes || caches.match(OFFLINE_URL);
+          return caches.match(OFFLINE_URL);
         }
-        return cacheRes; // ถ้าไม่ใช่ HTML (เช่น รูป/CSS) ก็ส่ง cache หรือปล่อย fail ไป
       });
 
-      return cacheRes || fetchPromise;
+      return fetchPromise;
     })
   );
 });
