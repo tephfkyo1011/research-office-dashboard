@@ -1,20 +1,26 @@
-const CACHE_VERSION = 'v11'; 
+const CACHE_VERSION = 'v12'; 
 const CACHE_NAME = `kyogi-portal-${CACHE_VERSION}`;
 const OFFLINE_URL = './offline.html';
+const MAX_CACHE_ITEMS = 80;
 
-// 🟢 4. Preload Fonts & CDNs ทั้งหมดตั้งแต่ติดตั้ง (Offline-Ready 100%)
+// 🟢 โหลด Library จาก Local แทน CDN เพื่อแก้ปัญหา CORS / Opaque Response
 const STATIC_ASSETS = [
   './',
   './index.html',
   OFFLINE_URL,
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-  'https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Sarabun:wght@300;400&display=swap',
-  'https://cdn.jsdelivr.net/npm/fuse.js@6.6.2/dist/fuse.min.js', // เพิ่ม Search Engine
-  'https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js' // เพิ่ม IndexedDB Wrapper
+  './libs/fuse.min.js',
+  './libs/localforage.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
 ];
 
+// 🟢 1. ดักรับ Message จากหน้าเว็บ เพื่อ Force Update (ของจริง)
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 self.addEventListener('install', e => {
-  self.skipWaiting(); // ให้มันพยายาม Update เบื้องหลังไปเลย
   e.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS))
   );
@@ -30,7 +36,18 @@ self.addEventListener('activate', e => {
   );
 });
 
-// 🟢 1. AbortController (แก้ปัญหา Network Request ค้าง / Leak)
+// 🟢 2. Limit Cache (ป้องกัน Storage โตจนเต็ม)
+async function trimCache(cacheName, maxItems) {
+  try {
+    const cache = await caches.open(cacheName);
+    const keys = await cache.keys();
+    if (keys.length > maxItems) {
+      await cache.delete(keys[0]);
+      trimCache(cacheName, maxItems); // ลบต่อจนกว่าจะอยู่ใน Limit
+    }
+  } catch (err) { console.error('Trim Cache Error:', err); }
+}
+
 async function fetchWithTimeout(request, timeout = 5000) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
@@ -42,53 +59,58 @@ async function fetchWithTimeout(request, timeout = 5000) {
   }
 }
 
+// 🟢 3. Dedupe Request (ป้องกันยิง API/Assets ซ้ำซ้อนตอนเปิดหลาย Tab หรือ รัวคลิก)
+const inFlight = new Map();
+function dedupeFetch(request) {
+  const key = request.url;
+  if (inFlight.has(key)) return inFlight.get(key);
+
+  const promise = fetchWithTimeout(request).finally(() => inFlight.delete(key));
+  inFlight.set(key, promise);
+  return promise;
+}
+
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
 
-  // 🔥 HYBRID STRATEGY 1: HTML -> Network First (ให้ได้ข้อมูลล่าสุดเสมอ)
-  if (e.request.mode === 'navigate' || e.request.headers.get('accept')?.includes('text/html')) {
-    e.respondWith(
-      fetchWithTimeout(e.request, 4000)
-        .then(networkRes => {
-          const clone = networkRes.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
-          return networkRes;
-        })
-        .catch(async () => {
-          // 🟢 3. Fallback Cache สุดท้าย ป้องกันจอขาว
-          const cacheRes = await caches.match(e.request);
-          return cacheRes || caches.match(OFFLINE_URL);
-        })
-    );
-    return;
-  }
+  // 🟢 4. Error Boundary (ป้องกัน SW พังเงียบ)
+  try {
+    // 🔥 HTML -> Network First
+    if (e.request.mode === 'navigate' || e.request.headers.get('accept')?.includes('text/html')) {
+      e.respondWith(
+        dedupeFetch(e.request)
+          .then(networkRes => {
+            const clone = networkRes.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(e.request, clone);
+              trimCache(CACHE_NAME, MAX_CACHE_ITEMS);
+            });
+            return networkRes;
+          })
+          .catch(async () => {
+            const cacheRes = await caches.match(e.request);
+            return cacheRes || caches.match(OFFLINE_URL);
+          })
+      );
+      return;
+    }
 
-  // 🔥 HYBRID STRATEGY 2: Images -> Cache First (โหลดไว ไม่เปลืองแบนด์วิดท์)
-  if (e.request.destination === 'image' || url.pathname.match(/\.(png|jpg|jpeg|gif|svg|webp)$/i)) {
+    // 🔥 Assets -> Stale-While-Revalidate (SWR)
     e.respondWith(
       caches.match(e.request).then(cacheRes => {
-        if (cacheRes) return cacheRes; // มี Cache คืนเลย
-        return fetchWithTimeout(e.request, 5000).then(networkRes => {
-          caches.open(CACHE_NAME).then(cache => cache.put(e.request, networkRes.clone()));
+        const fetchPromise = dedupeFetch(e.request).then(networkRes => {
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(e.request, networkRes.clone());
+            trimCache(CACHE_NAME, MAX_CACHE_ITEMS);
+          });
           return networkRes;
-        }).catch(() => caches.match(e.request)); // Fallback Offline Image (ถ้ามี)
+        }).catch(() => caches.match(e.request));
+
+        return cacheRes || fetchPromise;
       })
     );
-    return;
+  } catch (err) {
+    console.error('SW FETCH ERROR:', err);
   }
-
-  // 🔥 HYBRID STRATEGY 3: CSS/JS/Fonts -> Stale-While-Revalidate (SWR)
-  e.respondWith(
-    caches.match(e.request).then(cacheRes => {
-      // Background Fetch เพื่ออัปเดต Cache (Revalidate)
-      const fetchPromise = fetchWithTimeout(e.request, 5000).then(networkRes => {
-        caches.open(CACHE_NAME).then(cache => cache.put(e.request, networkRes.clone()));
-        return networkRes;
-      }).catch(() => caches.match(e.request)); // Fallback
-
-      // ถ้ามี Cache ส่งให้ User ใช้ก่อนเลย ไม่ต้องรอโหลดเสร็จ (Stale)
-      return cacheRes || fetchPromise;
-    })
-  );
 });
