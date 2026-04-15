@@ -1,4 +1,4 @@
-const APP_VERSION = 'v14-TitanMode';
+const APP_VERSION = 'v16-TitanMode';
 console.log(`🚀 App Version: ${APP_VERSION} (Secure CSP)`);
 
 // 🟢 DOM Elements
@@ -91,10 +91,11 @@ async function initApp() {
             const useCount = usage[name] || 0;
             
             // 🔥 Smart Prefetch: ถ้าระบบนี้ถูกใช้บ่อย (> 5 ครั้ง) ให้ Preload ลิงก์รอเลย
-            if (useCount >= 5 && card.href && !card.href.endsWith('#')) {
+            const cardUrl = card.dataset.href;
+            if (useCount >= 5 && cardUrl && !cardUrl.endsWith('#')) {
                 const link = document.createElement('link');
                 link.rel = 'prefetch';
-                link.href = card.href;
+                link.href = cardUrl;
                 document.head.appendChild(link);
             }
 
@@ -112,6 +113,7 @@ async function initApp() {
                     await localforage.setItem('lastUsed', name);
                 } catch(e) {}
             });
+        });
 
         sortCards();
         smartCheck(); // เริ่มระบบ Check
@@ -339,4 +341,4 @@ window.addEventListener('click', function(e) {
             console.error("หาฟังก์ชัน togglePin ไม่เจอครับ!");
         }
     }
-}, true); // สำคัญมาก! ใส่ true เพื่อดักตบ Event ตั้งแต่ขาลง ก่อนที่แท็ก <a> จะรู้ตัว
+}, true); // สำคัญมาก! ใส่ true เพื่อดักตบ Event ตั้งแต่ขาลง ก่อนที่แท็ก <a> หรือ <div> จะรู้ตัว
