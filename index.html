@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Research Office Portal - KYOGI</title>
     
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https:;">
 
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Sarabun:wght@300;400&display=swap" as="style">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Sarabun:wght@300;400&display=swap">
@@ -15,6 +15,9 @@
     <link rel="icon" type="image/png" href="https://tephfkyo1011.github.io/research-office-dashboard/Research_Office_KYOGI.png">
     <link rel="apple-touch-icon" href="https://tephfkyo1011.github.io/research-office-dashboard/Research_Office_KYOGI.png">
     
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2/dist/fuse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
+
     <style>
         :root {
             --primary-grad: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
@@ -45,21 +48,14 @@
             transition: background-color 0.3s ease, color 0.3s ease; 
         }
 
-        /* ---------------------------------
-           🟢 UI: Offline Badge 
-           --------------------------------- */
         #offlineBadge {
             position: fixed; top: 15px; left: 15px; background: #e74c3c; color: white;
             padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-family: 'Prompt', sans-serif;
             font-weight: 500; z-index: 1000; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
-            display: none; /* 🟢 1. แก้บัค display ซ้ำซ้อน */ 
-            align-items: center; gap: 5px; animation: pulseBadge 2s infinite;
+            display: none; align-items: center; gap: 5px; animation: pulseBadge 2s infinite;
         }
         @keyframes pulseBadge { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
-        /* ---------------------------------
-           🟢 UI: Update Banner
-           --------------------------------- */
         #updateBanner {
             position: fixed; bottom: 0; left: 0; width: 100%; background: #007bff; color: white;
             padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
@@ -72,7 +68,7 @@
             background: white; color: #007bff; border: none; padding: 6px 15px; border-radius: 8px;
             font-weight: 600; cursor: pointer; transition: transform 0.2s;
         }
-        .update-btn-dismiss { /* 🟢 5. ปุ่ม Dismiss */
+        .update-btn-dismiss {
             background: rgba(255,255,255,0.2); color: white; border: none; padding: 6px 10px; 
             border-radius: 8px; cursor: pointer; transition: background 0.2s;
         }
@@ -388,17 +384,14 @@
     <div class="footer">
         © 2026 <b>Research Office Portal</b><br>
         Developed & Updated by <b>KYO GI</b><br>
-        <span class="app-version"><i class="fa-solid fa-code-branch"></i> Version 10</span>
+        <span class="app-version"><i class="fa-solid fa-code-branch"></i> Version 11 (Enterprise)</span>
     </div>
 
     <script>
-        const APP_VERSION = 'v10';
+        const APP_VERSION = 'v11-Enterprise';
         console.log(`🚀 App Version: ${APP_VERSION}`);
 
-        const searchInput = document.getElementById('searchInput');
-        const clearBtn = document.getElementById('clearSearch');
-        let usage = JSON.parse(localStorage.getItem('usage') || '{}');
-
+        // 🟢 Dictionary ของคำค้นหาที่เกี่ยวข้องกัน เพื่อช่วยให้ Fuse.js หาเจอแม้พิมพ์คำที่ไม่ได้อยู่ใน Title
         const synonyms = {
             "แก๊ส": ["gas", "ถัง"],
             "จอง": ["booking", "reserve", "ประชุม"],
@@ -408,95 +401,120 @@
             "ครุภัณฑ์": ["asset", "ของ"]
         };
 
-        function getExpandedTerms(term) {
-            let expanded = [term];
-            for (const [key, syns] of Object.entries(synonyms)) {
-                if (term === key || syns.includes(term)) {
-                    expanded = expanded.concat(syns, [key]);
-                }
-            }
-            return [...new Set(expanded)]; 
-        }
-
-        /* ---------------------------------
-           🧠 4. Real Network Check (God Tier)
-        --------------------------------- */
+        /* =========================
+           🧠 Adaptive Battery Check (เซฟแบต/ประหยัด Request)
+        ========================= */
         const offlineBadge = document.getElementById('offlineBadge');
-        
+        let checkInterval = 15000; 
+
         async function checkRealOnline() {
             try {
-                // ยิง HEAD request พร้อม timestamp กันโดน Cache หลอก
-                await fetch(`./?_cb=${new Date().getTime()}`, { method: 'HEAD', cache: 'no-store' });
+                const controller = new AbortController();
+                const id = setTimeout(() => controller.abort(), 3000);
+                await fetch(`./?_cb=${Date.now()}`, { method: 'HEAD', cache: 'no-store', signal: controller.signal });
+                clearTimeout(id);
                 return true;
             } catch {
                 return false;
             }
         }
 
-        async function updateOnlineStatus() {
-            // ถ้า Browser บอกว่า Offline แน่นอน ก็ไม่ต้องเปลืองแรง Fetch
+        async function smartCheck() {
             if (!navigator.onLine) {
                 offlineBadge.style.display = 'flex';
-                return;
+                checkInterval = 5000; 
+            } else {
+                const isOnline = await checkRealOnline();
+                offlineBadge.style.display = isOnline ? 'none' : 'flex';
+                checkInterval = isOnline ? 30000 : 10000; 
             }
-            // ถ้า WiFi ติดอยู่ ค่อยทดสอบยิงเน็ตจริง
-            const isOnline = await checkRealOnline();
-            offlineBadge.style.display = isOnline ? 'none' : 'flex';
+            setTimeout(smartCheck, checkInterval);
         }
+        smartCheck(); 
 
-        window.addEventListener('online', updateOnlineStatus);
-        window.addEventListener('offline', updateOnlineStatus);
-        setInterval(updateOnlineStatus, 15000); // เช็คทุก 15 วิเนียนๆ
-        updateOnlineStatus();
+        window.addEventListener('online', () => { checkInterval = 5000; smartCheck(); });
+        window.addEventListener('offline', () => { offlineBadge.style.display = 'flex'; });
 
-        function toggleDark() {
-            document.body.classList.toggle('dark');
-            const isDark = document.body.classList.contains('dark');
-            localStorage.setItem('darkMode', isDark);
-            document.getElementById('darkModeBtn').innerText = isDark ? '☀️' : '🌙';
-        }
+        /* =========================
+           🚀 Enterprise Search (Fuse.js) + IndexedDB (LocalForage)
+        ========================= */
+        const searchInput = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('clearSearch');
+        
+        let usage = {};
+        let pinnedCards = [];
+        let fuse; 
+        let cardsData = []; 
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === '/' && document.activeElement !== searchInput) {
-                e.preventDefault();
-                searchInput.focus();
+        async function initApp() {
+            // สลับไปใช้ IndexedDB ให้อัตโนมัติ (ทะลุขีดจำกัด 5MB ของ LocalStorage)
+            localforage.config({ name: 'KyogiPortal', storeName: 'portal_data' });
+            
+            usage = (await localforage.getItem('usage')) || {};
+            pinnedCards = (await localforage.getItem('pinnedCards')) || [];
+            const lastUsed = await localforage.getItem('lastUsed');
+            const isDark = await localforage.getItem('darkMode');
+
+            if (isDark) {
+                document.body.classList.add('dark');
+                document.getElementById('darkModeBtn').innerText = '☀️';
             }
-        });
 
-        window.addEventListener('load', () => {
-            if (window.innerWidth > 768) searchInput.focus();
-        });
+            const maxUsage = Math.max(...Object.values(usage), 1);
 
-        function fuzzyMatch(text, term) {
-            let t = 0; let s = 0;
-            while (t < text.length && s < term.length) {
-                if (text[t] === term[s]) s++;
-                t++;
-            }
-            return s === term.length;
-        }
+            document.querySelectorAll('.card').forEach(card => {
+                const name = card.dataset.name || '';
+                const title = card.querySelector('.card-title')?.innerText || '';
+                const desc = card.querySelector('.card-desc')?.innerText || '';
+                let keywords = card.dataset.keywords || '';
+                
+                // ฉีดคำที่มีความหมายเหมือนกันลงไปใน Keywords ให้ Fuse.js หาเจอง่ายขึ้น
+                Object.entries(synonyms).forEach(([key, syns]) => {
+                    const allText = `${name} ${title} ${desc} ${keywords}`.toLowerCase();
+                    if (allText.includes(key) || syns.some(s => allText.includes(s))) {
+                        keywords += ` ${key} ${syns.join(' ')}`;
+                    }
+                });
 
-        function scoreMatch(card, term) {
-            let score = 0;
-            const text = card.dataset.search || '';
-            const name = (card.dataset.name || '').toLowerCase();
-            const origTitle = (card.dataset.origTitle || '').toLowerCase();
-            const keywords = (card.dataset.keywords || '').toLowerCase();
+                const useCount = usage[name] || 0;
+                
+                // Math.log Scale Analytics
+                const userBoost = Math.log(useCount + 1) * 10;
+                card.dataset.defaultOrder = 1000 - Math.round(userBoost);
+                
+                if(card.parentElement) card.dataset.parent = card.parentElement.id;
+                if (name === lastUsed) card.classList.add('last-used');
 
-            if (name.includes(term)) score += 20;
-            if (origTitle.includes(term)) score += 15;
-            if (keywords.includes(term)) score += 10;
-            if (fuzzyMatch(text, term)) score += 5;
+                // เตรียมข้อมูลโยนให้ Fuse.js
+                cardsData.push({
+                    id: name,
+                    title: title,
+                    desc: desc,
+                    keywords: keywords,
+                    element: card
+                });
 
-            return score;
-        }
+                card.addEventListener('click', async () => {
+                    if (navigator.vibrate) navigator.vibrate(30);
+                    usage[name] = (usage[name] || 0) + 1;
+                    await localforage.setItem('lastUsed', name);
+                    await localforage.setItem('usage', usage);
+                });
+            });
 
-        function highlight(text, termsArray) {
-            if (!termsArray || termsArray.length === 0) return text;
-            const validTerms = termsArray.filter(t => t.trim().length > 0);
-            if(validTerms.length === 0) return text;
-            const pattern = validTerms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
-            return text.replace(new RegExp(`(${pattern})`, 'gi'), '<mark>$1</mark>');
+            // สร้าง Search Engine Instance
+            fuse = new Fuse(cardsData, {
+                keys: [
+                    { name: 'title', weight: 0.6 },
+                    { name: 'keywords', weight: 0.3 },
+                    { name: 'desc', weight: 0.1 }
+                ],
+                threshold: 0.3, 
+                ignoreLocation: true, 
+                useExtendedSearch: true
+            });
+
+            sortCards();
         }
 
         let debounceTimer;
@@ -504,54 +522,29 @@
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => {
                 performSearch(e.target.value.toLowerCase().trim());
-            }, 120);
+            }, 100); 
         });
 
         function performSearch(term) {
             clearBtn.style.display = term.length > 0 ? 'block' : 'none';
             
-            const rawTerms = term.split(' ').filter(t => t.length > 0);
-            let searchTerms = [];
-            rawTerms.forEach(t => searchTerms.push(...getExpandedTerms(t)));
+            cardsData.forEach(item => item.element.style.display = 'none');
+            
+            if (term === '') {
+                cardsData.forEach(item => {
+                    item.element.style.display = 'flex';
+                    item.element.style.order = item.element.dataset.defaultOrder;
+                });
+            } else {
+                const results = fuse.search(term);
+                results.forEach((result, index) => {
+                    result.item.element.style.display = 'flex';
+                    result.item.element.style.order = index;
+                });
+            }
 
             document.querySelectorAll('.grid').forEach(grid => {
-                let hasVisible = false;
-
-                grid.querySelectorAll('.card').forEach(card => {
-                    const searchText = card.dataset.search || '';
-                    const titleEl = card.querySelector('.card-title');
-                    const descEl = card.querySelector('.card-desc');
-                    let match = false;
-                    let totalScore = 0;
-
-                    if (term === '') {
-                        match = true;
-                        card.style.order = card.dataset.defaultOrder; 
-                    } else {
-                        match = searchTerms.some(t => searchText.includes(t) || fuzzyMatch(searchText, t));
-                        if (match) {
-                            searchTerms.forEach(t => totalScore += scoreMatch(card, t));
-                            // 🟢 4. Analytics Bias: ใช้ Log Scale คุมไม่ให้คะแนนโดดเกินไป
-                            const userBoost = Math.log((usage[card.dataset.name] || 0) + 1) * 10;
-                            totalScore += userBoost;
-                            card.style.order = 1000 - Math.round(totalScore); 
-                        }
-                    }
-
-                    card.style.display = match ? 'flex' : 'none';
-
-                    if (match) {
-                        hasVisible = true;
-                        if (term) {
-                            titleEl.innerHTML = highlight(card.dataset.origTitle, rawTerms);
-                            descEl.innerHTML = highlight(card.dataset.origDesc, rawTerms);
-                        } else {
-                            titleEl.innerHTML = card.dataset.origTitle;
-                            descEl.innerHTML = card.dataset.origDesc;
-                        }
-                    }
-                });
-
+                let hasVisible = Array.from(grid.children).some(c => c.style.display !== 'none');
                 if (grid.id === 'grid-pinned') {
                     document.getElementById('pinned-section').style.display = hasVisible ? 'block' : 'none';
                 } else {
@@ -569,55 +562,61 @@
             searchInput.focus();
         });
 
-        function vibrate() {
-            if (navigator.vibrate) navigator.vibrate(30);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '/' && document.activeElement !== searchInput) {
+                e.preventDefault();
+                searchInput.focus();
+            }
+        });
+
+        async function toggleDark() {
+            document.body.classList.toggle('dark');
+            const isDark = document.body.classList.contains('dark');
+            await localforage.setItem('darkMode', isDark);
+            document.getElementById('darkModeBtn').innerText = isDark ? '☀️' : '🌙';
         }
 
-        function togglePin(event, card) {
+        async function togglePin(event, card) {
             event.preventDefault();
             event.stopPropagation();
-            vibrate();
+            if (navigator.vibrate) navigator.vibrate(30);
 
             const cardName = card.dataset.name;
-            if (!cardName) return; 
-
             card.style.transform = 'scale(0.9)';
             
-            setTimeout(() => {
+            setTimeout(async () => {
                 card.style.transform = '';
-                let pinnedItems = JSON.parse(localStorage.getItem('pinnedCards')) || [];
-                if (!pinnedItems.includes(cardName)) {
-                    pinnedItems.push(cardName);
+                if (!pinnedCards.includes(cardName)) {
+                    pinnedCards.push(cardName);
                 } else {
-                    pinnedItems = pinnedItems.filter(item => item !== cardName);
+                    pinnedCards = pinnedCards.filter(item => item !== cardName);
                     card.classList.remove('pinned');
                 }
-                localStorage.setItem('pinnedCards', JSON.stringify(pinnedItems));
+                await localforage.setItem('pinnedCards', pinnedCards); 
                 sortCards();
             }, 150);
         }
 
         function sortCards() {
-            const pinnedItems = JSON.parse(localStorage.getItem('pinnedCards')) || [];
             const pinnedGrid = document.getElementById('grid-pinned');
             const pinnedSection = document.getElementById('pinned-section');
-            const allCards = document.querySelectorAll('.card');
 
             pinnedGrid.innerHTML = '';
             
-            allCards.forEach(c => {
-                if(!pinnedItems.includes(c.dataset.name) && c.dataset.parent) {
+            cardsData.forEach(item => {
+                const c = item.element;
+                if(!pinnedCards.includes(c.dataset.name) && c.dataset.parent) {
                     c.classList.remove('pinned');
                     document.getElementById(c.dataset.parent).appendChild(c);
                 }
             });
 
             let hasPinned = false;
-            pinnedItems.forEach(name => {
-                const card = [...allCards].find(c => c.dataset.name === name);
-                if (card) {
-                    card.classList.add('pinned');
-                    pinnedGrid.appendChild(card);
+            pinnedCards.forEach(name => {
+                const item = cardsData.find(c => c.id === name);
+                if (item) {
+                    item.element.classList.add('pinned');
+                    pinnedGrid.appendChild(item.element);
                     hasPinned = true;
                 }
             });
@@ -626,45 +625,11 @@
             performSearch(searchInput.value.toLowerCase().trim());
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('darkMode') === 'true') {
-                document.body.classList.add('dark');
-                document.getElementById('darkModeBtn').innerText = '☀️';
-            }
+        window.addEventListener('DOMContentLoaded', initApp);
 
-            document.querySelectorAll('.card').forEach(card => {
-                const title = card.querySelector('.card-title')?.innerText || '';
-                const desc = card.querySelector('.card-desc')?.innerText || '';
-                const name = card.dataset.name || '';
-                const keywords = card.dataset.keywords || '';
-
-                card.dataset.origTitle = title;
-                card.dataset.origDesc = desc;
-                card.dataset.search = `${title} ${desc} ${name} ${keywords}`.toLowerCase().replace(/\s+/g, ' ');
-                
-                const useCount = usage[name] || 0;
-                card.dataset.defaultOrder = 1000 - useCount; 
-
-                if(card.parentElement && card.parentElement.classList.contains('grid')){
-                    card.dataset.parent = card.parentElement.id;
-                }
-                
-                card.addEventListener('click', () => {
-                    vibrate();
-                    localStorage.setItem('lastUsed', name);
-                    usage[name] = (usage[name] || 0) + 1;
-                    localStorage.setItem('usage', JSON.stringify(usage));
-                });
-            });
-
-            sortCards();
-
-            const lastUsed = localStorage.getItem('lastUsed');
-            document.querySelectorAll('.card').forEach(card => {
-                if (card.dataset.name === lastUsed) card.classList.add('last-used');
-            });
-        });
-
+        /* =========================
+           ⚙️ PWA Install & SW Update
+        ========================= */
         let deferredPrompt;
         const installBtn = document.getElementById('installPwaBtn');
 
@@ -678,36 +643,16 @@
             if (!deferredPrompt) return;
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                installBtn.style.display = 'none';
-            }
+            if (outcome === 'accepted') installBtn.style.display = 'none';
             deferredPrompt = null;
         });
 
-        /* =========================
-           ⚙️ 3. SW REGISTRATION (ไม่ต้องรอ Load & เช็ค Update ทุกชั่วโมง)
-        ========================= */
-        let newWorker;
         const updateBanner = document.getElementById('updateBanner');
-        const updateBtn = document.getElementById('updateBtn');
-        const dismissBtn = document.getElementById('dismissBtn');
+        document.getElementById('dismissBtn').addEventListener('click', () => updateBanner.classList.remove('show'));
 
-        // 🟢 5. เพิ่มปุ่ม ภายหลัง (Dismiss)
-        dismissBtn.addEventListener('click', () => {
-            updateBanner.classList.remove('show');
-        });
-
-        updateBtn.addEventListener('click', () => {
-            if (newWorker) {
-                newWorker.postMessage({ type: 'SKIP_WAITING' });
-            }
-        });
-
+        let newWorker;
         if ('serviceWorker' in navigator) {
-            // ไม่ต้องใส่ครอบ window.addEventListener('load') แล้วเพื่อให้ Install ไวขึ้น
             navigator.serviceWorker.register('./sw.js').then(reg => {
-                console.log('SW registered.', reg);
-                
                 reg.addEventListener('updatefound', () => {
                     newWorker = reg.installing;
                     newWorker.addEventListener('statechange', () => {
@@ -716,13 +661,12 @@
                         }
                     });
                 });
+                setInterval(() => reg.update(), 60 * 60 * 1000);
+            });
 
-                // 🟢 2. เช็คอัปเดตอัตโนมัติทุกๆ 1 ชั่วโมงแบบ Background
-                setInterval(() => {
-                    reg.update();
-                }, 60 * 60 * 1000);
-
-            }).catch(err => console.log('SW err: ', err));
+            document.getElementById('updateBtn').addEventListener('click', () => {
+                if (newWorker) newWorker.postMessage({ type: 'SKIP_WAITING' });
+            });
 
             let refreshing = false;
             navigator.serviceWorker.addEventListener('controllerchange', () => {
