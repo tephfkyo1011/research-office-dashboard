@@ -34,12 +34,14 @@
             --col-hr: #e83e8c;
             --col-central: #20c997;
             --col-fun: #6f42c1;
+            --hl-bg: rgba(255, 193, 7, 0.4);
         }
 
         body.dark {
             --bg-color: #1e1e2f;
             --text-main: #ffffff;
             --text-sub: #bbbbbb;
+            --hl-bg: rgba(255, 193, 7, 0.6);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -47,8 +49,7 @@
             font-family: 'Sarabun', sans-serif; 
             background-color: var(--bg-color); 
             color: var(--text-main);
-            margin: 0; 
-            padding-bottom: 40px; 
+            margin: 0; padding-bottom: 40px; 
             transition: background-color 0.3s ease, color 0.3s ease; 
         }
 
@@ -59,15 +60,11 @@
         }
 
         .portal-brand-container {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            margin-bottom: 10px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 10px;
         }
         .portal-main-logo {
-            max-width: 100px; height: auto;
-            border-radius: 20px; background: white; padding: 5px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            margin-bottom: 15px;
-            transition: transform 0.3s ease;
+            max-width: 100px; height: auto; border-radius: 20px; background: white; padding: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 15px; transition: transform 0.3s ease;
         }
         .portal-main-logo:hover { transform: scale(1.05) rotate(-3deg); }
 
@@ -75,10 +72,8 @@
         p.subtitle { font-size: 0.9rem; margin-top: 5px; opacity: 0.9; }
 
         .btn-darkmode {
-            position: absolute; top: 15px; right: 20px;
-            padding: 8px 12px; border: none; border-radius: 12px;
-            cursor: pointer; background: rgba(255, 255, 255, 0.2);
-            color: white; font-size: 1.2rem; backdrop-filter: blur(5px);
+            position: absolute; top: 15px; right: 20px; padding: 8px 12px; border: none; border-radius: 12px;
+            cursor: pointer; background: rgba(255, 255, 255, 0.2); color: white; font-size: 1.2rem; backdrop-filter: blur(5px);
             transition: all 0.3s ease;
         }
         .btn-darkmode:hover { background: rgba(255, 255, 255, 0.3); transform: scale(1.05); }
@@ -88,7 +83,6 @@
             max-width: 630px; margin-left: auto; margin-right: auto;
         }
         
-        /* 🟢 6. UI Upgrade: Glass Effect (ปรับจากเดิม) */
         .search-box {
             width: 100%; display: block; margin: 0 auto;
             padding: 15px 40px 15px 25px; border-radius: 30px; border: none; box-shadow: 0 8px 25px rgba(0,0,0,0.15);
@@ -100,8 +94,7 @@
 
         .clear-search {
             position: absolute; right: 30px; top: 50%; transform: translateY(-50%);
-            cursor: pointer; color: #6c757d; font-size: 1.2rem;
-            display: none; transition: color 0.2s;
+            cursor: pointer; color: #6c757d; font-size: 1.2rem; display: none; transition: color 0.2s;
         }
         .clear-search:hover { color: #e74c3c; }
 
@@ -121,19 +114,14 @@
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); } }
 
-        /* 🟢 6. UI Upgrade: Glass Effect สำหรับ Card */
         .card {
-            border-radius: 15px; padding: 15px 10px;
-            text-decoration: none; display: flex; flex-direction: column; align-items: center; text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: all 0.25s ease; position: relative;
-            min-height: 140px; border-top: 4px solid transparent; color: var(--text-main);
+            border-radius: 15px; padding: 15px 10px; text-decoration: none; display: flex; flex-direction: column; align-items: center; text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02); min-height: 140px; border-top: 4px solid transparent; color: var(--text-main);
+            backdrop-filter: blur(10px); background: rgba(255,255,255,0.8); position: relative;
             animation: fadeInCard 0.5s ease backwards;
-            backdrop-filter: blur(10px);
-            background: rgba(255,255,255,0.8); /* Glassmorphism Light */
+            transition: all 0.3s ease, transform 0.25s ease;
         }
-        body.dark .card {
-            background: rgba(40,40,60,0.6); /* Glassmorphism Dark */
-        }
+        body.dark .card { background: rgba(40,40,60,0.6); }
         
         @keyframes fadeInCard {
             0% { opacity: 0; transform: translateY(15px); }
@@ -147,10 +135,8 @@
         .card.last-used { outline: 2px solid #28a745; outline-offset: -2px; }
 
         .icon-circle {
-            width: 60px; height: 60px; border-radius: 18px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.6rem; margin-bottom: 10px; background: rgba(248,249,250,0.8);
-            overflow: hidden;
+            width: 60px; height: 60px; border-radius: 18px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem; margin-bottom: 10px; background: rgba(248,249,250,0.8); overflow: hidden;
         }
         body.dark .icon-circle { background: rgba(58,58,82,0.8); }
         .icon-circle img { width: 100%; height: 100%; object-fit: cover; }
@@ -164,15 +150,12 @@
         .pin { position: absolute; top: 5px; right: 5px; font-size: 1rem; color: #ccc; cursor: pointer; padding: 2px; transition: color 0.2s; z-index: 10; }
         body.dark .pin { color: #666; }
         
-        .card.pinned { border: 1px solid var(--gold); animation: pinPop 0.3s ease; }
-        @keyframes pinPop {
-            0% { transform: scale(0.9); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
+        .card.pinned { border: 1px solid var(--gold); }
         body:not(.dark) .card.pinned { background: rgba(255,253,240,0.9); }
         body.dark .card.pinned { background: rgba(53,48,24,0.8); }
         .card.pinned .pin { color: var(--gold); }
+
+        mark { background-color: var(--hl-bg); color: inherit; padding: 0 2px; border-radius: 4px; font-weight: bold; }
 
         .footer { text-align: center; font-size: 0.7rem; color: var(--text-sub); margin-top: 40px; padding: 20px; line-height: 1.5; }
     </style>
@@ -182,7 +165,7 @@
     <header>
         <button class="btn-darkmode" onclick="toggleDark()" id="darkModeBtn">🌙</button>
         <div class="portal-brand-container">
-            <img src="https://tephfkyo1011.github.io/research-office-dashboard/Research_Office_KYOGI.png" alt="Research Office KYOGI Logo" class="portal-main-logo" loading="lazy">
+            <img src="https://tephfkyo1011.github.io/research-office-dashboard/Research_Office_KYOGI.png" alt="Logo" class="portal-main-logo" loading="lazy">
             <div class="brand-text">
                 <h1>Research Office Portal</h1>
                 <p class="subtitle">ศูนย์รวมระบบสารสนเทศเพื่อการปฏิบัติงาน โดย KYOGI</p>
@@ -191,7 +174,7 @@
     </header>
 
     <div class="search-wrapper">
-        <input type="text" id="searchInput" class="search-box" placeholder="🔍 ค้นหาชื่อระบบแอป หรือคำอธิบาย...">
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 ค้นหาชื่อระบบ, คำอธิบาย หรือคีย์เวิร์ด...">
         <span id="clearSearch" class="clear-search"><i class="fa-solid fa-xmark"></i></span>
     </div>
 
@@ -207,103 +190,103 @@
 
         <div class="section-title" style="color:var(--col-it); border-color:var(--col-it);"><i class="fa-solid fa-code"></i> System by Kyo Gi</div>
         <div class="grid" id="grid-it">
-            <a href="https://www.appsheet.com/start/6e4cdc1f-da32-4ae1-87c6-3e7a0d81929f" target="_blank" class="card" data-name="HSR Database">
+            <a href="https://www.appsheet.com/start/6e4cdc1f-da32-4ae1-87c6-3e7a0d81929f" target="_blank" class="card" data-name="HSR Database" data-keywords="ครุภัณฑ์ asset inventory equipment ของ">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-db.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=HS&background=0D8ABC&color=fff'"></div>
                 <div class="card-title">ระบบฐานข้อมูลครุภัณฑ์ HSR</div>
                 <div class="card-desc">AppSheet Online</div>
             </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-dashboard.html" target="_blank" class="card" data-name="Dashboard ครุภัณฑ์">
+            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-dashboard.html" target="_blank" class="card" data-name="Dashboard ครุภัณฑ์" data-keywords="สรุป กราฟ chart report">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-dashboard.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=DB&background=f39c12&color=fff'"></div>
                 <div class="card-title">Dashboard ครุภัณฑ์</div>
                 <div class="card-desc">สรุปข้อมูลสำนักงานวิจัย</div>
             </a>
-            <a href="https://www.appsheet.com/start/54d31000-2358-4abc-bd52-44472a9275c6" target="_blank" class="card" data-name="USER ครุภัณฑ์">
+            <a href="https://www.appsheet.com/start/54d31000-2358-4abc-bd52-44472a9275c6" target="_blank" class="card" data-name="USER ครุภัณฑ์" data-keywords="ผู้ใช้ user พนักงาน">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-user.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=User&background=3498db&color=fff'"></div>
                 <div class="card-title">USER ครุภัณฑ์</div>
                 <div class="card-desc">สำนักงานวิจัย</div>
             </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-health-family.html" target="_blank" class="card" data-name="Health Family">
+            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-health-family.html" target="_blank" class="card" data-name="Health Family" data-keywords="สุขภาพ health cg ครอบครัว">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-health-family.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=HF&background=e74c3c&color=fff'"></div>
                 <div class="card-title">Health Family By CG</div>
                 <div class="card-desc">Version 17</div>
             </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-tumor-bank.html" target="_blank" class="card" data-name="Tumor Bank">
+            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-tumor-bank.html" target="_blank" class="card" data-name="Tumor Bank" data-keywords="ขนส่ง ขนย้าย transport มะเร็ง">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-tumor-bank.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=TB&background=2ecc71&color=fff'"></div>
                 <div class="card-title">Tumor Bank Transport</div>
                 <div class="card-desc">ระบบขนส่ง</div>
             </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-ot-time.html" target="_blank" class="card" data-name="OT Time">
+            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-ot-time.html" target="_blank" class="card" data-name="OT Time" data-keywords="ล่วงเวลา โอที นอกเวลาราชการ ลงเวลา overtime">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-ot-time.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=OT&background=9b59b6&color=fff'"></div>
                 <div class="card-title">ระบบลงเวลานอกราชการ</div>
                 <div class="card-desc">OT สนง.วิจัย</div>
             </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-gas-stock.html" target="_blank" class="card" data-name="Gas Stock">
+            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-gas-stock.html" target="_blank" class="card" data-name="Gas Stock" data-keywords="แก๊ส gas ถัง คลัง สต๊อก">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-gas-stock.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=GAS&background=34495e&color=fff'"></div>
                 <div class="card-title">ระบบแก๊ส & Stock</div>
                 <div class="card-desc">การจัดการคลังแก๊ส</div>
             </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-ln2-log.html" target="_blank" class="card" data-name="LN2 Log">
+            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-ln2-log.html" target="_blank" class="card" data-name="LN2 Log" data-keywords="ไนโตรเจน เหลว nitrogen liquid เติม">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-ln2-log.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=LN2&background=1abc9c&color=fff'"></div>
                 <div class="card-title">บันทึก Liquid Nitrogen</div>
                 <div class="card-desc">ระบบบันทึกข้อมูล</div>
             </a>
-            <a href="https://www.appsheet.com/start/2e8cd042-246d-4b55-abb8-a5884ba0c60d" target="_blank" class="card" data-name="Specimen Bank">
+            <a href="https://www.appsheet.com/start/2e8cd042-246d-4b55-abb8-a5884ba0c60d" target="_blank" class="card" data-name="Specimen Bank" data-keywords="เก็บตัวอย่าง specimen เลือด ชิ้นเนื้อ">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-specimen-bank.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=SB&background=e67e22&color=fff'"></div>
                 <div class="card-title">HSR Specimen Banking</div>
                 <div class="card-desc">ระบบจัดเก็บตัวอย่าง</div>
             </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-specimen-dashboard.html" target="_blank" class="card" data-name="Specimen Dash">
+            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-specimen-dashboard.html" target="_blank" class="card" data-name="Specimen Dash" data-keywords="สรุปตัวอย่าง กราฟ dash">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-specimen-dashboard.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=DS&background=d35400&color=fff'"></div>
                 <div class="card-title">HSR Banking Dashboard</div>
                 <div class="card-desc">สรุปผลการจัดเก็บ</div>
             </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-freezer-check.html" target="_blank" class="card" data-name="Freezer Check">
+            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-freezer-check.html" target="_blank" class="card" data-name="Freezer Check" data-keywords="ตู้แช่ เช็คอุณหภูมิ ln2 nitrogen freezer -80">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-freezer-check.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=FZ&background=2980b9&color=fff'"></div>
                 <div class="card-title">ตรวจสอบตู้แช่ & LN2</div>
                 <div class="card-desc">Monitoring System</div>
             </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-withdraw-specimen.html" target="_blank" class="card" data-name="Withdraw Spec">
+            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-withdraw-specimen.html" target="_blank" class="card" data-name="Withdraw Spec" data-keywords="เบิก จ่าย ตัวอย่าง withdraw คืน">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-withdraw-specimen.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=WD&background=27ae60&color=fff'"></div>
                 <div class="card-title">ระบบเบิก-จ่ายตัวอย่าง</div>
                 <div class="card-desc">Management System</div>
             </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-lms-lab.html" target="_blank" class="card" data-name="LMS Lab">
+            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-lms-lab.html" target="_blank" class="card" data-name="LMS Lab" data-keywords="จองเครื่องมือ lab booking reserve แล็บ">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-lms-lab.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=LMS&background=16a085&color=fff'"></div>
                 <div class="card-title">LMS จองเครื่องมือ Lab</div>
                 <div class="card-desc">Lab Management</div>
             </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-lms-dashboard.html" target="_blank" class="card" data-name="LMS Dash">
+            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-lms-dashboard.html" target="_blank" class="card" data-name="LMS Dash" data-keywords="สรุปจองเครื่องมือ lms dashboard">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-lms-dashboard.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=LD&background=7f8c8d&color=fff'"></div>
                 <div class="card-title">Dashboard จองเครื่องมือ</div>
                 <div class="card-desc">LMS Summary</div>
             </a>
-            <a href="https://www.appsheet.com/start/c9f22d36-e90e-46aa-9aba-f26f59aff364" target="_blank" class="card" data-name="Guest ครุภัณฑ์">
+            <a href="https://www.appsheet.com/start/c9f22d36-e90e-46aa-9aba-f26f59aff364" target="_blank" class="card" data-name="Guest ครุภัณฑ์" data-keywords="แขก เยี่ยม guest บุคคลภายนอก">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-guest.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=G&background=95a5a6&color=fff'"></div>
                 <div class="card-title">Guest ครุภัณฑ์</div>
                 <div class="card-desc">สำนักงานวิจัย</div>
             </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-spore-test.html" target="_blank" class="card" data-name="Spore Test">
+            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-spore-test.html" target="_blank" class="card" data-name="Spore Test" data-keywords="สปอร์ คุณภาพ เทส autoclave เชื้อ">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-spore-test.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=ST&background=c0392b&color=fff'"></div>
                 <div class="card-title">ระบบ Spore Test</div>
                 <div class="card-desc">ทดสอบคุณภาพ</div>
             </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-spore-dashboard.html" target="_blank" class="card" data-name="Spore Dash">
+            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-spore-dashboard.html" target="_blank" class="card" data-name="Spore Dash" data-keywords="สรุปสปอร์ dashboard spore">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-spore-dashboard.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=SD&background=7f8c8d&color=fff'"></div>
                 <div class="card-title">Dashboard Spore Test</div>
@@ -313,27 +296,27 @@
 
         <div class="section-title" style="color:var(--col-central); border-color:var(--col-central);"><i class="fa-solid fa-hotel"></i> ส่วนกลาง</div>
         <div class="grid" id="grid-central">
-            <a href="http://10.6.155.94/RAI/index.php" target="_blank" class="card" data-name="จองห้องประชุม สนง.วิจัย">
+            <a href="http://10.6.155.94/RAI/index.php" target="_blank" class="card" data-name="จองห้องประชุม สนง.วิจัย" data-keywords="meeting room book ห้องประชุม">
                 <span class="badge-lan">LAN</span>
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-calendar-check"></i></div>
                 <div class="card-title">จองห้องประชุม สนง.วิจัย</div>
                 <div class="card-desc">ระบบจองห้อง</div>
             </a>
-            <a href="http://10.6.22.52/ramapro/index.php" target="_blank" class="card" data-name="ซ่อมบำรุงวิศวกรรม">
+            <a href="http://10.6.22.52/ramapro/index.php" target="_blank" class="card" data-name="ซ่อมบำรุงวิศวกรรม" data-keywords="ซ่อม แจ้งซ่อม repair fix แอร์ ช่าง">
                 <span class="badge-lan">LAN</span>
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-screwdriver-wrench"></i></div>
                 <div class="card-title">ซ่อมบำรุงวิศวกรรม</div>
                 <div class="card-desc">Rama Pro</div>
             </a>
-            <a href="https://10-6-155-150.rcnas1838.direct.quickconnect.to:9443" target="_blank" class="card" data-name="Synology NAS">
+            <a href="https://10-6-155-150.rcnas1838.direct.quickconnect.to:9443" target="_blank" class="card" data-name="Synology NAS" data-keywords="เก็บข้อมูล ไฟล์ file drive แชร์">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-hard-drive"></i></div>
                 <div class="card-title">Synology NAS</div>
                 <div class="card-desc">QuickConnect</div>
             </a>
-            <a href="http://192.168.1.150/" target="_blank" class="card" data-name="XWEB ตรวจเช็คอุณหภูมิ">
+            <a href="http://192.168.1.150/" target="_blank" class="card" data-name="XWEB ตรวจเช็คอุณหภูมิ" data-keywords="อุณหภูมิ temp monitor ตู้เย็น dixell">
                 <span class="badge-lan">LAN</span>
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-temperature-arrow-up"></i></div>
@@ -344,20 +327,20 @@
 
         <div class="section-title" style="color:var(--col-hr); border-color:var(--col-hr);"><i class="fa-solid fa-user-tie"></i> HR & บุคลากร</div>
         <div class="grid" id="grid-hr">
-            <a href="http://n-rfid.rama.mahidol.ac.th/Time/Login" target="_blank" class="card" data-name="รายงานตอกบัตร">
+            <a href="http://n-rfid.rama.mahidol.ac.th/Time/Login" target="_blank" class="card" data-name="รายงานตอกบัตร" data-keywords="เข้างาน รูดบัตร rfid สาย ขาด">
                 <span class="badge-lan">LAN</span>
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-id-card"></i></div>
                 <div class="card-title">รายงานตอกบัตร</div>
                 <div class="card-desc">RFID เข้า-ออกงาน</div>
             </a>
-            <a href="https://www3.ra.mahidol.ac.th/leaveRama/index.jsp" target="_blank" class="card" data-name="ลาออนไลน์">
+            <a href="https://www3.ra.mahidol.ac.th/leaveRama/index.jsp" target="_blank" class="card" data-name="ลาออนไลน์" data-keywords="ลาป่วย พักร้อน leave ลากิจ">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-calendar-xmark"></i></div>
                 <div class="card-title">ลาออนไลน์ คณะฯ</div>
                 <div class="card-desc">ระบบลาป่วย/ลาพักร้อน</div>
             </a>
-            <a href="https://mypms.mahidol.ac.th/" target="_blank" class="card" data-name="ระบบ PMS">
+            <a href="https://mypms.mahidol.ac.th/" target="_blank" class="card" data-name="ระบบ PMS" data-keywords="ประเมิน ผลงาน pms เลื่อนขั้น เงินเดือน">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-star"></i></div>
                 <div class="card-title">ระบบ PMS</div>
@@ -367,13 +350,13 @@
 
         <div class="section-title" style="color:var(--col-fun); border-color:var(--col-fun);"><i class="fa-icons"></i> บันเทิง</div>
         <div class="grid" id="grid-fun">
-            <a href="https://www.appsheet.com/start/5a0dbaf8-5f2f-43c4-8b1a-482728632309" target="_blank" class="card" data-name="Movie Anime">
+            <a href="https://www.appsheet.com/start/5a0dbaf8-5f2f-43c4-8b1a-482728632309" target="_blank" class="card" data-name="Movie Anime" data-keywords="หนัง อนิเมะ ดูหนัง netflix ภาพยนตร์">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-play"></i></div>
                 <div class="card-title">Movie & Anime</div>
                 <div class="card-desc">BY KYO GI</div>
             </a>
-            <a href="https://script.google.com/macros/s/AKfycbz7ShCyT1GzwMtKdJUyGLJTBFKEjR-_axTuUkK1D4jDpYzbLzHCneFncu5wRwt1kRNmNA/exec" target="_blank" class="card" data-name="วงล้อเสี่ยงโชค">
+            <a href="https://script.google.com/macros/s/AKfycbz7ShCyT1GzwMtKdJUyGLJTBFKEjR-_axTuUkK1D4jDpYzbLzHCneFncu5wRwt1kRNmNA/exec" target="_blank" class="card" data-name="วงล้อเสี่ยงโชค" data-keywords="เกม สุ่ม หมุน game ลุ้น จับสลาก">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-rotate"></i></div>
                 <div class="card-title">วงล้อเสี่ยงโชค</div>
@@ -403,73 +386,115 @@
         }
 
         /* =========================
-           🟢 2. Fuzzy Search Function (เทพจริง)
+           🟢 1. TRUE FUZZY SEARCH
         ========================= */
         function fuzzyMatch(text, term) {
-            return text.split('').some((_, i) =>
-                text.slice(i, i + term.length).includes(term)
-            );
+            let t = 0;
+            let s = 0;
+            while (t < text.length && s < term.length) {
+                if (text[t] === term[s]) s++;
+                t++;
+            }
+            return s === term.length;
         }
 
         /* =========================
-           ⚡ DEEP SEARCH + 🟢 4. Performance Boost
+           🟢 7. AUTO HIGHLIGHT
         ========================= */
+        function highlight(text, term) {
+            if (!term) return text;
+            const safeTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); 
+            return text.replace(new RegExp(`(${safeTerm})`, 'gi'), '<mark>$1</mark>');
+        }
+
+        /* =========================
+           🟢 2. DEBOUNCE SEARCH & SMART SEARCH
+        ========================= */
+        let debounceTimer;
+
         searchInput.addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                performSearch(e.target.value.toLowerCase().trim());
+            }, 200);
+        });
+
+        function performSearch(term) {
             clearBtn.style.display = term.length > 0 ? 'block' : 'none';
 
             document.querySelectorAll('.grid').forEach(grid => {
                 let hasVisible = false;
 
                 grid.querySelectorAll('.card').forEach(card => {
-                    // ใช้ dataset.search ที่ cache ไว้แล้ว ช่วยเพิ่มความเร็ว
                     const searchText = card.dataset.search || '';
+                    const titleEl = card.querySelector('.card-title');
+                    const descEl = card.querySelector('.card-desc');
                     
-                    // เพิ่ม fuzzyMatch เข้าไปในการค้นหา
-                    const match = searchText.includes(term) || fuzzyMatch(searchText, term);
+                    const match = term === '' || searchText.includes(term) || fuzzyMatch(searchText, term);
 
                     card.style.display = match ? 'flex' : 'none';
-                    if (match) hasVisible = true;
+                    if (match) {
+                        hasVisible = true;
+                        if (term) {
+                            titleEl.innerHTML = highlight(card.dataset.origTitle, term);
+                            descEl.innerHTML = highlight(card.dataset.origDesc, term);
+                        } else {
+                            titleEl.innerHTML = card.dataset.origTitle;
+                            descEl.innerHTML = card.dataset.origDesc;
+                        }
+                    }
                 });
 
                 if (grid.id === 'grid-pinned') {
                     document.getElementById('pinned-section').style.display = hasVisible ? 'block' : 'none';
                 } else {
                     const sectionTitle = grid.previousElementSibling;
-                    if (sectionTitle && sectionTitle.classList.contains('section-title')) {
+                    if (sectionTitle?.classList.contains('section-title')) {
                         sectionTitle.style.display = hasVisible ? 'flex' : 'none';
                     }
                 }
             });
-        });
+        }
 
         clearBtn.addEventListener('click', () => {
             searchInput.value = '';
-            searchInput.dispatchEvent(new Event('input'));
+            performSearch('');
             searchInput.focus();
         });
 
         /* =========================
-           📌 🟢 3. PIN & SORT (แก้บั๊กให้เรียงตามลำดับกดจริง)
+           🟢 6. HAPTIC FEEDBACK
+        ========================= */
+        function vibrate() {
+            if (navigator.vibrate) navigator.vibrate(30);
+        }
+
+        /* =========================
+           📌 🟢 3. PIN & SORT (+ ANIMATION)
         ========================= */
         function togglePin(event, card) {
             event.preventDefault();
             event.stopPropagation();
+            vibrate();
 
             const cardName = card.dataset.name;
             if (!cardName) return; 
 
-            let pinnedItems = JSON.parse(localStorage.getItem('pinnedCards')) || [];
-
-            if (!pinnedItems.includes(cardName)) {
-                pinnedItems.push(cardName);
-            } else {
-                pinnedItems = pinnedItems.filter(item => item !== cardName);
-                card.classList.remove('pinned');
-            }
-
-            localStorage.setItem('pinnedCards', JSON.stringify(pinnedItems));
-            sortCards(); 
+            card.style.transform = 'scale(0.9)';
+            
+            setTimeout(() => {
+                card.style.transform = '';
+                
+                let pinnedItems = JSON.parse(localStorage.getItem('pinnedCards')) || [];
+                if (!pinnedItems.includes(cardName)) {
+                    pinnedItems.push(cardName);
+                } else {
+                    pinnedItems = pinnedItems.filter(item => item !== cardName);
+                    card.classList.remove('pinned');
+                }
+                localStorage.setItem('pinnedCards', JSON.stringify(pinnedItems));
+                sortCards();
+            }, 150);
         }
 
         function sortCards() {
@@ -477,10 +502,8 @@
             const pinnedGrid = document.getElementById('grid-pinned');
             const pinnedSection = document.getElementById('pinned-section');
 
-            // 1. เคลียร์ Grid ของ Pinned ก่อน
             pinnedGrid.innerHTML = '';
             
-            // 2. เอากลับไปที่ Parent เดิมก่อนเผื่อถูกเอาออกจากการ Pin
             cards.forEach(c => {
                 if(!pinnedItems.includes(c.dataset.name) && c.dataset.parent) {
                     c.classList.remove('pinned');
@@ -488,7 +511,6 @@
                 }
             });
 
-            // 3. เรียงตามลำดับที่กด Pin เป๊ะๆ
             let hasPinned = false;
             pinnedItems.forEach(name => {
                 const card = [...cards].find(c => c.dataset.name === name);
@@ -500,7 +522,7 @@
             });
 
             pinnedSection.style.display = hasPinned ? 'block' : 'none';
-            searchInput.dispatchEvent(new Event('input')); // ให้ Search อัปเดตใหม่
+            performSearch(searchInput.value.toLowerCase().trim());
         }
 
         /* =========================
@@ -512,88 +534,48 @@
                 document.getElementById('darkModeBtn').innerText = '☀️';
             }
 
-            // 🟢 4. Cache Text ไว้ใน dataset.search ทีเดียวตอนโหลดเพื่อลดภาระ CPU ตอนค้นหา
             cards.forEach(card => {
-                card.dataset.search = (
-                    (card.querySelector('.card-title')?.innerText || '') + ' ' +
-                    (card.querySelector('.card-desc')?.innerText || '') + ' ' +
-                    (card.dataset.name || '')
-                ).toLowerCase();
+                const title = card.querySelector('.card-title')?.innerText || '';
+                const desc = card.querySelector('.card-desc')?.innerText || '';
+                const name = card.dataset.name || '';
+                const keywords = card.dataset.keywords || '';
+
+                card.dataset.origTitle = title;
+                card.dataset.origDesc = desc;
+                card.dataset.search = `${title} ${desc} ${name} ${keywords}`.toLowerCase().replace(/\s+/g, ' ');
 
                 if(card.parentElement && card.parentElement.classList.contains('grid')){
                     card.dataset.parent = card.parentElement.id;
                 }
+                
+                card.addEventListener('click', () => {
+                    vibrate();
+                    localStorage.setItem('lastUsed', card.dataset.name);
+                });
             });
 
             sortCards();
 
-            // Last Used
             const lastUsed = localStorage.getItem('lastUsed');
             cards.forEach(card => {
                 if (card.dataset.name === lastUsed) card.classList.add('last-used');
-                card.addEventListener('click', () => localStorage.setItem('lastUsed', card.dataset.name));
             });
             
-            // Lazy Load
             document.querySelectorAll('img').forEach(img => img.loading = 'lazy');
         });
 
         /* =========================
-           ❗ 🟢 1. SERVICE WORKER (แยกไฟล์)
+           🟢 5. SERVICE WORKER
         ========================= */
         if ('service-worker' in navigator) {
             window.addEventListener('load', () => {
-                // อ้างอิงไฟล์ sw.js ที่เราเพิ่งสร้าง
-                navigator.serviceWorker.register('./sw.js').then(registration => {
-                    console.log('SW registered: ', registration);
-                }).catch(registrationError => {
-                    console.log('SW registration failed: ', registrationError);
+                navigator.serviceWorker.register('./sw.js').then(reg => {
+                    console.log('SW setup done.');
+                }).catch(err => {
+                    console.log('SW err: ', err);
                 });
             });
         }
-
-        /* =========================
-           📱 🟢 5. PWA INSTALL BUTTON (ปรับ UX โชว์เฉพาะครั้งแรก)
-        ========================= */
-        let deferredPrompt;
-        const installBtn = document.createElement('button');
-        installBtn.id = 'pwaInstallBtn';
-        installBtn.innerHTML = '<i class="fa-solid fa-download"></i> 📲 ติดตั้งแอป';
-        installBtn.style = 'position:fixed; bottom:20px; right:20px; padding:12px 18px; border:none; border-radius:15px; background:var(--col-it); color:#fff; font-family:"Prompt", sans-serif; font-size:1rem; box-shadow:0 8px 20px rgba(0,0,0,0.3); cursor:pointer; z-index:1000; transition: transform 0.2s ease; display: none;';
-        
-        installBtn.onmouseover = () => installBtn.style.transform = 'scale(1.05)';
-        installBtn.onmouseout = () => installBtn.style.transform = 'scale(1)';
-        document.body.appendChild(installBtn);
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            
-            // โชว์เฉพาะถ้ายังไม่เคยถูกกดซ่อนหรือติดตั้งไปแล้ว
-            if (!localStorage.getItem('pwaShown')) {
-                installBtn.style.display = 'block';
-            }
-        });
-
-        installBtn.onclick = async () => {
-            // บันทึกสถานะว่าโชว์/กดไปแล้ว ต่อไปจะไม่รบกวน UX อีก
-            localStorage.setItem('pwaShown', 'true');
-            
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    installBtn.style.display = 'none';
-                }
-                deferredPrompt = null;
-            }
-        };
-
-        // ปิดปุ่มถ้าระบบติดตั้งเสร็จแล้ว
-        window.addEventListener('appinstalled', () => {
-            installBtn.style.display = 'none';
-            localStorage.setItem('pwaShown', 'true');
-        });
     </script>
 </body>
 </html>
