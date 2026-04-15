@@ -175,6 +175,20 @@
         
         .footer { text-align: center; font-size: 0.7rem; color: var(--text-sub); margin-top: 40px; padding: 20px; line-height: 1.5; }
         .app-version { display: inline-block; background: rgba(0,0,0,0.1); padding: 2px 8px; border-radius: 10px; margin-top: 5px; }
+
+        /* 🟢 CSS สำหรับกล่องหมายเหตุ */
+        .notice {
+            background-color: rgba(255, 193, 7, 0.2);
+            border-left: 4px solid var(--gold);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+        body.dark .notice {
+            background-color: rgba(255, 193, 7, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -200,6 +214,10 @@
             <span id="voiceSearch" class="voice-search" title="ค้นหาด้วยเสียง" style="display:none;"><i class="fa-solid fa-microphone"></i></span>
             <span id="clearSearch" class="clear-search"><i class="fa-solid fa-xmark"></i></span>
         </div>
+    </div> <div class="container">
+        <div class="notice">
+            ⚠️ <b>หมายเหตุ:</b> ระบบหรือเว็บไซต์ที่มีคำว่า <b>LAN</b> จำเป็นต้องเชื่อมต่อเครือข่าย <b>LAN / WiFi ภายใน</b> เท่านั้น
+        </div>
     </div>
 
     <div class="container">
@@ -210,16 +228,17 @@
 
         <div class="section-title" style="color:var(--col-it); border-color:var(--col-it);"><i class="fa-solid fa-code"></i> System by Kyo Gi</div>
         <div class="grid" id="grid-it">
+            
             <a href="https://www.appsheet.com/start/6e4cdc1f-da32-4ae1-87c6-3e7a0d81929f" target="_blank" class="card online-only" data-name="HSR Database" data-keywords="ครุภัณฑ์ asset inventory equipment ของ">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
-                <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-db.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=HF&background=e74c3c&color=fff'"></div>
+                <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-db.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=HSR&background=e74c3c&color=fff'"></div>
                 <div class="card-title">ระบบฐานข้อมูลครุภัณฑ์ HSR</div>
                 <div class="card-desc">AppSheet Online</div>
             </a>
 
             <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-dashboard.html" target="_blank" class="card online-only" data-name="Dashboard ครุภัณฑ์" data-keywords="สรุป กราฟ chart report">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
-                <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-dashboard.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=HF&background=e74c3c&color=fff'"></div>
+                <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-dashboard.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=Dash&background=e74c3c&color=fff'"></div>
                 <div class="card-title">Dashboard ครุภัณฑ์</div>
                 <div class="card-desc">สรุปข้อมูลสำนักงานวิจัย</div>
             </a>
