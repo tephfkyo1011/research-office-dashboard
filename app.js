@@ -322,18 +322,24 @@ window.addEventListener('appinstalled', () => {
 /* =========================
    📌 Global Event Delegation สำหรับปุ่ม Pin (CSP Safe)
 ========================= */
-document.addEventListener('click', (e) => {
-    // 1. เช็คว่าคลิกโดนปุ่ม pin ไหม
+document.addEventListener('click', function(e) {
     const pinBtn = e.target.closest('.pin');
     
     if (pinBtn) {
-        e.preventDefault();  // หยุด! ไม่ให้ลิงก์เปิดหน้าใหม่
-        e.stopPropagation(); // หยุด! ไม่ให้คลิกกระเพื่อม
+        // 1. สั่งเบรกเอี๊ยด! ห้ามแท็ก <a> เปิดหน้าใหม่เด็ดขาด
+        e.preventDefault();  
+        e.stopPropagation(); 
         
-        // 2. ใช้ parentNode แบบเดียวกับที่พี่เขียนไว้แต่แรกเป๊ะๆ!
-        const card = pinBtn.parentNode; 
+        // 2. ดึงการ์ดแม่ข่ายมา
+        const card = pinBtn.closest('.card');
         
-        // 3. โยนเข้าฟังก์ชันเดิมของพี่เลย
-        if (card) togglePin(e, card);
+        // 3. ส่งเข้าฟังก์ชัน Fav เดิม
+        if (card) {
+            try {
+                togglePin(e, card);
+            } catch (err) {
+                console.error("❌ หาฟังก์ชัน togglePin ไม่เจอ เช็คด่วน:", err);
+            }
+        }
     }
-}, true); // ใส่ true ดักจับตั้งแต่ขาลง (Capture Phase) เอาอยู่แน่นอน
+});
