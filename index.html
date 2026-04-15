@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Research Office Portal - KYOGI</title>
     
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https:; connect-src 'self' https:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https:; connect-src 'self' https:;">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,7 +67,6 @@
             100% { opacity: 1; } 
         }
 
-        /* 🟢 เพิ่ม Offline Toast UX */
         #systemToast {
             position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(100px);
             background: #34495e; color: white; padding: 10px 20px; border-radius: 30px;
@@ -148,11 +147,12 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.02); min-height: 140px; border-top: 4px solid transparent; 
             color: var(--text-main); background: rgba(255,255,255,0.8); backdrop-filter: blur(10px);
             position: relative; transition: all 0.3s ease; order: 999;
+            cursor: pointer; /* 🟢 เพิ่ม cursor pointer ให้รู้ว่ากดได้ */
         }
         body.dark .card { background: rgba(40,40,60,0.6); }
         .card:hover { transform: translateY(-6px); box-shadow: 0 12px 25px rgba(0,0,0,0.08); }
         .card.last-used { outline: 2px solid #28a745; outline-offset: -2px; }
-        .card.disabled { opacity: 0.5; filter: grayscale(100%); pointer-events: none; } /* 🟢 สถานะปุ่มตอน Offline */
+        .card.disabled { opacity: 0.5; filter: grayscale(100%); pointer-events: none; }
         
         .icon-circle { 
             width: 60px; height: 60px; border-radius: 18px; display: flex; 
@@ -176,7 +176,6 @@
         .footer { text-align: center; font-size: 0.7rem; color: var(--text-sub); margin-top: 40px; padding: 20px; line-height: 1.5; }
         .app-version { display: inline-block; background: rgba(0,0,0,0.1); padding: 2px 8px; border-radius: 10px; margin-top: 5px; }
 
-        /* 🟢 CSS สำหรับกล่องหมายเหตุ */
         .notice {
             background-color: rgba(255, 193, 7, 0.2);
             border-left: 4px solid var(--gold);
@@ -214,7 +213,9 @@
             <span id="voiceSearch" class="voice-search" title="ค้นหาด้วยเสียง" style="display:none;"><i class="fa-solid fa-microphone"></i></span>
             <span id="clearSearch" class="clear-search"><i class="fa-solid fa-xmark"></i></span>
         </div>
-    </div> <div class="container">
+    </div> 
+    
+    <div class="container">
         <div class="notice">
             ⚠️ <b>หมายเหตุ:</b> ระบบหรือเว็บไซต์ที่มีคำว่า <b>LAN</b> จำเป็นต้องเชื่อมต่อเครือข่าย <b>LAN / WiFi ภายใน</b> เท่านั้น
         </div>
@@ -229,173 +230,193 @@
         <div class="section-title" style="color:var(--col-it); border-color:var(--col-it);"><i class="fa-solid fa-code"></i> System by Kyo Gi</div>
         <div class="grid" id="grid-it">
             
-            <a href="https://www.appsheet.com/start/6e4cdc1f-da32-4ae1-87c6-3e7a0d81929f" target="_blank" class="card online-only" data-name="HSR Database" data-keywords="ครุภัณฑ์ asset inventory equipment ของ">
+            <div data-href="https://www.appsheet.com/start/6e4cdc1f-da32-4ae1-87c6-3e7a0d81929f" class="card online-only" data-name="HSR Database" data-keywords="ครุภัณฑ์ asset inventory equipment ของ">
                 <div class="pin">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-db.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=HSR&background=e74c3c&color=fff'"></div>
                 <div class="card-title">ระบบฐานข้อมูลครุภัณฑ์ HSR</div>
                 <div class="card-desc">AppSheet Online</div>
-            </a>
+            </div>
 
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-dashboard.html" target="_blank" class="card online-only" data-name="Dashboard ครุภัณฑ์" data-keywords="สรุป กราฟ chart report">
+            <div data-href="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-dashboard.html" class="card online-only" data-name="Dashboard ครุภัณฑ์" data-keywords="สรุป กราฟ chart report">
                 <div class="pin">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-dashboard.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=Dash&background=e74c3c&color=fff'"></div>
                 <div class="card-title">Dashboard ครุภัณฑ์</div>
                 <div class="card-desc">สรุปข้อมูลสำนักงานวิจัย</div>
-            </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-health-family.html" target="_blank" class="card" data-name="Health Family" data-keywords="สุขภาพ health cg ครอบครัว">
+            </div>
+            
+            <div data-href="https://tephfkyo1011.github.io/research-office-dashboard/logo-health-family.html" class="card" data-name="Health Family" data-keywords="สุขภาพ health cg ครอบครัว">
                 <div class="pin">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-health-family.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=HF&background=e74c3c&color=fff'"></div>
                 <div class="card-title">Health Family By CG</div>
                 <div class="card-desc">Version 17</div>
-            </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-tumor-bank.html" target="_blank" class="card" data-name="Tumor Bank" data-keywords="ขนส่ง ขนย้าย transport มะเร็ง">
+            </div>
+            
+            <div data-href="https://tephfkyo1011.github.io/research-office-dashboard/logo-tumor-bank.html" class="card" data-name="Tumor Bank" data-keywords="ขนส่ง ขนย้าย transport มะเร็ง">
                 <div class="pin">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-tumor-bank.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=TB&background=2ecc71&color=fff'"></div>
                 <div class="card-title">Tumor Bank Transport</div>
                 <div class="card-desc">ระบบขนส่ง</div>
-            </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-ot-time.html" target="_blank" class="card" data-name="OT Time" data-keywords="ล่วงเวลา โอที นอกเวลาราชการ ลงเวลา overtime">
+            </div>
+            
+            <div data-href="https://tephfkyo1011.github.io/research-office-dashboard/logo-ot-time.html" class="card" data-name="OT Time" data-keywords="ล่วงเวลา โอที นอกเวลาราชการ ลงเวลา overtime">
                 <div class="pin">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-ot-time.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=OT&background=9b59b6&color=fff'"></div>
                 <div class="card-title">ระบบลงเวลานอกราชการ</div>
                 <div class="card-desc">OT สนง.วิจัย</div>
-            </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-gas-stock.html" target="_blank" class="card" data-name="Gas Stock" data-keywords="แก๊ส gas ถัง คลัง สต๊อก">
+            </div>
+            
+            <div data-href="https://tephfkyo1011.github.io/research-office-dashboard/logo-gas-stock.html" class="card" data-name="Gas Stock" data-keywords="แก๊ส gas ถัง คลัง สต๊อก">
                 <div class="pin">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-gas-stock.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=GAS&background=34495e&color=fff'"></div>
                 <div class="card-title">ระบบแก๊ส & Stock</div>
                 <div class="card-desc">การจัดการคลังแก๊ส</div>
-            </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-ln2-log.html" target="_blank" class="card" data-name="LN2 Log" data-keywords="ไนโตรเจน เหลว nitrogen liquid เติม ln2">
+            </div>
+            
+            <div data-href="https://tephfkyo1011.github.io/research-office-dashboard/logo-ln2-log.html" class="card" data-name="LN2 Log" data-keywords="ไนโตรเจน เหลว nitrogen liquid เติม ln2">
                 <div class="pin">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-ln2-log.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=LN2&background=1abc9c&color=fff'"></div>
                 <div class="card-title">บันทึก Liquid Nitrogen</div>
                 <div class="card-desc">ระบบบันทึกข้อมูล</div>
-            </a>
-            <a href="https://www.appsheet.com/start/2e8cd042-246d-4b55-abb8-a5884ba0c60d" target="_blank" class="card" data-name="Specimen Bank" data-keywords="เก็บตัวอย่าง specimen เลือด ชิ้นเนื้อ">
+            </div>
+            
+            <div data-href="https://www.appsheet.com/start/2e8cd042-246d-4b55-abb8-a5884ba0c60d" class="card" data-name="Specimen Bank" data-keywords="เก็บตัวอย่าง specimen เลือด ชิ้นเนื้อ">
                 <div class="pin">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-specimen-bank.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=SB&background=e67e22&color=fff'"></div>
                 <div class="card-title">HSR Specimen Banking</div>
                 <div class="card-desc">ระบบจัดเก็บตัวอย่าง</div>
-            </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-specimen-dashboard.html" target="_blank" class="card" data-name="Specimen Dash" data-keywords="สรุปตัวอย่าง กราฟ dash">
+            </div>
+            
+            <div data-href="https://tephfkyo1011.github.io/research-office-dashboard/logo-specimen-dashboard.html" class="card" data-name="Specimen Dash" data-keywords="สรุปตัวอย่าง กราฟ dash">
                 <div class="pin">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-specimen-dashboard.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=DS&background=d35400&color=fff'"></div>
                 <div class="card-title">HSR Banking Dashboard</div>
                 <div class="card-desc">สรุปผลการจัดเก็บ</div>
-            </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-freezer-check.html" target="_blank" class="card" data-name="Freezer Check" data-keywords="ตู้แช่ เช็คอุณหภูมิ ln2 nitrogen freezer -80">
+            </div>
+            
+            <div data-href="https://tephfkyo1011.github.io/research-office-dashboard/logo-freezer-check.html" class="card" data-name="Freezer Check" data-keywords="ตู้แช่ เช็คอุณหภูมิ ln2 nitrogen freezer -80">
                 <div class="pin">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-freezer-check.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=FZ&background=2980b9&color=fff'"></div>
                 <div class="card-title">ตรวจสอบตู้แช่ & LN2</div>
                 <div class="card-desc">Monitoring System</div>
-            </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-withdraw-specimen.html" target="_blank" class="card" data-name="Withdraw Spec" data-keywords="เบิก จ่าย ตัวอย่าง withdraw คืน">
+            </div>
+            
+            <div data-href="https://tephfkyo1011.github.io/research-office-dashboard/logo-withdraw-specimen.html" class="card" data-name="Withdraw Spec" data-keywords="เบิก จ่าย ตัวอย่าง withdraw คืน">
                 <div class="pin">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-withdraw-specimen.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=WD&background=27ae60&color=fff'"></div>
                 <div class="card-title">ระบบเบิก-จ่ายตัวอย่าง</div>
                 <div class="card-desc">Management System</div>
-            </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-lms-lab.html" target="_blank" class="card" data-name="LMS Lab" data-keywords="จองเครื่องมือ lab booking reserve แล็บ">
+            </div>
+            
+            <div data-href="https://tephfkyo1011.github.io/research-office-dashboard/logo-lms-lab.html" class="card" data-name="LMS Lab" data-keywords="จองเครื่องมือ lab booking reserve แล็บ">
                 <div class="pin">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-lms-lab.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=LMS&background=16a085&color=fff'"></div>
                 <div class="card-title">LMS จองเครื่องมือ Lab</div>
                 <div class="card-desc">Lab Management</div>
-            </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-lms-dashboard.html" target="_blank" class="card" data-name="LMS Dash" data-keywords="สรุปจองเครื่องมือ lms dashboard">
+            </div>
+            
+            <div data-href="https://tephfkyo1011.github.io/research-office-dashboard/logo-lms-dashboard.html" class="card" data-name="LMS Dash" data-keywords="สรุปจองเครื่องมือ lms dashboard">
                 <div class="pin">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-lms-dashboard.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=LD&background=7f8c8d&color=fff'"></div>
                 <div class="card-title">Dashboard จองเครื่องมือ</div>
                 <div class="card-desc">LMS Summary</div>
-            </a>
-            <a href="https://www.appsheet.com/start/c9f22d36-e90e-46aa-9aba-f26f59aff364" target="_blank" class="card" data-name="Guest ครุภัณฑ์" data-keywords="แขก เยี่ยม guest บุคคลภายนอก">
+            </div>
+            
+            <div data-href="https://www.appsheet.com/start/c9f22d36-e90e-46aa-9aba-f26f59aff364" class="card" data-name="Guest ครุภัณฑ์" data-keywords="แขก เยี่ยม guest บุคคลภายนอก">
                 <div class="pin">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-guest.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=G&background=95a5a6&color=fff'"></div>
                 <div class="card-title">Guest ครุภัณฑ์</div>
                 <div class="card-desc">สำนักงานวิจัย</div>
-            </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-spore-test.html" target="_blank" class="card" data-name="Spore Test" data-keywords="สปอร์ คุณภาพ เทส autoclave เชื้อ">
+            </div>
+            
+            <div data-href="https://tephfkyo1011.github.io/research-office-dashboard/logo-spore-test.html" class="card" data-name="Spore Test" data-keywords="สปอร์ คุณภาพ เทส autoclave เชื้อ">
                 <div class="pin">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-spore-test.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=ST&background=c0392b&color=fff'"></div>
                 <div class="card-title">ระบบ Spore Test</div>
                 <div class="card-desc">ทดสอบคุณภาพ</div>
-            </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-spore-dashboard.html" target="_blank" class="card" data-name="Spore Dash" data-keywords="สรุปสปอร์ dashboard spore">
+            </div>
+            
+            <div data-href="https://tephfkyo1011.github.io/research-office-dashboard/logo-spore-dashboard.html" class="card" data-name="Spore Dash" data-keywords="สรุปสปอร์ dashboard spore">
                 <div class="pin">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-spore-dashboard.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=SD&background=7f8c8d&color=fff'"></div>
                 <div class="card-title">Dashboard Spore Test</div>
                 <div class="card-desc">สรุปผลทดสอบ</div>
-            </a>
+            </div>
         </div>
 
         <div class="section-title" style="color:var(--col-central); border-color:var(--col-central);"><i class="fa-solid fa-hotel"></i> ส่วนกลาง</div>
         <div class="grid" id="grid-central">
-            <a href="http://10.6.155.94/RAI/index.php" target="_blank" class="card" data-name="จองห้องประชุม สนง.วิจัย" data-keywords="meeting room book ห้องประชุม">
+            <div data-href="http://10.6.155.94/RAI/index.php" class="card" data-name="จองห้องประชุม สนง.วิจัย" data-keywords="meeting room book ห้องประชุม">
                 <span class="badge-lan">LAN</span>
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-calendar-check"></i></div>
                 <div class="card-title">จองห้องประชุม สนง.วิจัย</div>
                 <div class="card-desc">ระบบจองห้อง</div>
-            </a>
-            <a href="http://10.6.22.52/ramapro/index.php" target="_blank" class="card" data-name="ซ่อมบำรุงวิศวกรรม" data-keywords="ซ่อม แจ้งซ่อม repair fix แอร์ ช่าง">
+            </div>
+            
+            <div data-href="http://10.6.22.52/ramapro/index.php" class="card" data-name="ซ่อมบำรุงวิศวกรรม" data-keywords="ซ่อม แจ้งซ่อม repair fix แอร์ ช่าง">
                 <span class="badge-lan">LAN</span>
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-screwdriver-wrench"></i></div>
                 <div class="card-title">ซ่อมบำรุงวิศวกรรม</div>
                 <div class="card-desc">Rama Pro</div>
-            </a>
-            <a href="https://10-6-155-150.rcnas1838.direct.quickconnect.to:9443" target="_blank" class="card" data-name="Synology NAS" data-keywords="เก็บข้อมูล ไฟล์ file drive แชร์">
+            </div>
+            
+            <div data-href="https://10-6-155-150.rcnas1838.direct.quickconnect.to:9443" class="card" data-name="Synology NAS" data-keywords="เก็บข้อมูล ไฟล์ file drive แชร์">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-hard-drive"></i></div>
                 <div class="card-title">Synology NAS</div>
                 <div class="card-desc">QuickConnect</div>
-            </a>
-            <a href="http://192.168.1.150/" target="_blank" class="card" data-name="XWEB ตรวจเช็คอุณหภูมิ" data-keywords="อุณหภูมิ temp monitor ตู้เย็น dixell">
+            </div>
+            
+            <div data-href="http://192.168.1.150/" class="card" data-name="XWEB ตรวจเช็คอุณหภูมิ" data-keywords="อุณหภูมิ temp monitor ตู้เย็น dixell">
                 <span class="badge-lan">LAN</span>
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-temperature-arrow-up"></i></div>
                 <div class="card-title">XWEB ตรวจเช็คอุณหภูมิ</div>
                 <div class="card-desc">Monitor ออนไลน์</div>
-            </a>
+            </div>
         </div>
 
         <div class="section-title" style="color:var(--col-hr); border-color:var(--col-hr);"><i class="fa-solid fa-user-tie"></i> HR & บุคลากร</div>
         <div class="grid" id="grid-hr">
-            <a href="http://n-rfid.rama.mahidol.ac.th/Time/Login" target="_blank" class="card" data-name="รายงานตอกบัตร" data-keywords="เข้างาน รูดบัตร rfid สาย ขาด">
+            <div data-href="http://n-rfid.rama.mahidol.ac.th/Time/Login" class="card" data-name="รายงานตอกบัตร" data-keywords="เข้างาน รูดบัตร rfid สาย ขาด">
                 <span class="badge-lan">LAN</span>
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-id-card"></i></div>
                 <div class="card-title">รายงานตอกบัตร</div>
                 <div class="card-desc">RFID เข้า-ออกงาน</div>
-            </a>
-            <a href="https://www3.ra.mahidol.ac.th/leaveRama/index.jsp" target="_blank" class="card" data-name="ลาออนไลน์" data-keywords="ลาป่วย พักร้อน leave ลากิจ">
+            </div>
+            
+            <div data-href="https://www3.ra.mahidol.ac.th/leaveRama/index.jsp" class="card" data-name="ลาออนไลน์" data-keywords="ลาป่วย พักร้อน leave ลากิจ">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-calendar-xmark"></i></div>
                 <div class="card-title">ลาออนไลน์ คณะฯ</div>
                 <div class="card-desc">ระบบลาป่วย/ลาพักร้อน</div>
-            </a>
-            <a href="https://mypms.mahidol.ac.th/" target="_blank" class="card" data-name="ระบบ PMS" data-keywords="ประเมิน ผลงาน pms เลื่อนขั้น เงินเดือน">
+            </div>
+            
+            <div data-href="https://mypms.mahidol.ac.th/" class="card" data-name="ระบบ PMS" data-keywords="ประเมิน ผลงาน pms เลื่อนขั้น เงินเดือน">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-star"></i></div>
                 <div class="card-title">ระบบ PMS</div>
                 <div class="card-desc">ประเมินผลปฏิบัติงาน</div>
-            </a>
+            </div>
         </div>
 
         <div class="section-title" style="color:var(--col-fun); border-color:var(--col-fun);"><i class="fa-icons"></i> บันเทิง</div>
         <div class="grid" id="grid-fun">
-            <a href="https://www.appsheet.com/start/5a0dbaf8-5f2f-43c4-8b1a-482728632309" target="_blank" class="card" data-name="Movie Anime" data-keywords="หนัง อนิเมะ ดูหนัง netflix ภาพยนตร์">
+            <div data-href="https://www.appsheet.com/start/5a0dbaf8-5f2f-43c4-8b1a-482728632309" class="card" data-name="Movie Anime" data-keywords="หนัง อนิเมะ ดูหนัง netflix ภาพยนตร์">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-play"></i></div>
                 <div class="card-title">Movie & Anime</div>
                 <div class="card-desc">BY KYO GI</div>
-            </a>
-            <a href="https://script.google.com/macros/s/AKfycbz7ShCyT1GzwMtKdJUyGLJTBFKEjR-_axTuUkK1D4jDpYzbLzHCneFncu5wRwt1kRNmNA/exec" target="_blank" class="card" data-name="วงล้อเสี่ยงโชค" data-keywords="เกม สุ่ม หมุน game ลุ้น จับสลาก">
+            </div>
+            
+            <div data-href="https://script.google.com/macros/s/AKfycbz7ShCyT1GzwMtKdJUyGLJTBFKEjR-_axTuUkK1D4jDpYzbLzHCneFncu5wRwt1kRNmNA/exec" class="card" data-name="วงล้อเสี่ยงโชค" data-keywords="เกม สุ่ม หมุน game ลุ้น จับสลาก">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-rotate"></i></div>
                 <div class="card-title">วงล้อเสี่ยงโชค</div>
                 <div class="card-desc">กิจกรรมเสี่ยงดวง</div>
-            </a>
+            </div>
         </div>
     </div>
 
@@ -404,5 +425,25 @@
         <span class="app-version"><i class="fa-solid fa-chess-king"></i> Version 14 (Titan Mode)</span>
     </div>
 
+    <script>
+        document.addEventListener('click', function(e) {
+            // ตรวจสอบว่าคลิกโดนส่วนไหนของการ์ดบ้าง
+            const card = e.target.closest('.card');
+            
+            // ถ้าไม่ได้คลิกในการ์ด ให้ข้ามไป
+            if (!card) return;
+
+            // ถ้ากดโดนปุ่ม Pin หรือสัญลักษณ์ดาว ให้หยุดการทำงานตรงนี้ (ปล่อยให้ app.js ดึงไปจัดการต่อ)
+            if (e.target.classList.contains('pin') || e.target.closest('.pin')) {
+                return;
+            }
+
+            // ถ้ากดโดนส่วนอื่นๆ ของการ์ด ให้ดึงลิงก์มาเปิดแท็บใหม่
+            const url = card.getAttribute('data-href');
+            if (url && !card.classList.contains('disabled')) { // เช็คด้วยว่าการ์ดไม่ได้โดนปิดใช้งานตอนออฟไลน์
+                window.open(url, '_blank');
+            }
+        });
+    </script>
 </body>
 </html>
