@@ -105,15 +105,23 @@ async function initApp() {
 
             cardsData.push({ id: name, title: title, keywords: card.dataset.keywords || '', element: card });
 
-            // Event Listeners
-            card.addEventListener('click', async () => {
+            // Event Listeners สำหรับการกดการ์ด (เพราะ <div> เปลี่ยนหน้าเองไม่ได้ ต้องใช้ JS สั่ง)
+            card.addEventListener('click', async (e) => {
+                // ถ้าเผลอกดโดนปุ่ม Pin หรือไอคอนดาว ให้ข้ามไป ไม่ต้องเปิดลิงก์
+                if (e.target.closest('.pin')) return; 
+
                 usage[name] = (usage[name] || 0) + 1;
                 try {
                     await localforage.setItem('usageV2', { data: usage, ts: Date.now() });
                     await localforage.setItem('lastUsed', name);
-                } catch(e) {}
+                } catch(err) {}
+
+                // 🟢 สั่งให้เปลี่ยนหน้าไปยังลิงก์ที่เก็บไว้ใน data-href
+                const targetUrl = card.dataset.href;
+                if (targetUrl) {
+                    window.location.href = targetUrl;
+                }
             });
-        });
 
         sortCards();
         smartCheck(); // เริ่มระบบ Check
@@ -238,14 +246,19 @@ async function togglePin(event, card) {
 
 function sortCards() {
     const pinnedGrid = document.getElementById('grid-pinned');
+    const pinnedSection = document.getElementById('pinned-section');
+    if (!pinnedGrid || !pinnedSection) return; // ป้องกัน Error ถ้าหา element ไม่เจอ
+
     pinnedGrid.innerHTML = '';
     let hasPinned = false;
     
     cardsData.forEach(item => {
         const c = item.element;
+        // ถ้ายกเลิกปักหมุด ให้เอากลับไปหมวดเดิม
         if(!pinnedCards.includes(c.dataset.name) && c.dataset.parent) {
             c.classList.remove('pinned');
-            document.getElementById(c.dataset.parent).appendChild(c);
+            const parentEl = document.getElementById(c.dataset.parent);
+            if (parentEl) parentEl.appendChild(c);
         }
     });
 
@@ -253,11 +266,12 @@ function sortCards() {
         const item = cardsData.find(c => c.id === name);
         if (item) {
             item.element.classList.add('pinned');
-            pinnedGrid.appendChild(item.element);
+            pinnedGrid.appendChild(item.element); // ย้ายการ์ดมาที่โปรแกรมที่ชอบ
             hasPinned = true;
         }
     });
-    document.getElementById('pinned-section').style.display = hasPinned ? 'block' : 'none';
+    
+    pinnedSection.style.display = hasPinned ? 'block' : 'none';
     performSearch(searchInput.value.toLowerCase().trim());
 }
 
