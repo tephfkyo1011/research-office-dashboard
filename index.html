@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Research Office Portal - KYOGI</title>
     
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https:; connect-src 'self' https:;">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -92,16 +92,23 @@
         }
         .search-box {
             width: 100%; display: block; margin: 0 auto;
-            padding: 15px 40px 15px 25px; border-radius: 30px; border: none; box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            padding: 15px 70px 15px 25px; /* เพิ่มพื้นที่ขวาให้ปุ่ม Mic */
+            border-radius: 30px; border: none; box-shadow: 0 8px 25px rgba(0,0,0,0.15);
             font-family: 'Prompt', sans-serif; font-size: 1rem; outline: none;
             backdrop-filter: blur(10px); background: rgba(255,255,255,0.9); color: #2c3e50;
         }
         body.dark .search-box { background: rgba(40,40,60,0.8); color: #ffffff; }
 
-        .clear-search {
-            position: absolute; right: 30px; top: 50%; transform: translateY(-50%);
-            cursor: pointer; color: #6c757d; font-size: 1.2rem; display: none;
+        .search-actions {
+            position: absolute; right: 25px; top: 50%; transform: translateY(-50%);
+            display: flex; gap: 10px; align-items: center;
         }
+        .clear-search, .voice-search {
+            cursor: pointer; color: #6c757d; font-size: 1.2rem; transition: color 0.2s;
+        }
+        .clear-search { display: none; }
+        .voice-search:hover { color: var(--col-it); }
+        .voice-search.listening { color: #e74c3c; animation: pulseBadge 1s infinite; }
 
         .container { padding: 20px 15px; max-width: 900px; margin: 0 auto; }
         .section-title { font-family: 'Prompt', sans-serif; font-size: 1.1rem; margin: 30px 0 15px; display: flex; align-items: center; font-weight: 600; border-left: 5px solid #ccc; padding-left: 10px; }
@@ -133,7 +140,6 @@
         body.dark .card.pinned { background: rgba(53,48,24,0.8); }
         .card.pinned .pin { color: var(--gold); }
 
-        /* 🟢 Search Highlight CSS */
         mark { background-color: var(--hl-bg); color: inherit; padding: 0 2px; border-radius: 4px; font-weight: bold; }
 
         .footer { text-align: center; font-size: 0.7rem; color: var(--text-sub); margin-top: 40px; padding: 20px; line-height: 1.5; }
@@ -144,10 +150,10 @@
 
     <div id="offlineBadge"><i class="fa-solid fa-wifi" style="text-decoration: line-through;"></i> Offline Mode</div>
     <div id="updateBanner">
-        <div><i class="fa-solid fa-cloud-arrow-down"></i> มีเวอร์ชันใหม่!</div>
+        <div><i class="fa-solid fa-cloud-arrow-down"></i> มีอัปเดตระบบใหม่!</div>
         <div class="update-actions">
             <button id="dismissBtn" class="update-btn-dismiss">ภายหลัง</button>
-            <button id="updateBtn" class="update-btn-action">อัปเดต</button>
+            <button id="updateBtn" class="update-btn-action">อัปเดตทันที</button>
         </div>
     </div>
 
@@ -165,7 +171,10 @@
 
     <div class="search-wrapper">
         <input type="text" id="searchInput" class="search-box" placeholder="🔍 ค้นหา... (กด '/' เพื่อค้นหาด่วน)">
-        <span id="clearSearch" class="clear-search"><i class="fa-solid fa-xmark"></i></span>
+        <div class="search-actions">
+            <span id="voiceSearch" class="voice-search" title="ค้นหาด้วยเสียง" style="display:none;"><i class="fa-solid fa-microphone"></i></span>
+            <span id="clearSearch" class="clear-search"><i class="fa-solid fa-xmark"></i></span>
+        </div>
     </div>
 
     <div class="container">
@@ -347,15 +356,15 @@
 
     <div class="footer">
         © 2026 <b>Research Office Portal</b><br>
-        <span class="app-version"><i class="fa-solid fa-rocket"></i> Version 12 (God Mode)</span>
+        <span class="app-version"><i class="fa-solid fa-crown"></i> Version 13 (God+ Mode)</span>
     </div>
 
     <script>
-        const APP_VERSION = 'v12-GodMode';
+        const APP_VERSION = 'v13-GodPlusMode';
         console.log(`🚀 App Version: ${APP_VERSION}`);
 
         /* =========================
-           🔋 Visibility Aware Battery Check
+           🔋 1. Server-Friendly Battery Check (ping.txt)
         ========================= */
         const offlineBadge = document.getElementById('offlineBadge');
         let checkInterval = 15000; 
@@ -364,14 +373,14 @@
             try {
                 const controller = new AbortController();
                 const id = setTimeout(() => controller.abort(), 3000);
-                await fetch(`./?_cb=${Date.now()}`, { method: 'HEAD', cache: 'no-store', signal: controller.signal });
+                // 🟢 เปลี่ยนมายิง ping.txt ลดโหลดเซิร์ฟเวอร์
+                await fetch(`./ping.txt?_cb=${Date.now()}`, { method: 'HEAD', cache: 'no-store', signal: controller.signal });
                 clearTimeout(id);
                 return true;
             } catch { return false; }
         }
 
         async function smartCheck() {
-            // 🟢 หยุดยิง Request ถ้าซ่อนหน้าจออยู่ (เซฟแบต + เซฟ Server)
             if (document.hidden) return; 
 
             if (!navigator.onLine) {
@@ -386,7 +395,6 @@
         }
         smartCheck(); 
         
-        // 🟢 ตื่นมาเช็คทันทีเมื่อเปิดจอกลับมา
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden) smartCheck();
         });
@@ -395,101 +403,110 @@
         window.addEventListener('offline', () => { offlineBadge.style.display = 'flex'; });
 
         /* =========================
-           🚀 Enterprise Search & IndexedDB (Time Decay)
+           🚀 2. Enterprise Data Layer & Error Boundaries
+        ========================= */
+        let usage = {};
+        let pinnedCards = [];
+        let cardsData = []; 
+
+        async function initApp() {
+            try {
+                localforage.config({ name: 'KyogiPortal', storeName: 'portal_data' });
+                cardsData = [];
+
+                const storedUsage = await localforage.getItem('usageV2');
+                const now = Date.now();
+                
+                if (storedUsage && storedUsage.data) {
+                    if (now - storedUsage.ts > 30 * 24 * 60 * 60 * 1000) {
+                        await localforage.removeItem('usageV2'); 
+                        usage = {};
+                    } else {
+                        usage = storedUsage.data;
+                    }
+                }
+
+                pinnedCards = (await localforage.getItem('pinnedCards')) || [];
+                const lastUsed = await localforage.getItem('lastUsed');
+                const isDark = await localforage.getItem('darkMode');
+
+                if (isDark) {
+                    document.body.classList.add('dark');
+                    document.getElementById('darkModeBtn').innerText = '☀️';
+                }
+
+                document.querySelectorAll('.card').forEach(card => {
+                    const name = card.dataset.name || '';
+                    const title = card.querySelector('.card-title')?.innerText || '';
+                    const desc = card.querySelector('.card-desc')?.innerText || '';
+                    const keywords = card.dataset.keywords || '';
+
+                    const useCount = usage[name] || 0;
+                    const recencyBoost = (name === lastUsed) ? 15 : 0; 
+                    const userBoost = (Math.log(useCount + 1) * 10) + recencyBoost;
+                    
+                    card.dataset.defaultOrder = 1000 - Math.round(userBoost);
+                    
+                    if(card.parentElement) card.dataset.parent = card.parentElement.id;
+                    if (name === lastUsed) card.classList.add('last-used');
+
+                    cardsData.push({
+                        id: name, title: title, desc: desc, keywords: keywords, element: card
+                    });
+
+                    card.addEventListener('click', async () => {
+                        if (navigator.vibrate) navigator.vibrate(30);
+                        usage[name] = (usage[name] || 0) + 1;
+                        
+                        try {
+                            await localforage.setItem('usageV2', { data: usage, ts: Date.now() });
+                            await localforage.setItem('lastUsed', name);
+                        } catch(e) { console.warn('Storage Write Error:', e); }
+                    });
+                });
+
+                sortCards();
+            } catch(e) {
+                console.warn('Init App Storage Error:', e);
+                // Fallback rendering in case of DB failure
+                sortCards(); 
+            }
+        }
+
+        /* =========================
+           🧠 3. Advanced Search (Lazy Init, Cache, Regex Safety)
         ========================= */
         const searchInput = document.getElementById('searchInput');
         const clearBtn = document.getElementById('clearSearch');
         
-        let usage = {};
-        let pinnedCards = [];
-        let fuse; 
-        let cardsData = []; // ประกาศตัวแปรไว้
+        let fuse = null;
+        const searchCache = new Map(); // 🟢 Search Cache Map
 
-        async function initApp() {
-            localforage.config({ name: 'KyogiPortal', storeName: 'portal_data' });
-            
-            // 🟢 เคลียร์ Array ป้องกัน Memory Leak เวลารันซ้ำ
-            cardsData = [];
-
-            // 🟢 อ่าน Data แบบมี Structure และ TTL (Cleanup ข้อมูลเก่าเกิน 30 วัน)
-            const storedUsage = await localforage.getItem('usageV2');
-            const now = Date.now();
-            
-            if (storedUsage && storedUsage.data) {
-                if (now - storedUsage.ts > 30 * 24 * 60 * 60 * 1000) {
-                    await localforage.removeItem('usageV2'); // Expired
-                    usage = {};
-                } else {
-                    usage = storedUsage.data;
-                }
-            } else {
-                usage = {};
-            }
-
-            pinnedCards = (await localforage.getItem('pinnedCards')) || [];
-            const lastUsed = await localforage.getItem('lastUsed');
-            const isDark = await localforage.getItem('darkMode');
-
-            if (isDark) {
-                document.body.classList.add('dark');
-                document.getElementById('darkModeBtn').innerText = '☀️';
-            }
-
-            document.querySelectorAll('.card').forEach(card => {
-                const name = card.dataset.name || '';
-                const title = card.querySelector('.card-title')?.innerText || '';
-                const desc = card.querySelector('.card-desc')?.innerText || '';
-                let keywords = card.dataset.keywords || '';
-
-                // Time Decay Scoring (สมมติจำลองผ่าน log + recency check เล็กๆ)
-                const useCount = usage[name] || 0;
-                const recencyBoost = (name === lastUsed) ? 15 : 0; // เพิ่งใช้ล่าสุดให้ Boost หนักๆ
-                const userBoost = (Math.log(useCount + 1) * 10) + recencyBoost;
-                
-                card.dataset.defaultOrder = 1000 - Math.round(userBoost);
-                
-                if(card.parentElement) card.dataset.parent = card.parentElement.id;
-                if (name === lastUsed) card.classList.add('last-used');
-
-                cardsData.push({
-                    id: name,
-                    title: title, // เก็บ Title ต้นฉบับไว้สำหรับ Highlight
-                    desc: desc,
-                    keywords: keywords,
-                    element: card
+        // 🟢 Lazy Initialize Fuse (สร้างเมื่อพิมพ์ครั้งแรก)
+        function ensureFuse() {
+            if (!fuse && cardsData.length > 0) {
+                fuse = new Fuse(cardsData, {
+                    keys: [ { name: 'title', weight: 0.6 }, { name: 'keywords', weight: 0.3 }, { name: 'desc', weight: 0.1 } ],
+                    threshold: 0.3, ignoreLocation: true, useExtendedSearch: true
                 });
-
-                card.addEventListener('click', async () => {
-                    if (navigator.vibrate) navigator.vibrate(30);
-                    usage[name] = (usage[name] || 0) + 1;
-                    
-                    // 🟢 เซฟแบบมี Structure
-                    await localforage.setItem('usageV2', { data: usage, ts: Date.now() });
-                    await localforage.setItem('lastUsed', name);
-                });
-            });
-
-            fuse = new Fuse(cardsData, {
-                keys: [ { name: 'title', weight: 0.6 }, { name: 'keywords', weight: 0.3 }, { name: 'desc', weight: 0.1 } ],
-                threshold: 0.3, 
-                ignoreLocation: true, 
-                useExtendedSearch: true
-            });
-
-            sortCards();
+            }
         }
 
-        // 🟢 ฟังก์ชัน Highlight คำค้นหา
+        // 🟢 Regex Injection Prevention
+        function escapeRegex(text) {
+            return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+        }
+
         function highlightText(text, term) {
             if (!term) return text;
-            const regex = new RegExp(`(${term})`, 'gi');
+            const safeTerm = escapeRegex(term);
+            const regex = new RegExp(`(${safeTerm})`, 'gi');
             return text.replace(regex, '<mark>$1</mark>');
         }
 
         let debounceTimer;
         searchInput.addEventListener('input', (e) => {
             clearTimeout(debounceTimer);
-            // 🟢 อัปเกรดเป็น 250ms ลดอาการกระตุกตอนพิมพ์บนมือถือเก่าๆ
             debounceTimer = setTimeout(() => {
                 performSearch(e.target.value.toLowerCase().trim());
             }, 250); 
@@ -500,7 +517,6 @@
             
             cardsData.forEach(item => {
                 item.element.style.display = 'none';
-                // Reset Highlight กลับเป็นปกติก่อน
                 item.element.querySelector('.card-title').innerHTML = item.title;
             });
             
@@ -510,12 +526,21 @@
                     item.element.style.order = item.element.dataset.defaultOrder;
                 });
             } else {
-                // 🟢 Limit การแสดงผล 20 อันดับแรก ลดโหลด DOM
-                const results = fuse.search(term, { limit: 20 });
+                ensureFuse();
+                let results;
+                
+                // 🟢 เช็ค Cache ก่อน ถ้าเคยค้นหาคำนี้แล้ว เอามาโชว์เลย (O(1))
+                if (searchCache.has(term)) {
+                    results = searchCache.get(term);
+                } else {
+                    results = fuse.search(term, { limit: 20 });
+                    searchCache.set(term, results); // เก็บลง Cache
+                    if (searchCache.size > 50) searchCache.delete(searchCache.keys().next().value); // กัน Memory บวม
+                }
+
                 results.forEach((result, index) => {
                     result.item.element.style.display = 'flex';
                     result.item.element.style.order = index;
-                    // 🔥 ใส่ Highlight ตรงคำที่เจอ
                     result.item.element.querySelector('.card-title').innerHTML = highlightText(result.item.title, term);
                 });
             }
@@ -546,10 +571,50 @@
             }
         });
 
+        /* =========================
+           🎤 4. Voice Search (Web Speech API)
+        ========================= */
+        const voiceBtn = document.getElementById('voiceSearch');
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (SpeechRecognition) {
+            voiceBtn.style.display = 'block';
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'th-TH'; // รองรับภาษาไทย
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = () => {
+                voiceBtn.classList.add('listening');
+                searchInput.placeholder = 'กำลังฟัง...';
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                searchInput.value = transcript;
+                performSearch(transcript.toLowerCase().trim());
+            };
+
+            recognition.onerror = (event) => { console.warn('Voice Search Error:', event.error); };
+            
+            recognition.onend = () => {
+                voiceBtn.classList.remove('listening');
+                searchInput.placeholder = "🔍 ค้นหา... (กด '/' เพื่อค้นหาด่วน)";
+            };
+
+            voiceBtn.addEventListener('click', () => {
+                if(voiceBtn.classList.contains('listening')) recognition.stop();
+                else recognition.start();
+            });
+        }
+
+        /* =========================
+           UI Functions
+        ========================= */
         async function toggleDark() {
             document.body.classList.toggle('dark');
             const isDark = document.body.classList.contains('dark');
-            await localforage.setItem('darkMode', isDark);
+            try { await localforage.setItem('darkMode', isDark); } catch(e){}
             document.getElementById('darkModeBtn').innerText = isDark ? '☀️' : '🌙';
         }
 
@@ -569,7 +634,7 @@
                     pinnedCards = pinnedCards.filter(item => item !== cardName);
                     card.classList.remove('pinned');
                 }
-                await localforage.setItem('pinnedCards', pinnedCards); 
+                try { await localforage.setItem('pinnedCards', pinnedCards); } catch(e){}
                 sortCards();
             }, 150);
         }
@@ -605,7 +670,7 @@
         window.addEventListener('DOMContentLoaded', initApp);
 
         /* =========================
-           ⚙️ SW UPDATE & DISMISS (Fixed)
+           ⚙️ PWA & SW Update
         ========================= */
         let deferredPrompt;
         const installBtn = document.getElementById('installPwaBtn');
@@ -641,7 +706,6 @@
             });
 
             document.getElementById('updateBtn').addEventListener('click', () => {
-                // 🟢 โพสต์ Message ไปบอก SW ให้ตื่นและข้ามสถานะ Waiting ซะ!
                 if (newWorker) newWorker.postMessage({ type: 'SKIP_WAITING' });
             });
 
