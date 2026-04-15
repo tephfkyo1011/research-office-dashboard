@@ -31,21 +31,83 @@
     }'>
 
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f4f6f9; }
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f4f6f9; font-family: sans-serif; }
         iframe { width: 100%; height: 100%; border: none; }
+
+        /* สไตล์ของปุ่มติดตั้งแอป */
+        #installAppBtn {
+            display: none; /* ซ่อนไว้ก่อน จะโชว์เมื่อเบราว์เซอร์อนุญาต */
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 8px 15px rgba(37, 99, 235, 0.4);
+            cursor: pointer;
+            z-index: 9999;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        #installAppBtn:hover {
+            transform: scale(1.05);
+            background-color: #1d4ed8;
+        }
     </style>
 </head>
 <body>
 
     <iframe src="https://script.google.com/a/macros/mahidol.ac.th/s/AKfycbzPxW-MM3P4RpWlPq4n3hP2iwf8DtHBgydaBWngDZ9sho9K4MC2seH5t8eGMZWRjmvy/exec" allow="fullscreen"></iframe>
     
+    <button id="installAppBtn">📲 ติดตั้งแอปนี้</button>
+
     <script>
-        // โค้ด Service Worker เปล่าๆ เพื่อหลอกให้เบราว์เซอร์ยอมให้ติดตั้งแอป
+        // 1. โค้ด Service Worker เปล่าๆ เพื่อหลอกให้เบราว์เซอร์ยอมให้ติดตั้งแอป
         if ('service-worker' in navigator) {
             const swCode = `self.addEventListener('fetch', function() {});`;
             const blob = new Blob([swCode], {type: 'text/javascript'});
             navigator.serviceWorker.register(URL.createObjectURL(blob));
         }
+
+        // 2. โค้ดสำหรับจัดการปุ่มติดตั้งแอป
+        let deferredPrompt;
+        const installBtn = document.getElementById('installAppBtn');
+
+        // ดักจับเมื่อเบราว์เซอร์พร้อมให้ติดตั้ง
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // ป้องกันไม่ให้เบราว์เซอร์แสดง Prompt พื้นฐานของมันเอง
+            e.preventDefault();
+            // เก็บ event ไว้ใช้ตอนผู้ใช้กดปุ่ม
+            deferredPrompt = e;
+            // แสดงปุ่มของเราขึ้นมา
+            installBtn.style.display = 'block';
+        });
+
+        // เมื่อผู้ใช้กดปุ่มติดตั้งของเรา
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                // แสดงหน้าต่างยืนยันการติดตั้ง
+                deferredPrompt.prompt();
+                
+                // รอฟังคำตอบจากผู้ใช้ว่ากด "ติดตั้ง" หรือ "ยกเลิก"
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('ผู้ใช้ยอมรับการติดตั้ง');
+                    installBtn.style.display = 'none'; // ซ่อนปุ่มเมื่อติดตั้งเสร็จ
+                }
+                
+                // ล้างค่าทิ้ง เพราะ prompt โชว์ซ้ำไม่ได้แล้ว
+                deferredPrompt = null;
+            }
+        });
+
+        // ซ่อนปุ่มอัตโนมัติ ถ้าแอปนี้ถูกติดตั้งลงเครื่องไปแล้ว
+        window.addEventListener('appinstalled', () => {
+            installBtn.style.display = 'none';
+        });
     </script>
 
 </body>
