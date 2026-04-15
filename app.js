@@ -283,3 +283,42 @@ if ('serviceWorker' in navigator) {
         if (!refreshing) { window.location.reload(); refreshing = true; }
     });
 }
+
+/* =========================
+   📱 PWA Install Promotion
+========================= */
+let deferredPrompt;
+const installBtn = document.getElementById('installPwaBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    // ป้องกันไม่ให้เบราว์เซอร์โชว์ Prompt ขึ้นมาเอง (เราจะคุมเอง)
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // แสดงปุ่ม Install ขึ้นมาเมื่อระบบพร้อมให้ติดตั้ง
+    if(installBtn) installBtn.style.display = 'block';
+});
+
+if(installBtn) {
+    installBtn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            // โชว์หน้าต่างยืนยันการติดตั้ง
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                console.log('ติดตั้ง PWA สำเร็จ');
+            }
+            
+            // รีเซ็ตค่าและซ่อนปุ่ม
+            deferredPrompt = null;
+            installBtn.style.display = 'none';
+        }
+    });
+}
+
+window.addEventListener('appinstalled', () => {
+    // ซ่อนปุ่มทันทีที่ติดตั้งเสร็จ
+    if(installBtn) installBtn.style.display = 'none';
+    showToast('ติดตั้งแอปพลิเคชันลงเครื่องเรียบร้อย! 🎉');
+});
