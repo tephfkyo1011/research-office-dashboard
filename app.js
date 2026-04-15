@@ -122,6 +122,7 @@ async function initApp() {
                     window.location.href = targetUrl;
                 }
             });
+        }); // 🟢 เติมบรรทัดนี้ลงไปเพื่อปิด forEach ครับ!
 
         sortCards();
         smartCheck(); // เริ่มระบบ Check
