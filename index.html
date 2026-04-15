@@ -120,6 +120,7 @@
             backdrop-filter: blur(10px); background: rgba(255,255,255,0.8); position: relative;
             animation: fadeInCard 0.5s ease backwards;
             transition: all 0.3s ease, transform 0.25s ease;
+            order: 999; /* For Smart Search Sorting */
         }
         body.dark .card { background: rgba(40,40,60,0.6); }
         
@@ -128,8 +129,14 @@
             100% { opacity: 1; transform: translateY(0); }
         }
         
-        .card:hover { transform: translateY(-6px); box-shadow: 0 12px 25px rgba(0,0,0,0.08); }
-        body.dark .card:hover { box-shadow: 0 12px 25px rgba(0,0,0,0.4); }
+        /* 🟢 7. UI Upgrade - Card Hover Glow */
+        .card:hover { 
+            transform: translateY(-6px); 
+            box-shadow: 0 12px 25px rgba(0,0,0,0.08), 0 0 0 1px rgba(255,255,255,0.1) inset; 
+        }
+        body.dark .card:hover { 
+            box-shadow: 0 12px 25px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05) inset; 
+        }
         .card:active { transform: scale(0.95); }
 
         .card.last-used { outline: 2px solid #28a745; outline-offset: -2px; }
@@ -174,7 +181,7 @@
     </header>
 
     <div class="search-wrapper">
-        <input type="text" id="searchInput" class="search-box" placeholder="🔍 ค้นหาชื่อระบบ, คำอธิบาย หรือคีย์เวิร์ด...">
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 ค้นหา... (กด '/' เพื่อค้นหาด่วน)">
         <span id="clearSearch" class="clear-search"><i class="fa-solid fa-xmark"></i></span>
     </div>
 
@@ -232,7 +239,7 @@
                 <div class="card-title">ระบบแก๊ส & Stock</div>
                 <div class="card-desc">การจัดการคลังแก๊ส</div>
             </a>
-            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-ln2-log.html" target="_blank" class="card" data-name="LN2 Log" data-keywords="ไนโตรเจน เหลว nitrogen liquid เติม">
+            <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-ln2-log.html" target="_blank" class="card" data-name="LN2 Log" data-keywords="ไนโตรเจน เหลว nitrogen liquid เติม ln2">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-ln2-log.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=LN2&background=1abc9c&color=fff'"></div>
                 <div class="card-title">บันทึก Liquid Nitrogen</div>
@@ -373,7 +380,6 @@
     <script>
         const searchInput = document.getElementById('searchInput');
         const clearBtn = document.getElementById('clearSearch');
-        const cards = document.querySelectorAll('.card');
 
         /* =========================
            🌙 DARK MODE
@@ -386,11 +392,24 @@
         }
 
         /* =========================
+           ⌨️ 4. KEYBOARD SHORTCUT & AUTO FOCUS
+        ========================= */
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '/' && document.activeElement !== searchInput) {
+                e.preventDefault();
+                searchInput.focus();
+            }
+        });
+
+        window.addEventListener('load', () => {
+            if (window.innerWidth > 768) searchInput.focus();
+        });
+
+        /* =========================
            🟢 1. TRUE FUZZY SEARCH
         ========================= */
         function fuzzyMatch(text, term) {
-            let t = 0;
-            let s = 0;
+            let t = 0; let s = 0;
             while (t < text.length && s < term.length) {
                 if (text[t] === term[s]) s++;
                 t++;
@@ -399,16 +418,28 @@
         }
 
         /* =========================
-           🟢 7. AUTO HIGHLIGHT
+           🧠 8. SMART RANKING SCORE
         ========================= */
-        function highlight(text, term) {
-            if (!term) return text;
-            const safeTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); 
-            return text.replace(new RegExp(`(${safeTerm})`, 'gi'), '<mark>$1</mark>');
+        function scoreMatch(text, term) {
+            let score = 0;
+            if (text.includes(term)) score += 10;
+            if (fuzzyMatch(text, term)) score += 5;
+            return score;
         }
 
         /* =========================
-           🟢 2. DEBOUNCE SEARCH & SMART SEARCH
+           🟢 7. AUTO HIGHLIGHT (รองรับ Multi-word)
+        ========================= */
+        function highlight(text, termsArray) {
+            if (!termsArray || termsArray.length === 0) return text;
+            const validTerms = termsArray.filter(t => t.trim().length > 0);
+            if(validTerms.length === 0) return text;
+            const pattern = validTerms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+            return text.replace(new RegExp(`(${pattern})`, 'gi'), '<mark>$1</mark>');
+        }
+
+        /* =========================
+           ⚡ 6. DEBOUNCE SEARCH (120ms) & 🔍 3. MULTI-WORD SEARCH
         ========================= */
         let debounceTimer;
 
@@ -416,11 +447,12 @@
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => {
                 performSearch(e.target.value.toLowerCase().trim());
-            }, 200);
+            }, 120); // เร็วปรู๊ด UX โคตรดี
         });
 
         function performSearch(term) {
             clearBtn.style.display = term.length > 0 ? 'block' : 'none';
+            const terms = term.split(' ').filter(t => t.length > 0);
 
             document.querySelectorAll('.grid').forEach(grid => {
                 let hasVisible = false;
@@ -430,14 +462,29 @@
                     const titleEl = card.querySelector('.card-title');
                     const descEl = card.querySelector('.card-desc');
                     
-                    const match = term === '' || searchText.includes(term) || fuzzyMatch(searchText, term);
+                    let match = false;
+                    let totalScore = 0;
+
+                    if (term === '') {
+                        match = true;
+                        card.style.order = card.dataset.defaultOrder; // กลับไปเรียงตามปกติ
+                    } else {
+                        // Multi-word search (ทุกคำต้องเจอ)
+                        match = terms.every(t => searchText.includes(t) || fuzzyMatch(searchText, t));
+                        if (match) {
+                            terms.forEach(t => totalScore += scoreMatch(searchText, t));
+                            // Smart Ranking: แปลงคะแนนเป็น order (คะแนนมากสุดอยู่บนสุด)
+                            card.style.order = 100 - totalScore; 
+                        }
+                    }
 
                     card.style.display = match ? 'flex' : 'none';
+
                     if (match) {
                         hasVisible = true;
                         if (term) {
-                            titleEl.innerHTML = highlight(card.dataset.origTitle, term);
-                            descEl.innerHTML = highlight(card.dataset.origDesc, term);
+                            titleEl.innerHTML = highlight(card.dataset.origTitle, terms);
+                            descEl.innerHTML = highlight(card.dataset.origDesc, terms);
                         } else {
                             titleEl.innerHTML = card.dataset.origTitle;
                             descEl.innerHTML = card.dataset.origDesc;
@@ -470,7 +517,7 @@
         }
 
         /* =========================
-           📌 🟢 3. PIN & SORT (+ ANIMATION)
+           📌 5. PIN & SORT BUG FIX
         ========================= */
         function togglePin(event, card) {
             event.preventDefault();
@@ -501,10 +548,11 @@
             const pinnedItems = JSON.parse(localStorage.getItem('pinnedCards')) || [];
             const pinnedGrid = document.getElementById('grid-pinned');
             const pinnedSection = document.getElementById('pinned-section');
+            const allCards = document.querySelectorAll('.card'); // ดึงใหม่ทุกครั้งแก้ Bug
 
             pinnedGrid.innerHTML = '';
             
-            cards.forEach(c => {
+            allCards.forEach(c => {
                 if(!pinnedItems.includes(c.dataset.name) && c.dataset.parent) {
                     c.classList.remove('pinned');
                     document.getElementById(c.dataset.parent).appendChild(c);
@@ -513,7 +561,7 @@
 
             let hasPinned = false;
             pinnedItems.forEach(name => {
-                const card = [...cards].find(c => c.dataset.name === name);
+                const card = [...allCards].find(c => c.dataset.name === name);
                 if (card) {
                     card.classList.add('pinned');
                     pinnedGrid.appendChild(card);
@@ -534,7 +582,8 @@
                 document.getElementById('darkModeBtn').innerText = '☀️';
             }
 
-            cards.forEach(card => {
+            let orderIndex = 0;
+            document.querySelectorAll('.card').forEach(card => {
                 const title = card.querySelector('.card-title')?.innerText || '';
                 const desc = card.querySelector('.card-desc')?.innerText || '';
                 const name = card.dataset.name || '';
@@ -543,6 +592,9 @@
                 card.dataset.origTitle = title;
                 card.dataset.origDesc = desc;
                 card.dataset.search = `${title} ${desc} ${name} ${keywords}`.toLowerCase().replace(/\s+/g, ' ');
+                
+                // เก็บ Order เริ่มต้นไว้ เผื่อลบคำค้นหาจะได้กลับมาเรียงแบบเดิม
+                card.dataset.defaultOrder = orderIndex++;
 
                 if(card.parentElement && card.parentElement.classList.contains('grid')){
                     card.dataset.parent = card.parentElement.id;
@@ -557,7 +609,7 @@
             sortCards();
 
             const lastUsed = localStorage.getItem('lastUsed');
-            cards.forEach(card => {
+            document.querySelectorAll('.card').forEach(card => {
                 if (card.dataset.name === lastUsed) card.classList.add('last-used');
             });
             
