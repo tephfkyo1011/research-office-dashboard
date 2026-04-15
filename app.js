@@ -320,26 +320,23 @@ window.addEventListener('appinstalled', () => {
 });
 
 /* =========================
-   📌 Global Event Delegation สำหรับปุ่ม Pin (CSP Safe)
+   📌 ระบบกด Fav (★) ขั้นเด็ดขาด (ป้องกันการเปิดลิงก์ 100%)
 ========================= */
-document.addEventListener('click', function(e) {
+window.addEventListener('click', function(e) {
     const pinBtn = e.target.closest('.pin');
     
     if (pinBtn) {
-        // 1. สั่งเบรกเอี๊ยด! ห้ามแท็ก <a> เปิดหน้าใหม่เด็ดขาด
-        e.preventDefault();  
-        e.stopPropagation(); 
+        // คาถาหยุดเวลา 3 ชั้น! ห้ามเปิดลิงก์ ห้ามกระเพื่อม ห้ามทำอะไรทั้งนั้น
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
         
-        // 2. ดึงการ์ดแม่ข่ายมา
         const card = pinBtn.closest('.card');
         
-        // 3. ส่งเข้าฟังก์ชัน Fav เดิม
-        if (card) {
-            try {
-                togglePin(e, card);
-            } catch (err) {
-                console.error("❌ หาฟังก์ชัน togglePin ไม่เจอ เช็คด่วน:", err);
-            }
+        if (card && typeof togglePin === 'function') {
+            togglePin(e, card); // เรียกฟังก์ชันย้ายขึ้นข้างบนของพี่
+        } else {
+            console.error("หาฟังก์ชัน togglePin ไม่เจอครับ!");
         }
     }
-});
+}, true); // สำคัญมาก! ใส่ true เพื่อดักตบ Event ตั้งแต่ขาลง ก่อนที่แท็ก <a> จะรู้ตัว
