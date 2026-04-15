@@ -41,23 +41,24 @@
             font-family: 'Sarabun', sans-serif; 
             background-color: var(--bg-color); 
             color: var(--text-main);
-            margin: 0; padding-bottom: 80px; /* เพิ่มพื้นที่ให้ Banner อัปเดต */
+            margin: 0; padding-bottom: 80px; 
             transition: background-color 0.3s ease, color 0.3s ease; 
         }
 
         /* ---------------------------------
-           🟢 UI: Offline Badge (มุมขวาบน) 
+           🟢 UI: Offline Badge 
            --------------------------------- */
         #offlineBadge {
             position: fixed; top: 15px; left: 15px; background: #e74c3c; color: white;
             padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-family: 'Prompt', sans-serif;
             font-weight: 500; z-index: 1000; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
-            display: none; animation: pulseBadge 2s infinite; display: flex; align-items: center; gap: 5px;
+            display: none; /* 🟢 1. แก้บัค display ซ้ำซ้อน */ 
+            align-items: center; gap: 5px; animation: pulseBadge 2s infinite;
         }
         @keyframes pulseBadge { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
         /* ---------------------------------
-           🟢 UI: Update Banner (ติดขอบล่าง) 
+           🟢 UI: Update Banner
            --------------------------------- */
         #updateBanner {
             position: fixed; bottom: 0; left: 0; width: 100%; background: #007bff; color: white;
@@ -66,10 +67,16 @@
             transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         #updateBanner.show { transform: translateY(0); }
+        .update-actions { display: flex; gap: 10px; }
         .update-btn-action {
             background: white; color: #007bff; border: none; padding: 6px 15px; border-radius: 8px;
             font-weight: 600; cursor: pointer; transition: transform 0.2s;
         }
+        .update-btn-dismiss { /* 🟢 5. ปุ่ม Dismiss */
+            background: rgba(255,255,255,0.2); color: white; border: none; padding: 6px 10px; 
+            border-radius: 8px; cursor: pointer; transition: background 0.2s;
+        }
+        .update-btn-dismiss:hover { background: rgba(255,255,255,0.3); }
         .update-btn-action:active { transform: scale(0.95); }
 
         header {
@@ -78,9 +85,6 @@
             position: relative;
         }
 
-        .portal-brand-container {
-            display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 10px;
-        }
         .portal-main-logo {
             max-width: 100px; height: auto; border-radius: 20px; background: white; padding: 5px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 15px; transition: transform 0.3s ease;
@@ -109,7 +113,6 @@
             padding: 15px 40px 15px 25px; border-radius: 30px; border: none; box-shadow: 0 8px 25px rgba(0,0,0,0.15);
             font-family: 'Prompt', sans-serif; font-size: 1rem; outline: none;
             backdrop-filter: blur(10px); background: rgba(255,255,255,0.9); color: #2c3e50;
-            transition: background-color 0.3s ease, color 0.3s ease;
         }
         body.dark .search-box { background: rgba(40,40,60,0.8); color: #ffffff; }
 
@@ -117,7 +120,6 @@
             position: absolute; right: 30px; top: 50%; transform: translateY(-50%);
             cursor: pointer; color: #6c757d; font-size: 1.2rem; display: none; transition: color 0.2s;
         }
-        .clear-search:hover { color: #e74c3c; }
 
         .container { padding: 20px 15px; max-width: 900px; margin: 0 auto; }
         
@@ -139,21 +141,12 @@
             border-radius: 15px; padding: 15px 10px; text-decoration: none; display: flex; flex-direction: column; align-items: center; text-align: center;
             box-shadow: 0 4px 6px rgba(0,0,0,0.02); min-height: 140px; border-top: 4px solid transparent; color: var(--text-main);
             backdrop-filter: blur(10px); background: rgba(255,255,255,0.8); position: relative;
-            animation: fadeInCard 0.5s ease backwards;
-            transition: all 0.3s ease, transform 0.25s ease;
-            order: 999;
+            transition: all 0.3s ease, transform 0.25s ease; order: 999;
         }
         body.dark .card { background: rgba(40,40,60,0.6); }
-        
-        @keyframes fadeInCard {
-            0% { opacity: 0; transform: translateY(15px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        
         .card:hover { transform: translateY(-6px); box-shadow: 0 12px 25px rgba(0,0,0,0.08), 0 0 0 1px rgba(255,255,255,0.1) inset; }
         body.dark .card:hover { box-shadow: 0 12px 25px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05) inset; }
-        .card:active { transform: scale(0.95); }
-
+        
         .card.last-used { outline: 2px solid #28a745; outline-offset: -2px; }
 
         .icon-circle {
@@ -169,9 +162,7 @@
         .badge-lan { position: absolute; top: 5px; left: 5px; font-size: 0.6rem; background: #ffebee; color: #c62828; padding: 1px 5px; border-radius: 4px; font-weight: bold; }
         body.dark .badge-lan { background: #5c1818; color: #ffb3b3; }
         
-        .pin { position: absolute; top: 5px; right: 5px; font-size: 1rem; color: #ccc; cursor: pointer; padding: 2px; transition: color 0.2s; z-index: 10; }
-        body.dark .pin { color: #666; }
-        
+        .pin { position: absolute; top: 5px; right: 5px; font-size: 1rem; color: #ccc; cursor: pointer; padding: 2px; z-index: 10; }
         .card.pinned { border: 1px solid var(--gold); }
         body:not(.dark) .card.pinned { background: rgba(255,253,240,0.9); }
         body.dark .card.pinned { background: rgba(53,48,24,0.8); }
@@ -180,15 +171,20 @@
         mark { background-color: var(--hl-bg); color: inherit; padding: 0 2px; border-radius: 4px; font-weight: bold; }
 
         .footer { text-align: center; font-size: 0.7rem; color: var(--text-sub); margin-top: 40px; padding: 20px; line-height: 1.5; }
+        .app-version { display: inline-block; background: rgba(0,0,0,0.1); padding: 2px 8px; border-radius: 10px; margin-top: 5px; }
+        body.dark .app-version { background: rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
 
-    <div id="offlineBadge" style="display: none;"><i class="fa-solid fa-wifi" style="text-decoration: line-through;"></i> Offline Mode</div>
+    <div id="offlineBadge"><i class="fa-solid fa-wifi" style="text-decoration: line-through;"></i> Offline Mode</div>
 
     <div id="updateBanner">
-        <div><i class="fa-solid fa-cloud-arrow-down"></i> มีเวอร์ชันใหม่พร้อมใช้งาน!</div>
-        <button id="updateBtn" class="update-btn-action">อัปเดตเลย</button>
+        <div><i class="fa-solid fa-cloud-arrow-down"></i> มีเวอร์ชันใหม่!</div>
+        <div class="update-actions">
+            <button id="dismissBtn" class="update-btn-dismiss">ภายหลัง</button>
+            <button id="updateBtn" class="update-btn-action">อัปเดต</button>
+        </div>
     </div>
 
     <header>
@@ -231,12 +227,6 @@
                 <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-dashboard.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=DB&background=f39c12&color=fff'"></div>
                 <div class="card-title">Dashboard ครุภัณฑ์</div>
                 <div class="card-desc">สรุปข้อมูลสำนักงานวิจัย</div>
-            </a>
-            <a href="https://www.appsheet.com/start/54d31000-2358-4abc-bd52-44472a9275c6" target="_blank" class="card" data-name="USER ครุภัณฑ์" data-keywords="ผู้ใช้ user พนักงาน">
-                <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
-                <div class="icon-circle"><img src="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-user.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=User&background=3498db&color=fff'"></div>
-                <div class="card-title">USER ครุภัณฑ์</div>
-                <div class="card-desc">สำนักงานวิจัย</div>
             </a>
             <a href="https://tephfkyo1011.github.io/research-office-dashboard/logo-health-family.html" target="_blank" class="card" data-name="Health Family" data-keywords="สุขภาพ health cg ครอบครัว">
                 <div class="pin" onclick="togglePin(event, this.parentNode)">★</div>
@@ -397,15 +387,18 @@
 
     <div class="footer">
         © 2026 <b>Research Office Portal</b><br>
-        Developed & Updated by <b>KYO GI</b>
+        Developed & Updated by <b>KYO GI</b><br>
+        <span class="app-version"><i class="fa-solid fa-code-branch"></i> Version 10</span>
     </div>
 
     <script>
+        const APP_VERSION = 'v10';
+        console.log(`🚀 App Version: ${APP_VERSION}`);
+
         const searchInput = document.getElementById('searchInput');
         const clearBtn = document.getElementById('clearSearch');
         let usage = JSON.parse(localStorage.getItem('usage') || '{}');
 
-        /* 🟢 พจนานุกรม Synonyms */
         const synonyms = {
             "แก๊ส": ["gas", "ถัง"],
             "จอง": ["booking", "reserve", "ประชุม"],
@@ -426,19 +419,35 @@
         }
 
         /* ---------------------------------
-           🟡 OFFLINE STATUS LISTENER
+           🧠 4. Real Network Check (God Tier)
         --------------------------------- */
         const offlineBadge = document.getElementById('offlineBadge');
-        function updateOnlineStatus() {
-            if (navigator.onLine) {
-                offlineBadge.style.display = 'none';
-            } else {
-                offlineBadge.style.display = 'flex';
+        
+        async function checkRealOnline() {
+            try {
+                // ยิง HEAD request พร้อม timestamp กันโดน Cache หลอก
+                await fetch(`./?_cb=${new Date().getTime()}`, { method: 'HEAD', cache: 'no-store' });
+                return true;
+            } catch {
+                return false;
             }
         }
+
+        async function updateOnlineStatus() {
+            // ถ้า Browser บอกว่า Offline แน่นอน ก็ไม่ต้องเปลืองแรง Fetch
+            if (!navigator.onLine) {
+                offlineBadge.style.display = 'flex';
+                return;
+            }
+            // ถ้า WiFi ติดอยู่ ค่อยทดสอบยิงเน็ตจริง
+            const isOnline = await checkRealOnline();
+            offlineBadge.style.display = isOnline ? 'none' : 'flex';
+        }
+
         window.addEventListener('online', updateOnlineStatus);
         window.addEventListener('offline', updateOnlineStatus);
-        updateOnlineStatus(); // ตรวจสอบตอนโหลดหน้าเว็บทันที
+        setInterval(updateOnlineStatus, 15000); // เช็คทุก 15 วิเนียนๆ
+        updateOnlineStatus();
 
         function toggleDark() {
             document.body.classList.toggle('dark');
@@ -505,9 +514,6 @@
             let searchTerms = [];
             rawTerms.forEach(t => searchTerms.push(...getExpandedTerms(t)));
 
-            const usageValues = Object.values(usage);
-            const maxUsage = usageValues.length > 0 ? Math.max(...usageValues, 1) : 1;
-
             document.querySelectorAll('.grid').forEach(grid => {
                 let hasVisible = false;
 
@@ -525,7 +531,8 @@
                         match = searchTerms.some(t => searchText.includes(t) || fuzzyMatch(searchText, t));
                         if (match) {
                             searchTerms.forEach(t => totalScore += scoreMatch(card, t));
-                            const userBoost = ((usage[card.dataset.name] || 0) / maxUsage) * 20;
+                            // 🟢 4. Analytics Bias: ใช้ Log Scale คุมไม่ให้คะแนนโดดเกินไป
+                            const userBoost = Math.log((usage[card.dataset.name] || 0) + 1) * 10;
                             totalScore += userBoost;
                             card.style.order = 1000 - Math.round(totalScore); 
                         }
@@ -658,9 +665,6 @@
             });
         });
 
-        /* =========================
-           📱 PWA INSTALL BUTTON
-        ========================= */
         let deferredPrompt;
         const installBtn = document.getElementById('installPwaBtn');
 
@@ -681,38 +685,45 @@
         });
 
         /* =========================
-           ⚙️ SW REGISTRATION & UPDATE UX
+           ⚙️ 3. SW REGISTRATION (ไม่ต้องรอ Load & เช็ค Update ทุกชั่วโมง)
         ========================= */
         let newWorker;
         const updateBanner = document.getElementById('updateBanner');
         const updateBtn = document.getElementById('updateBtn');
+        const dismissBtn = document.getElementById('dismissBtn');
 
-        // เมื่อ User กดปุ่ม "อัปเดตเลย" ให้ส่ง Message ไปบังคับ Skip Waiting
+        // 🟢 5. เพิ่มปุ่ม ภายหลัง (Dismiss)
+        dismissBtn.addEventListener('click', () => {
+            updateBanner.classList.remove('show');
+        });
+
         updateBtn.addEventListener('click', () => {
             if (newWorker) {
                 newWorker.postMessage({ type: 'SKIP_WAITING' });
             }
         });
 
-        if ('service-worker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').then(reg => {
-                    console.log('SW registered.');
-                    
-                    // 🔄 ตรวจจับเมื่อมี SW เวอร์ชันใหม่ติดตั้ง
-                    reg.addEventListener('updatefound', () => {
-                        newWorker = reg.installing;
-                        newWorker.addEventListener('statechange', () => {
-                            // ถ้าลงเสร็จแล้ว และมีเวอร์ชันเก่าคุมอยู่ (แปลว่านี่คืออัปเดตใหม่)
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                updateBanner.classList.add('show');
-                            }
-                        });
+        if ('serviceWorker' in navigator) {
+            // ไม่ต้องใส่ครอบ window.addEventListener('load') แล้วเพื่อให้ Install ไวขึ้น
+            navigator.serviceWorker.register('./sw.js').then(reg => {
+                console.log('SW registered.', reg);
+                
+                reg.addEventListener('updatefound', () => {
+                    newWorker = reg.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            updateBanner.classList.add('show');
+                        }
                     });
-                }).catch(err => console.log('SW err: ', err));
-            });
+                });
 
-            // เมื่อ SW ตัวใหม่ Activate และเข้ามาคุม (Controller Change) ให้รีโหลดหน้าจอใหม่เนียนๆ
+                // 🟢 2. เช็คอัปเดตอัตโนมัติทุกๆ 1 ชั่วโมงแบบ Background
+                setInterval(() => {
+                    reg.update();
+                }, 60 * 60 * 1000);
+
+            }).catch(err => console.log('SW err: ', err));
+
             let refreshing = false;
             navigator.serviceWorker.addEventListener('controllerchange', () => {
                 if (!refreshing) {
