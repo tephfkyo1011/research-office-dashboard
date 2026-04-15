@@ -425,25 +425,5 @@
         <span class="app-version"><i class="fa-solid fa-chess-king"></i> Version 14 (Titan Mode)</span>
     </div>
 
-    <script>
-        document.addEventListener('click', function(e) {
-            // ตรวจสอบว่าคลิกโดนส่วนไหนของการ์ดบ้าง
-            const card = e.target.closest('.card');
-            
-            // ถ้าไม่ได้คลิกในการ์ด ให้ข้ามไป
-            if (!card) return;
-
-            // ถ้ากดโดนปุ่ม Pin หรือสัญลักษณ์ดาว ให้หยุดการทำงานตรงนี้ (ปล่อยให้ app.js ดึงไปจัดการต่อ)
-            if (e.target.classList.contains('pin') || e.target.closest('.pin')) {
-                return;
-            }
-
-            // ถ้ากดโดนส่วนอื่นๆ ของการ์ด ให้ดึงลิงก์มาเปิดแท็บใหม่
-            const url = card.getAttribute('data-href');
-            if (url && !card.classList.contains('disabled')) { // เช็คด้วยว่าการ์ดไม่ได้โดนปิดใช้งานตอนออฟไลน์
-                window.open(url, '_blank');
-            }
-        });
-    </script>
 </body>
 </html>
