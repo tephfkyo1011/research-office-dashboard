@@ -320,17 +320,20 @@ window.addEventListener('appinstalled', () => {
 });
 
 /* =========================
-   📌 Global Event Delegation (Capture Phase)
+   📌 Global Event Delegation สำหรับปุ่ม Pin (CSP Safe)
 ========================= */
 document.addEventListener('click', (e) => {
-    // เช็คว่าจุดที่คลิกคือปุ่ม pin หรือไม่
+    // 1. เช็คว่าคลิกโดนปุ่ม pin ไหม
     const pinBtn = e.target.closest('.pin');
     
     if (pinBtn) {
-        e.preventDefault();  // 🟢 หยุด! ไม่ให้เปิดลิงก์
-        e.stopPropagation(); // 🟢 หยุด! ไม่ให้คลิกทะลุลงไปที่ตัวการ์ด (แท็ก <a>)
+        e.preventDefault();  // หยุด! ไม่ให้ลิงก์เปิดหน้าใหม่
+        e.stopPropagation(); // หยุด! ไม่ให้คลิกกระเพื่อม
         
-        const card = pinBtn.closest('.card');
+        // 2. ใช้ parentNode แบบเดียวกับที่พี่เขียนไว้แต่แรกเป๊ะๆ!
+        const card = pinBtn.parentNode; 
+        
+        // 3. โยนเข้าฟังก์ชันเดิมของพี่เลย
         if (card) togglePin(e, card);
     }
-}, true); // 🔥 พระเอกอยู่ตรงนี้: ใส่ true เพื่อให้ดักจับ Event แบบ Capture Phase (ขาลง)
+}, true); // ใส่ true ดักจับตั้งแต่ขาลง (Capture Phase) เอาอยู่แน่นอน
