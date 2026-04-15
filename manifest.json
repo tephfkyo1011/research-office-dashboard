@@ -1,0 +1,16 @@
+{
+  "name": "Research Office Portal - KYOGI",
+  "short_name": "RO Portal",
+  "display": "standalone",
+  "start_url": "./index.html",
+  "background_color": "#f4f6f9",
+  "theme_color": "#0f2027",
+  "icons": [
+    {
+      "src": "https://tephfkyo1011.github.io/research-office-dashboard/Research_Office_KYOGI.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
