@@ -1,16 +1,19 @@
-const CACHE_VERSION = 'v13'; 
-const CACHE_NAME = `kyogi-portal-${CACHE_VERSION}`;
+const CACHE_VERSION = 'v14'; 
+const STATIC_CACHE = `kyogi-static-${CACHE_VERSION}`;
+const DYNAMIC_CACHE = `kyogi-dynamic-${CACHE_VERSION}`;
 const OFFLINE_URL = './offline.html';
-const MAX_CACHE_ITEMS = 80;
+const MAX_DYNAMIC_ITEMS = 100;
 
+// 🟢 โหลดทุกอย่างจาก Local
 const STATIC_ASSETS = [
   './',
   './index.html',
-  OFFLINE_URL,
-  './ping.txt', // 🟢 เพิ่ม ping.txt สำหรับ Health check แบบประหยัดพลังงาน Server
+  './app.js',
+  './offline.html',
+  './ping.txt',
   './libs/fuse.min.js',
   './libs/localforage.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
+  './libs/fontawesome/css/all.min.css' // ใช้ Local FontAwesome
 ];
 
 self.addEventListener('message', event => {
@@ -20,8 +23,9 @@ self.addEventListener('message', event => {
 });
 
 self.addEventListener('install', e => {
+  self.skipWaiting(); // บังคับลงทันที
   e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS))
+    caches.open(STATIC_CACHE).then(cache => cache.addAll(STATIC_ASSETS))
   );
 });
 
@@ -29,42 +33,29 @@ self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(keys =>
       Promise.all(keys.map(key => {
-        if (key !== CACHE_NAME) return caches.delete(key);
+        if (key !== STATIC_CACHE && key !== DYNAMIC_CACHE) {
+          return caches.delete(key);
+        }
       }))
-    ).then(() => self.clients.claim())
+    ).then(async () => {
+      // 🟢 เปิดใช้งาน Navigation Preload ถ้ารองรับ (โหลดข้อมูลรอเลยขณะ SW กำลังบูท)
+      if (self.registration.navigationPreload) {
+        await self.registration.navigationPreload.enable();
+      }
+      self.clients.claim();
+    })
   );
 });
 
+// 🟢 แก้ไข: ใช้ while loop แทน Recursion ป้องกัน Stack Overflow
 async function trimCache(cacheName, maxItems) {
   try {
     const cache = await caches.open(cacheName);
     const keys = await cache.keys();
-    if (keys.length > maxItems) {
-      await cache.delete(keys[0]);
-      trimCache(cacheName, maxItems); 
+    while (keys.length > maxItems) {
+      await cache.delete(keys.shift());
     }
   } catch (err) { console.error('Trim Cache Error:', err); }
-}
-
-async function fetchWithTimeout(request, timeout = 5000) {
-  const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), timeout);
-  try {
-    const response = await fetch(request, { signal: controller.signal });
-    return response;
-  } finally {
-    clearTimeout(id);
-  }
-}
-
-const inFlight = new Map();
-function dedupeFetch(request) {
-  const key = request.url;
-  if (inFlight.has(key)) return inFlight.get(key);
-
-  const promise = fetchWithTimeout(request).finally(() => inFlight.delete(key));
-  inFlight.set(key, promise);
-  return promise;
 }
 
 self.addEventListener('fetch', e => {
@@ -72,37 +63,58 @@ self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
 
   try {
+    // 🔥 1. HTML / Navigation -> Network First + Navigation Preload
     if (e.request.mode === 'navigate' || e.request.headers.get('accept')?.includes('text/html')) {
       e.respondWith(
-        dedupeFetch(e.request)
-          .then(networkRes => {
-            const clone = networkRes.clone();
-            caches.open(CACHE_NAME).then(cache => {
-              cache.put(e.request, clone);
-              trimCache(CACHE_NAME, MAX_CACHE_ITEMS);
-            });
+        (async () => {
+          try {
+            // ดึง Preload ก่อน ถ้ามี
+            const preloadRes = await e.preloadResponse;
+            if (preloadRes && preloadRes.status === 200) {
+              const cache = await caches.open(DYNAMIC_CACHE);
+              cache.put(e.request, preloadRes.clone());
+              return preloadRes;
+            }
+
+            const networkRes = await fetch(e.request);
+            // 🟢 เช็ค Status 200 ก่อน Cache ป้องกันการจำหน้า 404
+            if (networkRes && networkRes.status === 200) {
+              const cache = await caches.open(DYNAMIC_CACHE);
+              cache.put(e.request, networkRes.clone());
+              await trimCache(DYNAMIC_CACHE, MAX_DYNAMIC_ITEMS);
+            }
             return networkRes;
-          })
-          .catch(async () => {
+          } catch (err) {
             const cacheRes = await caches.match(e.request);
+            // 🟢 Fallback เฉพาะ HTML เท่านั้น
             return cacheRes || caches.match(OFFLINE_URL);
-          })
+          }
+        })()
       );
       return;
     }
 
+    // 🔥 2. Assets (CSS, JS, API) -> Stale-While-Revalidate ของแท้
     e.respondWith(
-      caches.match(e.request).then(cacheRes => {
-        const fetchPromise = dedupeFetch(e.request).then(networkRes => {
-          caches.open(CACHE_NAME).then(cache => {
+      (async () => {
+        const cacheRes = await caches.match(e.request);
+        
+        const fetchPromise = fetch(e.request).then(async networkRes => {
+          if (networkRes && networkRes.status === 200 && networkRes.type === 'basic') {
+            const targetCache = STATIC_ASSETS.includes(url.pathname) ? STATIC_CACHE : DYNAMIC_CACHE;
+            const cache = await caches.open(targetCache);
             cache.put(e.request, networkRes.clone());
-            trimCache(CACHE_NAME, MAX_CACHE_ITEMS);
-          });
+            if (targetCache === DYNAMIC_CACHE) await trimCache(DYNAMIC_CACHE, MAX_DYNAMIC_ITEMS);
+          }
           return networkRes;
-        }).catch(() => caches.match(e.request));
+        }).catch(err => console.warn('Background sync failed:', err));
 
-        return cacheRes || fetchPromise;
-      })
+        // 🟢 ถ้ามี Cache โยนกลับไปเลยทันที (เร็วสุดๆ) แล้วปล่อย fetch ทำงานเบื้องหลัง
+        if (cacheRes) {
+          return cacheRes;
+        }
+        return fetchPromise;
+      })()
     );
   } catch (err) {
     console.error('SW FETCH ERROR:', err);
