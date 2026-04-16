@@ -36,6 +36,10 @@ const STATIC_ASSETS = [
   // --- 🔬 โซนที่ 7: โปรแกรมที่ 5 - Dashboard จองเครื่องมือ Lab ---
   './logo-lms-dashboard.html',
   './logo-lms-dashboard.png',
+
+  // --- 🧪 โซนที่ 8: โปรแกรมที่ 6 - Lab Instrument Management System (LMS) ---
+  './logo-lms-lab.html',
+  './logo-lms-lab.png',
   
   // (สามารถเติมโปรแกรมต่อไปเรื่อยๆ ด้านล่างนี้ได้เลยครับ)
 ];
