@@ -71,10 +71,11 @@
             ]
         };
         
-        // แปลงเป็นข้อความ และเข้ารหัสให้เบราว์เซอร์อ่าน Data URI ได้ปลอดภัย 100%
-        const encodedManifest = encodeURIComponent(JSON.stringify(manifestData));
-        document.getElementById('dynamic-manifest').href = 'data:application/manifest+json;charset=utf-8,' + encodedManifest;
-
+        // เปลี่ยนมาใช้ Blob เพื่อป้องกัน Syntax Error 100%
+        const blob = new Blob([JSON.stringify(manifestData)], { type: 'application/manifest+json' });
+        const manifestURL = URL.createObjectURL(blob);
+        document.getElementById('dynamic-manifest').href = manifestURL;
+        
         // 2. เรียกใช้ Service Worker
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js')
