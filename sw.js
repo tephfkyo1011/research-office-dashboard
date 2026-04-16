@@ -25,9 +25,9 @@ const STATIC_ASSETS = [
   './logo-gas-stock.html',
   './logo-gas-stock.png',
 
-  // --- 📦 โซนที่ 5: โปรแกรมที่ 3 - (รอพี่มาเติม) ---
-  // './logo-program-3.html',
-  // './logo-program-3.png',
+  // --- 🏥 โซนที่ 5: โปรแกรมที่ 3 - Health Family ---
+  './logo-health-family.html',
+  './logo-health-family.png',
   
   // (สามารถเติมโปรแกรมต่อไปเรื่อยๆ ด้านล่างนี้ได้เลยครับ)
 ];
