@@ -32,6 +32,10 @@ const STATIC_ASSETS = [
   // --- 📊 โซนที่ 6: โปรแกรมที่ 4 - Dashboard ครุภัณฑ์ HSR ---
   './logo-hsr-dashboard.html',
   './logo-hsr-dashboard.png',
+
+  // --- 🔬 โซนที่ 7: โปรแกรมที่ 5 - Dashboard จองเครื่องมือ Lab ---
+  './logo-lms-dashboard.html',
+  './logo-lms-dashboard.png',
   
   // (สามารถเติมโปรแกรมต่อไปเรื่อยๆ ด้านล่างนี้ได้เลยครับ)
 ];
