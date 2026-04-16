@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard ครุภัณฑ์ HSR</title>
+    <title>Dashboard ครุภัณฑ์ HSR</title> 
     
     <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,34 +13,33 @@
     <link rel="icon" type="image/png" href="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-dashboard.png">
     <link rel="apple-touch-icon" href="https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-dashboard.png">
 
-    <link rel="manifest" href='data:application/manifest+json,{
-      "name": "Dashboard สรุปข้อมูลครุภัณฑ์",
-      "short_name": "ครุภัณฑ์ HSR",
-      "display": "standalone",
-      "start_url": ".",
-      "background_color": "#ffffff",
-      "theme_color": "#2563eb",
-      "icons": [
-        {
-          "src": "https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-dashboard.png",
-          "sizes": "512x512",
-          "type": "image/png",
-          "purpose": "any maskable"
-        }
-      ]
-    }'>
+    <link rel="manifest" id="dynamic-manifest">
 
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow: hidden; 
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f4f6f9; font-family: sans-serif; }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* สไตล์ของปุ่มติดตั้งแอป */
+        #installAppBtn {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #2563eb;
+            color: white;
             border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 8px 15px rgba(37, 99, 235, 0.4);
+            cursor: pointer;
+            z-index: 9999;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        #installAppBtn:hover {
+            transform: scale(1.05);
+            background-color: #1d4ed8;
         }
     </style>
 </head>
@@ -48,12 +47,67 @@
 
     <iframe src="https://script.google.com/macros/s/AKfycbxbcCDzD5mabYhFnw0MP00-ZkOoCJg4bZc-daedF9GhHIq0xVUMMIKmB7l4_69oyNQ/exec" allow="fullscreen"></iframe>
     
+    <button id="installAppBtn">📲 ติดตั้งแอปนี้</button>
+
     <script>
-        if ('service-worker' in navigator) {
-            const swCode = `self.addEventListener('fetch', function() {});`;
-            const blob = new Blob([swCode], {type: 'text/javascript'});
-            navigator.serviceWorker.register(URL.createObjectURL(blob));
+        // 1. สร้าง Manifest ด้วย JavaScript
+        const manifestData = {
+            "name": "Dashboard สรุปข้อมูลครุภัณฑ์",
+            "short_name": "ครุภัณฑ์ HSR",
+            "display": "standalone",
+            
+            // ดึง URL หน้าเว็บปัจจุบันแบบเต็มๆ
+            "start_url": window.location.href, 
+            
+            "background_color": "#ffffff",
+            "theme_color": "#2563eb",
+            "icons": [
+                {
+                    "src": "https://tephfkyo1011.github.io/research-office-dashboard/logo-hsr-dashboard.png",
+                    "sizes": "512x512",
+                    "type": "image/png",
+                    "purpose": "any maskable"
+                }
+            ]
+        };
+        // แปลง JSON เป็นไฟล์ชั่วคราวแล้วยัดใส่แท็ก <link>
+        const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/manifest+json' });
+        document.getElementById('dynamic-manifest').href = URL.createObjectURL(manifestBlob);
+
+        // 2. เรียกใช้ Service Worker ตัวจริงที่อยู่ในโฟลเดอร์หลัก
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+            .catch(err => console.log('Service Worker Error:', err));
         }
+
+        // 3. โค้ดสำหรับจัดการปุ่มติดตั้งแอป
+        let deferredPrompt;
+        const installBtn = document.getElementById('installAppBtn');
+
+        // ดักจับเมื่อเบราว์เซอร์พร้อมให้ติดตั้ง
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'block';
+        });
+
+        // เมื่อผู้ใช้กดปุ่มติดตั้งของเรา
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('ผู้ใช้ยอมรับการติดตั้ง');
+                    installBtn.style.display = 'none';
+                }
+                deferredPrompt = null;
+            }
+        });
+
+        // ซ่อนปุ่มอัตโนมัติ ถ้าแอปนี้ถูกติดตั้งลงเครื่องไปแล้ว
+        window.addEventListener('appinstalled', () => {
+            installBtn.style.display = 'none';
+        });
     </script>
 
 </body>
