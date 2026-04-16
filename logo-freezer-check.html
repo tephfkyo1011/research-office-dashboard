@@ -13,28 +13,12 @@
     <link rel="icon" type="image/png" href="./logo-freezer-check.png">
     <link rel="apple-touch-icon" href="./logo-freezer-check.png">
 
-    <link rel="manifest" href='data:application/manifest+json,{
-        "name": "ระบบตรวจสอบตู้แช่ & LN2",
-        "short_name": "ตรวจสอบตู้แช่",
-        "display": "standalone",
-        "start_url": ".",
-        "background_color": "#ffffff",
-        "theme_color": "#2563eb",
-        "icons": [
-            {
-                "src": "./logo-freezer-check.png",
-                "sizes": "512x512",
-                "type": "image/png",
-                "purpose": "any maskable"
-            }
-        ]
-    }'>
+    <link rel="manifest" id="dynamic-manifest">
 
     <style>
         body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f4f6f9; font-family: sans-serif; }
         iframe { width: 100%; height: 100%; border: none; }
 
-        /* สไตล์ของปุ่มติดตั้งแอป */
         #installAppBtn {
             display: none;
             position: fixed;
@@ -65,24 +49,44 @@
     <button id="installAppBtn">📲 ติดตั้งแอปนี้</button>
 
     <script>
-        // 1. เรียกใช้ Service Worker ตัวเดียวที่มีอยู่ในโปรเจกต์
+        // 1. สร้าง Manifest และเข้ารหัสเพื่อป้องกัน Syntax Error
+        const manifestData = {
+            "name": "ระบบตรวจสอบตู้แช่ & LN2",
+            "short_name": "ตรวจสอบตู้แช่",
+            "display": "standalone",
+            "start_url": window.location.href, // ใช้ URL จริงของหน้านี้
+            "background_color": "#ffffff",
+            "theme_color": "#2563eb",
+            "icons": [
+                {
+                    "src": "./logo-freezer-check.png",
+                    "sizes": "512x512",
+                    "type": "image/png",
+                    "purpose": "any maskable"
+                }
+            ]
+        };
+        
+        // แปลงเป็นข้อความ และเข้ารหัสให้เบราว์เซอร์อ่าน Data URI ได้ปลอดภัย 100%
+        const encodedManifest = encodeURIComponent(JSON.stringify(manifestData));
+        document.getElementById('dynamic-manifest').href = 'data:application/manifest+json;charset=utf-8,' + encodedManifest;
+
+        // 2. เรียกใช้ Service Worker
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js')
             .catch(err => console.log('Service Worker Error:', err));
         }
 
-        // 2. โค้ดสำหรับจัดการปุ่มติดตั้งแอป
+        // 3. จัดการปุ่มติดตั้งแอป
         let deferredPrompt;
         const installBtn = document.getElementById('installAppBtn');
 
-        // ดักจับเมื่อเบราว์เซอร์พร้อมให้ติดตั้ง
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault(); 
             deferredPrompt = e; 
             installBtn.style.display = 'block'; 
         });
 
-        // เมื่อผู้ใช้กดปุ่มติดตั้งของเรา
         installBtn.addEventListener('click', async () => {
             if (deferredPrompt) {
                 deferredPrompt.prompt(); 
@@ -95,7 +99,6 @@
             }
         });
 
-        // ซ่อนปุ่มอัตโนมัติ ถ้าแอปนี้ถูกติดตั้งลงเครื่องไปแล้ว
         window.addEventListener('appinstalled', () => {
             installBtn.style.display = 'none';
         });
