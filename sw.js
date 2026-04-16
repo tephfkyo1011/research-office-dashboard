@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v23'; // 🟢 อัปเดตเป็น v22 เพื่อบังคับเคลียร์แคชเก่า ดึง app.js ตัวใหม่ แก้โค้ดต้องอัปเลขทุกครั้ง
+const CACHE_VERSION = 'v24'; // 🟢 อัปเดตเป็น v22 เพื่อบังคับเคลียร์แคชเก่า ดึง app.js ตัวใหม่ แก้โค้ดต้องอัปเลขทุกครั้ง
 const STATIC_CACHE = `kyogi-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `kyogi-dynamic-${CACHE_VERSION}`;
 const OFFLINE_URL = './offline.html';
@@ -9,7 +9,7 @@ const STATIC_ASSETS = [
   // --- ⚙️ โซนที่ 1: ไฟล์ระบบหลัก (Core Files) ---
   './',
   './index.html',
-  './app.js?v=23', // ทิ้งไว้แบบนี้ก่อน ทำเสร็จหมดทุกโปรแกรมค่อยมาขยับเลขทีเดียวครับ
+  './app.js?v=24', // ทิ้งไว้แบบนี้ก่อน ทำเสร็จหมดทุกโปรแกรมค่อยมาขยับเลขทีเดียวครับ
   './offline.html',
   './ping.txt',
 
@@ -64,6 +64,10 @@ const STATIC_ASSETS = [
   // --- 🎗️ โซนที่ 14: โปรแกรมที่ 12 - Tumor Bank Transport ---
   './logo-tumor-bank.html',
   './logo-tumor-bank.png',
+
+  // --- 📦 โซนที่ 15: โปรแกรมที่ 13 - ระบบเบิก-จ่ายตัวอย่าง ---
+  './logo-withdraw-specimen.html',
+  './logo-withdraw-specimen.png',
   
   // (สามารถเติมโปรแกรมต่อไปเรื่อยๆ ด้านล่างนี้ได้เลยครับ)
 ];
