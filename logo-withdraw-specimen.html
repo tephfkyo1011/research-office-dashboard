@@ -16,10 +16,10 @@
     <link rel="manifest" id="dynamic-manifest">
 
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f4f6f9; font-family: sans-serif; }
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         iframe { width: 100%; height: 100%; border: none; }
 
-        /* สไตล์ของปุ่มติดตั้งแอป */
+        /* สไตล์ของปุ่มติดตั้งแอป (Android/PC) */
         #installAppBtn {
             display: none;
             position: fixed;
@@ -41,6 +41,38 @@
             transform: scale(1.05);
             background-color: #1d4ed8;
         }
+
+        /* กล่องคำแนะนำสำหรับ iOS */
+        #iosInstallPrompt {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ffffff;
+            color: #333;
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            z-index: 9999;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            border-bottom: 4px solid #2563eb;
+        }
+        #iosInstallPrompt p { margin: 0 0 10px 0; font-size: 14px; line-height: 1.4; }
+        #iosInstallPrompt .icon-share { display: inline-block; font-size: 18px; color: #2563eb; margin: 0 5px; }
+        #closeIosPrompt {
+            background: #f1f5f9;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: #475569;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        #closeIosPrompt:hover { background: #e2e8f0; }
     </style>
 </head>
 <body>
@@ -49,15 +81,25 @@
     
     <button id="installAppBtn">📲 ติดตั้งแอปนี้</button>
 
+    <div id="iosInstallPrompt">
+        <p><strong>ติดตั้งแอปบน iOS</strong><br>แตะที่ไอคอน <span class="icon-share">⎋</span> (แชร์) ด้านล่าง<br>แล้วเลือก <strong>"เพิ่มไปยังหน้าจอโฮม"</strong><br>(Add to Home Screen)</p>
+        <button id="closeIosPrompt">รับทราบ</button>
+    </div>
+
     <script>
-        // 1. สร้าง Manifest ด้วย JavaScript
+        // 1. ดึง URL แบบเต็มของไฟล์นี้ เพื่อเอาไปล็อก Scope
+        const currentUrl = window.location.origin + window.location.pathname;
+
+        // 2. สร้าง Manifest ด้วย JavaScript
         const manifestData = {
+            "id": "app-withdraw-specimen", // 🟢 กำหนด ID เฉพาะตัว
             "name": "ระบบเบิก-จ่ายตัวอย่าง",
             "short_name": "เบิก-จ่ายตัวอย่าง",
             "display": "standalone",
             
-            // ดึง URL หน้าเว็บปัจจุบันแบบเต็มๆ
-            "start_url": window.location.href, 
+            // 🟢 ล็อก Scope และหน้าเริ่มต้นให้เป็นไฟล์นี้แบบเป๊ะๆ
+            "scope": currentUrl, 
+            "start_url": currentUrl, 
             
             "background_color": "#ffffff",
             "theme_color": "#2563eb",
@@ -70,28 +112,27 @@
                 }
             ]
         };
-        // แปลง JSON เป็นไฟล์ชั่วคราวแล้วยัดใส่แท็ก <link>
-        const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/manifest+json' });
-        document.getElementById('dynamic-manifest').href = URL.createObjectURL(manifestBlob);
 
-        // 2. เรียกใช้ Service Worker ตัวจริงที่อยู่ในโฟลเดอร์หลัก
+        // 🟢 3. เข้ารหัสเป็น Base64 แทน Blob ป้องกันปัญหา Scope บน Chrome
+        const base64Manifest = btoa(unescape(encodeURIComponent(JSON.stringify(manifestData))));
+        document.getElementById('dynamic-manifest').href = 'data:application/manifest+json;base64,' + base64Manifest;
+
+        // 4. เรียกใช้ Service Worker ตัวจริงที่อยู่ในโฟลเดอร์หลัก
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js')
             .catch(err => console.log('Service Worker Error:', err));
         }
 
-        // 3. โค้ดสำหรับจัดการปุ่มติดตั้งแอป
+        // 5. โค้ดสำหรับจัดการปุ่มติดตั้งแอป (Android & Chrome)
         let deferredPrompt;
         const installBtn = document.getElementById('installAppBtn');
 
-        // ดักจับเมื่อเบราว์เซอร์พร้อมให้ติดตั้ง
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
             installBtn.style.display = 'block';
         });
 
-        // เมื่อผู้ใช้กดปุ่มติดตั้งของเรา
         installBtn.addEventListener('click', async () => {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
@@ -104,10 +145,31 @@
             }
         });
 
-        // ซ่อนปุ่มอัตโนมัติ ถ้าแอปนี้ถูกติดตั้งลงเครื่องไปแล้ว
         window.addEventListener('appinstalled', () => {
             installBtn.style.display = 'none';
         });
+
+        // 6. 🍏 ตรวจจับและแสดงคำแนะนำสำหรับ iOS
+        const isIos = () => {
+            const userAgent = window.navigator.userAgent.toLowerCase();
+            return /iphone|ipad|ipod/.test(userAgent);
+        };
+
+        const isInStandaloneMode = () => {
+            return ('standalone' in window.navigator && window.navigator.standalone) || 
+                   window.matchMedia('(display-mode: standalone)').matches;
+        };
+
+        if (isIos() && !isInStandaloneMode()) {
+            const iosPrompt = document.getElementById('iosInstallPrompt');
+            const closeIosBtn = document.getElementById('closeIosPrompt');
+            
+            iosPrompt.style.display = 'block';
+            
+            closeIosBtn.addEventListener('click', () => {
+                iosPrompt.style.display = 'none';
+            });
+        }
     </script>
 
 </body>
