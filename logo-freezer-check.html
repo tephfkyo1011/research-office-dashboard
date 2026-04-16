@@ -50,12 +50,15 @@
     <button id="installAppBtn">📲 ติดตั้งแอปนี้</button>
 
     <script>
-        // 1. สร้าง Manifest ด้วย JavaScript (แก้ปัญหาโค้ดพังจากการขึ้นบรรทัดใหม่ใน HTML)
+        // 1. สร้าง Manifest ด้วย JavaScript
         const manifestData = {
             "name": "ระบบตรวจสอบตู้แช่ & LN2",
             "short_name": "ตรวจสอบตู้แช่",
             "display": "standalone",
-            "start_url": "./logo-freezer-check.html", // แก้ให้ชี้มาที่ไฟล์นี้โดยตรง
+            
+            // 🟢 แก้ไขตรงนี้: ใช้คำสั่งดึง URL หน้าเว็บปัจจุบันแบบเต็มๆ เบราว์เซอร์จะได้ไม่งง
+            "start_url": window.location.href, 
+            
             "background_color": "#ffffff",
             "theme_color": "#2563eb",
             "icons": [
