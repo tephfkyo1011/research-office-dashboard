@@ -11,6 +11,9 @@ const STATIC_ASSETS = [
   './app.js?v=23', // 🟢 อัปเดตเป็น v22 เพื่อบังคับเคลียร์แคชเก่า ดึง app.js ตัวใหม่ แก้โค้ดต้องอัปเลขทุกครั้ง
   './logo-freezer-check.html', // <--- เพิ่มบรรทัดนี้เข้าไปด้วยครับ
   './logo-freezer-check.png',  // <--- เพิ่มรูปโลโก้เข้าไปด้วยครับ
+  // --- 📦 โปรแกรมที่ 2: ระบบจัดการแก๊ส ---
+  './logo-gas-stock.html',
+  './logo-gas-stock.png',
   './offline.html',
   './ping.txt',
   './libs/fuse.min.js',
