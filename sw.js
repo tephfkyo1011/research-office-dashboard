@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v31'; // 🟢 อัปเดตเป็น v31 เพื่อบังคับเคลียร์แคชเก่า ดึง app.js ตัวใหม่ แก้โค้ดต้องอัปเลขทุกครั้ง
+const CACHE_VERSION = 'v32'; // 🟢 อัปเดตเป็น v32 เพื่อบังคับเคลียร์แคชเก่า ดึง app.js ตัวใหม่ แก้โค้ดต้องอัปเลขทุกครั้ง
 const STATIC_CACHE = `kyogi-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `kyogi-dynamic-${CACHE_VERSION}`;
 const OFFLINE_URL = './offline.html';
@@ -9,7 +9,7 @@ const STATIC_ASSETS = [
   // --- ⚙️ โซนที่ 1: ไฟล์ระบบหลัก (Core Files) ---
   './',
   './index.html',
-  './app.js?v=31', // 🟢 อัปเดตเป็น v31 เพื่อบังคับเคลียร์แคชเก่า ดึง app.js ตัวใหม่ แก้โค้ดต้องอัปเลขทุกครั้ง
+  './app.js?v=32', // 🟢 อัปเดตเป็น v32 เพื่อบังคับเคลียร์แคชเก่า ดึง app.js ตัวใหม่ แก้โค้ดต้องอัปเลขทุกครั้ง
   './offline.html',
   './ping.txt',
 
