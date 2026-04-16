@@ -51,10 +51,14 @@
     <script>
         // 1. สร้าง Manifest และเข้ารหัสเพื่อป้องกัน Syntax Error
         const manifestData = {
+            // 🟢 เพิ่ม 2 บรรทัดนี้ เพื่อบอกเบราว์เซอร์ให้แยกแอปแต่ละหน้าออกจากกัน!
+            "id": window.location.pathname, 
+            "scope": window.location.pathname, 
+            
             "name": "ระบบตรวจสอบตู้แช่ & LN2",
             "short_name": "ตรวจสอบตู้แช่",
             "display": "standalone",
-            "start_url": window.location.href, // ใช้ URL จริงของหน้านี้
+            "start_url": window.location.href, 
             "background_color": "#ffffff",
             "theme_color": "#2563eb",
             "icons": [
