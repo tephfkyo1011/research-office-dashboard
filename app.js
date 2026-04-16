@@ -36,9 +36,9 @@ async function checkRealOnline() {
     try {
         const controller = new AbortController();
         const id = setTimeout(() => controller.abort(), 3000);
-        await fetch(`./ping.txt?_cb=${Date.now()}`, { method: 'HEAD', cache: 'no-store', signal: controller.signal });
+        const res = await fetch(`./ping.txt?_cb=${Date.now()}`, { method: 'HEAD', cache: 'no-store', signal: controller.signal });
         clearTimeout(id);
-        return true;
+        return res.ok; // 🟢 เพิ่มตรงนี้: คืนค่า true เฉพาะตอนที่เจอไฟล์ ping.txt จริงๆ (Status 200-299)
     } catch { return false; }
 }
 
