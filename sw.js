@@ -52,6 +52,10 @@ const STATIC_ASSETS = [
   // --- 🧬 โซนที่ 11: โปรแกรมที่ 9 - HSR Specimen Banking Dashboard ---
   './logo-specimen-dashboard.html',
   './logo-specimen-dashboard.png',
+
+  // --- 🧫 โซนที่ 12: โปรแกรมที่ 10 - Dashboard ระบบทดสอบคุณภาพ Spore Test ---
+  './logo-spore-dashboard.html',
+  './logo-spore-dashboard.png',
   
   // (สามารถเติมโปรแกรมต่อไปเรื่อยๆ ด้านล่างนี้ได้เลยครับ)
 ];
