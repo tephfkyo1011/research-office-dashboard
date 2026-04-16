@@ -28,6 +28,10 @@ const STATIC_ASSETS = [
   // --- 🏥 โซนที่ 5: โปรแกรมที่ 3 - Health Family ---
   './logo-health-family.html',
   './logo-health-family.png',
+
+  // --- 📊 โซนที่ 6: โปรแกรมที่ 4 - Dashboard ครุภัณฑ์ HSR ---
+  './logo-hsr-dashboard.html',
+  './logo-hsr-dashboard.png',
   
   // (สามารถเติมโปรแกรมต่อไปเรื่อยๆ ด้านล่างนี้ได้เลยครับ)
 ];
