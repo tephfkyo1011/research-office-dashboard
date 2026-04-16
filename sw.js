@@ -56,6 +56,10 @@ const STATIC_ASSETS = [
   // --- 🧫 โซนที่ 12: โปรแกรมที่ 10 - Dashboard ระบบทดสอบคุณภาพ Spore Test ---
   './logo-spore-dashboard.html',
   './logo-spore-dashboard.png',
+
+  // --- 🧪 โซนที่ 13: โปรแกรมที่ 11 - RC Autoclave Spore Test ---
+  './logo-spore-test.html',
+  './logo-spore-test.png',
   
   // (สามารถเติมโปรแกรมต่อไปเรื่อยๆ ด้านล่างนี้ได้เลยครับ)
 ];
