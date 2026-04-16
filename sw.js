@@ -48,6 +48,10 @@ const STATIC_ASSETS = [
   // --- ⏰ โซนที่ 10: โปรแกรมที่ 8 - ระบบลงเวลาปฏิบัติงานนอกเวลา ---
   './logo-ot-time.html',
   './logo-ot-time.png',
+
+  // --- 🧬 โซนที่ 11: โปรแกรมที่ 9 - HSR Specimen Banking Dashboard ---
+  './logo-specimen-dashboard.html',
+  './logo-specimen-dashboard.png',
   
   // (สามารถเติมโปรแกรมต่อไปเรื่อยๆ ด้านล่างนี้ได้เลยครับ)
 ];
