@@ -60,6 +60,10 @@ const STATIC_ASSETS = [
   // --- 🧪 โซนที่ 13: โปรแกรมที่ 11 - RC Autoclave Spore Test ---
   './logo-spore-test.html',
   './logo-spore-test.png',
+
+  // --- 🎗️ โซนที่ 14: โปรแกรมที่ 12 - Tumor Bank Transport ---
+  './logo-tumor-bank.html',
+  './logo-tumor-bank.png',
   
   // (สามารถเติมโปรแกรมต่อไปเรื่อยๆ ด้านล่างนี้ได้เลยครับ)
 ];
