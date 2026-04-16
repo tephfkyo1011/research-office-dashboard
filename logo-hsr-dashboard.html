@@ -50,17 +50,19 @@
     <button id="installAppBtn">📲 ติดตั้งแอปนี้</button>
 
     <script>
-        // 1. สร้าง Manifest ด้วย JavaScript
+        // 🟢 1. ดึง URL แบบเต็มของไฟล์นี้ (ตัดพวกเครื่องหมาย ? ต่อท้ายออกเพื่อความชัวร์)
+        const currentUrl = window.location.origin + window.location.pathname;
+
+        // 2. สร้าง Manifest ด้วย JavaScript
         const manifestData = {
-            // 🟢 จุดสำคัญที่สุด: ต้องใส่ ID ให้ไม่ซ้ำกันในแต่ละไฟล์!
             "id": "app-hsr-dashboard", 
-            
             "name": "Dashboard สรุปข้อมูลครุภัณฑ์",
             "short_name": "ครุภัณฑ์ HSR",
             "display": "standalone",
             
-            // ดึง URL หน้าเว็บปัจจุบันแบบเต็มๆ
-            "start_url": window.location.href, 
+            // 🟢 3. จุดสำคัญที่สุด: บังคับ Scope และ Start URL ให้ล็อคตายตัวที่ไฟล์นี้ไฟล์เดียว!
+            "scope": currentUrl, 
+            "start_url": currentUrl, 
             
             "background_color": "#ffffff",
             "theme_color": "#2563eb",
@@ -73,17 +75,18 @@
                 }
             ]
         };
-        // แปลง JSON เป็นไฟล์ชั่วคราวแล้วยัดใส่แท็ก <link>
-        const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/manifest+json' });
-        document.getElementById('dynamic-manifest').href = URL.createObjectURL(manifestBlob);
 
-        // 2. เรียกใช้ Service Worker ตัวจริงที่อยู่ในโฟลเดอร์หลัก
+        // 🟢 4. เปลี่ยนมาใช้ Base64 ในการเข้ารหัสแทน Blob (แก้ปัญหา Chrome สับสน Scope 100%)
+        const base64Manifest = btoa(unescape(encodeURIComponent(JSON.stringify(manifestData))));
+        document.getElementById('dynamic-manifest').href = 'data:application/manifest+json;base64,' + base64Manifest;
+
+        // 5. เรียกใช้ Service Worker 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js')
             .catch(err => console.log('Service Worker Error:', err));
         }
 
-        // 3. โค้ดสำหรับจัดการปุ่มติดตั้งแอป
+        // 6. โค้ดสำหรับจัดการปุ่มติดตั้งแอป
         let deferredPrompt;
         const installBtn = document.getElementById('installAppBtn');
 
