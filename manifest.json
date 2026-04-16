@@ -1,7 +1,8 @@
 {
+  "id": "research-portal-main", 
   "name": "Research Office Portal - KYOGI",
-  "short_name": "RO Portal",
-  "description": "ระบบจัดการและรวบรวมลิงก์ภายในสำหรับฝ่ายวิจัย KYOGI",
+  "short_name": "Portal",
+  "start_url": "./index.html",
   "display": "standalone",
   "start_url": "./index.html",
   "background_color": "#f4f6f9",
