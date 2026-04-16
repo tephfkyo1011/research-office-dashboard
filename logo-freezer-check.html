@@ -16,9 +16,10 @@
     <link rel="manifest" id="dynamic-manifest">
 
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f4f6f9; font-family: sans-serif; }
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         iframe { width: 100%; height: 100%; border: none; }
 
+        /* ปุ่มติดตั้งสำหรับ Android/PC */
         #installAppBtn {
             display: none;
             position: fixed;
@@ -40,6 +41,38 @@
             transform: scale(1.05);
             background-color: #1d4ed8;
         }
+
+        /* กล่องคำแนะนำสำหรับ iOS */
+        #iosInstallPrompt {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ffffff;
+            color: #333;
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            z-index: 9999;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            border-bottom: 4px solid #2563eb;
+        }
+        #iosInstallPrompt p { margin: 0 0 10px 0; font-size: 14px; line-height: 1.4; }
+        #iosInstallPrompt .icon-share { display: inline-block; font-size: 18px; color: #2563eb; margin: 0 5px; }
+        #closeIosPrompt {
+            background: #f1f5f9;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: #475569;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        #closeIosPrompt:hover { background: #e2e8f0; }
     </style>
 </head>
 <body>
@@ -48,13 +81,16 @@
     
     <button id="installAppBtn">📲 ติดตั้งแอปนี้</button>
 
+    <div id="iosInstallPrompt">
+        <p><strong>ติดตั้งแอปบน iOS</strong><br>แตะที่ไอคอน <span class="icon-share">⎋</span> (แชร์) ด้านล่าง<br>แล้วเลือก <strong>"เพิ่มไปยังหน้าจอโฮม"</strong><br>(Add to Home Screen)</p>
+        <button id="closeIosPrompt">รับทราบ</button>
+    </div>
+
     <script>
         // 1. สร้าง Manifest และเข้ารหัสเพื่อป้องกัน Syntax Error
         const manifestData = {
-            // 🟢 กำหนด ID เฉพาะตัว เพื่อไม่ให้ Chrome สับสนกับแอประบบ Portal
             "id": "freezer-check-app", 
             "scope": "./", 
-            
             "name": "ระบบตรวจสอบตู้แช่ & LN2",
             "short_name": "ตรวจสอบตู้แช่",
             "display": "standalone",
@@ -71,7 +107,6 @@
             ]
         };
         
-        // เปลี่ยนมาใช้ Blob เพื่อป้องกัน Syntax Error 100%
         const blob = new Blob([JSON.stringify(manifestData)], { type: 'application/manifest+json' });
         const manifestURL = URL.createObjectURL(blob);
         document.getElementById('dynamic-manifest').href = manifestURL;
@@ -82,7 +117,7 @@
             .catch(err => console.log('Service Worker Error:', err));
         }
 
-        // 3. จัดการปุ่มติดตั้งแอป
+        // 3. จัดการปุ่มติดตั้งแอป (Android & Chrome)
         let deferredPrompt;
         const installBtn = document.getElementById('installAppBtn');
 
@@ -107,6 +142,30 @@
         window.addEventListener('appinstalled', () => {
             installBtn.style.display = 'none';
         });
+
+        // 4. 🍏 ตรวจจับและแสดงคำแนะนำสำหรับ iOS
+        const isIos = () => {
+            const userAgent = window.navigator.userAgent.toLowerCase();
+            return /iphone|ipad|ipod/.test(userAgent);
+        };
+
+        // เช็คว่าทำงานแบบ Standalone (ติดตั้งเป็นแอปแล้ว) หรือยัง
+        const isInStandaloneMode = () => {
+            return ('standalone' in window.navigator && window.navigator.standalone) || 
+                   window.matchMedia('(display-mode: standalone)').matches;
+        };
+
+        if (isIos() && !isInStandaloneMode()) {
+            const iosPrompt = document.getElementById('iosInstallPrompt');
+            const closeIosBtn = document.getElementById('closeIosPrompt');
+            
+            // โชว์ popup สำหรับ iOS
+            iosPrompt.style.display = 'block';
+            
+            closeIosBtn.addEventListener('click', () => {
+                iosPrompt.style.display = 'none';
+            });
+        }
     </script>
 
 </body>
