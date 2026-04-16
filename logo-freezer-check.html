@@ -13,22 +13,7 @@
     <link rel="icon" type="image/png" href="https://tephfkyo1011.github.io/research-office-dashboard/logo-freezer-check.png">
     <link rel="apple-touch-icon" href="https://tephfkyo1011.github.io/research-office-dashboard/logo-freezer-check.png">
 
-    <link rel="manifest" href='data:application/manifest+json,{
-      "name": "ระบบตรวจสอบตู้แช่ & LN2",
-      "short_name": "ตรวจสอบตู้แช่",
-      "display": "standalone",
-      "start_url": ".",
-      "background_color": "#ffffff",
-      "theme_color": "#2563eb",
-      "icons": [
-        {
-          "src": "https://tephfkyo1011.github.io/research-office-dashboard/logo-freezer-check.png",
-          "sizes": "512x512",
-          "type": "image/png",
-          "purpose": "any maskable"
-        }
-      ]
-    }'>
+    <link rel="manifest" id="dynamic-manifest">
 
     <style>
         body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f4f6f9; font-family: sans-serif; }
@@ -65,41 +50,53 @@
     <button id="installAppBtn">📲 ติดตั้งแอปนี้</button>
 
     <script>
-        // 1. โค้ด Service Worker เปล่าๆ เพื่อหลอกให้เบราว์เซอร์ยอมให้ติดตั้งแอป
-        if ('service-worker' in navigator) {
-            const swCode = `self.addEventListener('fetch', function() {});`;
-            const blob = new Blob([swCode], {type: 'text/javascript'});
-            navigator.serviceWorker.register(URL.createObjectURL(blob));
+        // 1. สร้าง Manifest ด้วย JavaScript (แก้ปัญหาโค้ดพังจากการขึ้นบรรทัดใหม่ใน HTML)
+        const manifestData = {
+            "name": "ระบบตรวจสอบตู้แช่ & LN2",
+            "short_name": "ตรวจสอบตู้แช่",
+            "display": "standalone",
+            "start_url": "./logo-freezer-check.html", // แก้ให้ชี้มาที่ไฟล์นี้โดยตรง
+            "background_color": "#ffffff",
+            "theme_color": "#2563eb",
+            "icons": [
+                {
+                    "src": "https://tephfkyo1011.github.io/research-office-dashboard/logo-freezer-check.png",
+                    "sizes": "512x512",
+                    "type": "image/png",
+                    "purpose": "any maskable"
+                }
+            ]
+        };
+        // แปลง JSON เป็นไฟล์ชั่วคราวแล้วยัดใส่แท็ก <link>
+        const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/manifest+json' });
+        document.getElementById('dynamic-manifest').href = URL.createObjectURL(manifestBlob);
+
+        // 2. เรียกใช้ Service Worker ตัวจริงที่เรามีอยู่แล้ว! (แก้ปัญหาที่ Chrome บล็อก Blob)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+            .catch(err => console.log('Service Worker Error:', err));
         }
 
-        // 2. โค้ดสำหรับจัดการปุ่มติดตั้งแอป
+        // 3. โค้ดสำหรับจัดการปุ่มติดตั้งแอป (ส่วนนี้ของพี่เขียนมาดีมากๆ แล้วครับ)
         let deferredPrompt;
         const installBtn = document.getElementById('installAppBtn');
 
         // ดักจับเมื่อเบราว์เซอร์พร้อมให้ติดตั้ง
         window.addEventListener('beforeinstallprompt', (e) => {
-            // ป้องกันไม่ให้เบราว์เซอร์แสดง Prompt พื้นฐานของมันเอง
-            e.preventDefault();
-            // เก็บ event ไว้ใช้ตอนผู้ใช้กดปุ่ม
-            deferredPrompt = e;
-            // แสดงปุ่มของเราขึ้นมา
-            installBtn.style.display = 'block';
+            e.preventDefault(); // ป้องกัน Prompt มาตรฐาน
+            deferredPrompt = e; // เก็บ event ไว้
+            installBtn.style.display = 'block'; // แสดงปุ่มของเราขึ้นมา
         });
 
         // เมื่อผู้ใช้กดปุ่มติดตั้งของเรา
         installBtn.addEventListener('click', async () => {
             if (deferredPrompt) {
-                // แสดงหน้าต่างยืนยันการติดตั้ง
-                deferredPrompt.prompt();
-                
-                // รอฟังคำตอบจากผู้ใช้ว่ากด "ติดตั้ง" หรือ "ยกเลิก"
+                deferredPrompt.prompt(); // แสดงหน้าต่างยืนยัน
                 const { outcome } = await deferredPrompt.userChoice;
                 if (outcome === 'accepted') {
                     console.log('ผู้ใช้ยอมรับการติดตั้ง');
-                    installBtn.style.display = 'none'; // ซ่อนปุ่มเมื่อติดตั้งเสร็จ
+                    installBtn.style.display = 'none'; // ซ่อนปุ่มเมื่อกดติดตั้ง
                 }
-                
-                // ล้างค่าทิ้ง เพราะ prompt โชว์ซ้ำไม่ได้แล้ว
                 deferredPrompt = null;
             }
         });
