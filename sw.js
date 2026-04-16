@@ -40,6 +40,10 @@ const STATIC_ASSETS = [
   // --- 🧪 โซนที่ 8: โปรแกรมที่ 6 - Lab Instrument Management System (LMS) ---
   './logo-lms-lab.html',
   './logo-lms-lab.png',
+
+  // --- 🧊 โซนที่ 9: โปรแกรมที่ 7 - ระบบบันทึก Liquid Nitrogen ---
+  './logo-ln2-log.html',
+  './logo-ln2-log.png',
   
   // (สามารถเติมโปรแกรมต่อไปเรื่อยๆ ด้านล่างนี้ได้เลยครับ)
 ];
