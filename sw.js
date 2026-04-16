@@ -114,16 +114,15 @@ async function trimCache(cacheName, maxItems) {
   } catch (err) { console.error('Trim Cache Error:', err); }
 }
 
-self.addEventListener('fetch', event => {
-    // 🟢 เพิ่ม 3 บรรทัดนี้เข้าไป เพื่อให้ข้ามการแคชพวก Chrome Extension
-    if (!event.request.url.startsWith('http')) {
-        return;
-    }
-
-    // ... (โค้ดเดิมของพี่ที่อยู่ด้านล่าง ปล่อยไว้เหมือนเดิมครับ) ...
-});
 self.addEventListener('fetch', e => {
+  // 🟢 1. เพิ่มตรงนี้! ดักจับและข้ามพวก Chrome Extension หรือ URL ที่ไม่ใช่ http/https ทันที
+  if (!e.request.url.startsWith('http')) {
+    return;
+  }
+
+  // 🟢 2. โค้ดเดิมของพี่: ถ้าไม่ใช่ GET ให้ข้ามไป
   if (e.request.method !== 'GET') return;
+  
   const url = new URL(e.request.url);
 
   try {
