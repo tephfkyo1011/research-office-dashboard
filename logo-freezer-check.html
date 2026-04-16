@@ -51,9 +51,9 @@
     <script>
         // 1. สร้าง Manifest และเข้ารหัสเพื่อป้องกัน Syntax Error
         const manifestData = {
-            // 🟢 เพิ่ม 2 บรรทัดนี้ เพื่อบอกเบราว์เซอร์ให้แยกแอปแต่ละหน้าออกจากกัน!
-            "id": window.location.pathname, 
-            "scope": window.location.pathname, 
+            // 🟢 กำหนด ID เฉพาะตัว เพื่อไม่ให้ Chrome สับสนกับแอประบบ Portal
+            "id": "freezer-check-app", 
+            "scope": "./", 
             
             "name": "ระบบตรวจสอบตู้แช่ & LN2",
             "short_name": "ตรวจสอบตู้แช่",
