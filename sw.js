@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v22'; // 🟢 อัปเดตเป็น v22 เพื่อบังคับเคลียร์แคชเก่า ดึง app.js ตัวใหม่ แก้โค้ดต้องอัปเลขทุกครั้ง
+const CACHE_VERSION = 'v23'; // 🟢 อัปเดตเป็น v22 เพื่อบังคับเคลียร์แคชเก่า ดึง app.js ตัวใหม่ แก้โค้ดต้องอัปเลขทุกครั้ง
 const STATIC_CACHE = `kyogi-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `kyogi-dynamic-${CACHE_VERSION}`;
 const OFFLINE_URL = './offline.html';
@@ -8,7 +8,7 @@ const MAX_DYNAMIC_ITEMS = 100;
 const STATIC_ASSETS = [
   './',
   './index.html',
-  './app.js?v=22', // 🟢 อัปเดตเป็น v22 เพื่อบังคับเคลียร์แคชเก่า ดึง app.js ตัวใหม่ แก้โค้ดต้องอัปเลขทุกครั้ง
+  './app.js?v=23', // 🟢 อัปเดตเป็น v22 เพื่อบังคับเคลียร์แคชเก่า ดึง app.js ตัวใหม่ แก้โค้ดต้องอัปเลขทุกครั้ง
   './logo-freezer-check.html', // <--- เพิ่มบรรทัดนี้เข้าไปด้วยครับ
   './logo-freezer-check.png',  // <--- เพิ่มรูปโลโก้เข้าไปด้วยครับ
   './offline.html',
