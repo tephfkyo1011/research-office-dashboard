@@ -6,18 +6,30 @@ const MAX_DYNAMIC_ITEMS = 100;
 
 // 🟢 โหลดทุกอย่างจาก Local
 const STATIC_ASSETS = [
+  // --- ⚙️ โซนที่ 1: ไฟล์ระบบหลัก (Core Files) ---
   './',
   './index.html',
-  './app.js?v=23', // 🟢 อัปเดตเป็น v22 เพื่อบังคับเคลียร์แคชเก่า ดึง app.js ตัวใหม่ แก้โค้ดต้องอัปเลขทุกครั้ง
-  './logo-freezer-check.html', // <--- เพิ่มบรรทัดนี้เข้าไปด้วยครับ
-  './logo-freezer-check.png',  // <--- เพิ่มรูปโลโก้เข้าไปด้วยครับ
-  // --- 📦 โปรแกรมที่ 2: ระบบจัดการแก๊ส ---
-  './logo-gas-stock.html',
-  './logo-gas-stock.png',
+  './app.js?v=23', // ทิ้งไว้แบบนี้ก่อน ทำเสร็จหมดทุกโปรแกรมค่อยมาขยับเลขทีเดียวครับ
   './offline.html',
   './ping.txt',
+
+  // --- 📚 โซนที่ 2: ไลบรารี (Libraries) ---
   './libs/fuse.min.js',
   './libs/localforage.min.js',
+
+  // --- ❄️ โซนที่ 3: โปรแกรมที่ 1 - ตู้แช่ & LN2 ---
+  './logo-freezer-check.html',
+  './logo-freezer-check.png',
+
+  // --- ⛽ โซนที่ 4: โปรแกรมที่ 2 - ระบบจัดการแก๊ส ---
+  './logo-gas-stock.html',
+  './logo-gas-stock.png',
+
+  // --- 📦 โซนที่ 5: โปรแกรมที่ 3 - (รอพี่มาเติม) ---
+  // './logo-program-3.html',
+  // './logo-program-3.png',
+  
+  // (สามารถเติมโปรแกรมต่อไปเรื่อยๆ ด้านล่างนี้ได้เลยครับ)
 ];
 
 self.addEventListener('message', event => {
