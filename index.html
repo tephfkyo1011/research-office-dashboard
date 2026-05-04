@@ -29,6 +29,10 @@
             --text-sub: #6c757d;
             --gold: #ffc107;
             --col-it: #007bff;
+            /* เพิ่มตัวแปรสีที่ขาดหายไปเพื่อให้หัวข้อแสดงผลได้อย่างถูกต้อง */
+            --col-central: #e67e22; 
+            --col-hr: #9b59b6;      
+            --col-fun: #e74c3c;     
             --hl-bg: rgba(255, 193, 7, 0.4);
         }
 
@@ -147,7 +151,7 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.02); min-height: 140px; border-top: 4px solid transparent; 
             color: var(--text-main); background: rgba(255,255,255,0.8); backdrop-filter: blur(10px);
             position: relative; transition: all 0.3s ease; order: 999;
-            cursor: pointer; /* 🟢 เพิ่ม cursor pointer ให้รู้ว่ากดได้ */
+            cursor: pointer; 
         }
         body.dark .card { background: rgba(40,40,60,0.6); }
         .card:hover { transform: translateY(-6px); box-shadow: 0 12px 25px rgba(0,0,0,0.08); }
@@ -375,7 +379,8 @@
                 <div class="card-title">XWEB ตรวจเช็คอุณหภูมิ</div>
                 <div class="card-desc">Monitor ออนไลน์</div>
             </div>
-        </div>
+            
+            </div>
 
         <div class="section-title" style="color:var(--col-hr); border-color:var(--col-hr);"><i class="fa-solid fa-user-tie"></i> HR & บุคลากร</div>
         <div class="grid" id="grid-hr">
@@ -400,7 +405,8 @@
                 <div class="card-title">ระบบ PMS</div>
                 <div class="card-desc">ประเมินผลปฏิบัติงาน</div>
             </div>
-        </div>
+            
+            </div>
 
         <div class="section-title" style="color:var(--col-fun); border-color:var(--col-fun);"><i class="fa-icons"></i> บันเทิง</div>
         <div class="grid" id="grid-fun">
@@ -417,7 +423,8 @@
                 <div class="card-title">วงล้อเสี่ยงโชค</div>
                 <div class="card-desc">กิจกรรมเสี่ยงดวง</div>
             </div>
-        </div>
+            
+            </div>
     </div>
 
     <div class="footer">
