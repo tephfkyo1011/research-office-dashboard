@@ -1,4 +1,4 @@
-const APP_VERSION = 'v33-TitanMode';
+const APP_VERSION = 'v34-TitanMode';
 console.log(`🚀 App Version: ${APP_VERSION} (Secure CSP)`);
 
 // 🟢 DOM Elements
