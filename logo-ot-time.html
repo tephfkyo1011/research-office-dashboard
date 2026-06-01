@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>ระบบลงเวลาปฏิบัติงานนอกเวลา</title> 
     
     <meta name="theme-color" content="#2563eb">
@@ -16,68 +16,66 @@
     <link rel="manifest" id="dynamic-manifest">
 
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        iframe { width: 100%; height: 100%; border: none; }
+        /* 🌟 บังคับ body ให้เต็มจอ 100% และห้ามเลื่อนเด็ดขาด */
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            overflow: hidden; background-color: #f4f6f9; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        }
+
+        /* 🌟 สร้างกล่องพิเศษสำหรับ iOS เพื่อให้เลื่อนเฉพาะข้างใน Iframe ได้ลื่นไหล */
+        .iframe-wrapper {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            -webkit-overflow-scrolling: touch;
+            overflow-y: auto;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 🌟 เทคนิคหลอก iOS: ตั้ง width=1px แต่ min-width=100% ป้องกันการขยายกรอบมั่วๆ */
+        iframe { 
+            width: 1px; 
+            min-width: 100%; 
+            height: 100%; 
+            border: none; 
+            display: block;
+            transition: opacity 0.3s ease; /* เพิ่มลูกเล่นตอนเปลี่ยนหน้า */
+        }
 
         /* สไตล์ของปุ่มติดตั้งแอป (Android/PC) */
         #installAppBtn {
-            display: none;
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: bold;
-            box-shadow: 0 8px 15px rgba(37, 99, 235, 0.4);
-            cursor: pointer;
-            z-index: 9999;
-            transition: transform 0.2s, background-color 0.2s;
+            display: none; position: fixed; bottom: 30px; right: 30px;
+            background-color: #2563eb; color: white; border: none;
+            border-radius: 50px; padding: 12px 24px; font-size: 16px;
+            font-weight: bold; box-shadow: 0 8px 15px rgba(37, 99, 235, 0.4);
+            cursor: pointer; z-index: 9999; transition: transform 0.2s, background-color 0.2s;
         }
-        #installAppBtn:hover {
-            transform: scale(1.05);
-            background-color: #1d4ed8;
-        }
+        #installAppBtn:hover { transform: scale(1.05); background-color: #1d4ed8; }
 
         /* กล่องคำแนะนำสำหรับ iOS */
         #iosInstallPrompt {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #ffffff;
-            color: #333;
-            padding: 15px 20px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            z-index: 9999;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
+            display: none; position: fixed; bottom: 20px; left: 50%;
+            transform: translateX(-50%); background-color: #ffffff; color: #333;
+            padding: 15px 20px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            z-index: 9999; width: 90%; max-width: 400px; text-align: center;
             border-bottom: 4px solid #2563eb;
         }
         #iosInstallPrompt p { margin: 0 0 10px 0; font-size: 14px; line-height: 1.4; }
         #iosInstallPrompt .icon-share { display: inline-block; font-size: 18px; color: #2563eb; margin: 0 5px; }
         #closeIosPrompt {
-            background: #f1f5f9;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            color: #475569;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 14px;
+            background: #f1f5f9; border: none; padding: 8px 16px;
+            border-radius: 6px; color: #475569; font-weight: bold;
+            cursor: pointer; font-size: 14px;
         }
         #closeIosPrompt:hover { background: #e2e8f0; }
     </style>
 </head>
 <body>
 
-    <iframe src="https://script.google.com/macros/s/AKfycbzO_77wN89GjfbaoqkcH_j9iziyK-_mbKP_8PGnUuvPOsnjkyx2HZWo1naZJWwuuo8wVg/exec" allow="fullscreen"></iframe>
+    <div class="iframe-wrapper">
+        <iframe id="mainIframe" src="https://script.google.com/macros/s/AKfycbzO_77wN89GjfbaoqkcH_j9iziyK-_mbKP_8PGnUuvPOsnjkyx2HZWo1naZJWwuuo8wVg/exec" allow="fullscreen"></iframe>
+    </div>
     
     <button id="installAppBtn">📲 ติดตั้งแอปนี้</button>
 
@@ -87,20 +85,36 @@
     </div>
 
     <script>
-        // 1. ดึง URL แบบเต็มของไฟล์นี้ เพื่อเอาไปล็อก Scope
+        // ==========================================
+        // 🌟 1. ระบบรับสัญญาณวิทยุจาก Iframe (แก้บั๊ก iOS สลับหน้าแล้วค้าง)
+        // ==========================================
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.action === 'changePage') {
+                const iframe = document.getElementById('mainIframe');
+                if (iframe) {
+                    iframe.style.opacity = '0.5'; // ทำเอฟเฟกต์เฟดตอนโหลด
+                    iframe.src = event.data.newUrl; // สั่งเปลี่ยนหน้าต่างอย่างปลอดภัย
+                    iframe.onload = function() {
+                        iframe.style.opacity = '1';
+                        // สั่งให้เลื่อนจอขึ้นบนสุดเมื่อเปลี่ยนหน้าเสร็จ
+                        document.querySelector('.iframe-wrapper').scrollTop = 0; 
+                    };
+                }
+            }
+        });
+
+        // ==========================================
+        // 2. ระบบ PWA และ Manifest เดิมของพี่ (คงไว้เหมือนเดิมเป๊ะ)
+        // ==========================================
         const currentUrl = window.location.origin + window.location.pathname;
 
-        // 2. สร้าง Manifest ด้วย JavaScript
         const manifestData = {
-            "id": "app-ot-time", // 🟢 กำหนด ID เฉพาะตัว
+            "id": "app-ot-time", 
             "name": "ระบบลงเวลาปฏิบัติงานนอกเวลา",
             "short_name": "ลงเวลา OT",
             "display": "standalone",
-            
-            // 🟢 ล็อก Scope และหน้าเริ่มต้นให้เป็นไฟล์นี้แบบเป๊ะๆ
             "scope": currentUrl, 
             "start_url": currentUrl, 
-            
             "background_color": "#ffffff",
             "theme_color": "#2563eb",
             "icons": [
@@ -113,17 +127,14 @@
             ]
         };
 
-        // 🟢 3. เข้ารหัสเป็น Base64 แทน Blob ป้องกันปัญหา Scope บน Chrome
         const base64Manifest = btoa(unescape(encodeURIComponent(JSON.stringify(manifestData))));
         document.getElementById('dynamic-manifest').href = 'data:application/manifest+json;base64,' + base64Manifest;
 
-        // 4. เรียกใช้ Service Worker ตัวจริงที่อยู่ในโฟลเดอร์หลัก
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js')
             .catch(err => console.log('Service Worker Error:', err));
         }
 
-        // 5. โค้ดสำหรับจัดการปุ่มติดตั้งแอป (Android & Chrome)
         let deferredPrompt;
         const installBtn = document.getElementById('installAppBtn');
 
@@ -149,7 +160,6 @@
             installBtn.style.display = 'none';
         });
 
-        // 6. 🍏 ตรวจจับและแสดงคำแนะนำสำหรับ iOS
         const isIos = () => {
             const userAgent = window.navigator.userAgent.toLowerCase();
             return /iphone|ipad|ipod/.test(userAgent);
