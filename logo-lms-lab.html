@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lab Instrument Management System (LMS)</title> 
-    
     <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -12,65 +11,16 @@
 
     <link rel="icon" type="image/png" href="https://tephfkyo1011.github.io/research-office-dashboard/logo-lms-lab.png">
     <link rel="apple-touch-icon" href="https://tephfkyo1011.github.io/research-office-dashboard/logo-lms-lab.png">
-
     <link rel="manifest" id="dynamic-manifest">
 
     <style>
         body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         iframe { width: 100%; height: 100%; border: none; }
-
-        #installAppBtn {
-            display: none;
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: bold;
-            box-shadow: 0 8px 15px rgba(37, 99, 235, 0.4);
-            cursor: pointer;
-            z-index: 9999;
-            transition: transform 0.2s, background-color 0.2s;
-        }
-        #installAppBtn:hover {
-            transform: scale(1.05);
-            background-color: #1d4ed8;
-        }
-
-        #iosInstallPrompt {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #ffffff;
-            color: #333;
-            padding: 15px 20px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            z-index: 9999;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            border-bottom: 4px solid #2563eb;
-        }
+        #installAppBtn { display: none; position: fixed; bottom: 30px; right: 30px; background-color: #2563eb; color: white; border: none; border-radius: 50px; padding: 12px 24px; font-size: 16px; font-weight: bold; box-shadow: 0 8px 15px rgba(37, 99, 235, 0.4); cursor: pointer; z-index: 9999; }
+        #iosInstallPrompt { display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #ffffff; color: #333; padding: 15px 20px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); z-index: 9999; width: 90%; max-width: 400px; text-align: center; border-bottom: 4px solid #2563eb; }
         #iosInstallPrompt p { margin: 0 0 10px 0; font-size: 14px; line-height: 1.4; }
         #iosInstallPrompt .icon-share { display: inline-block; font-size: 18px; color: #2563eb; margin: 0 5px; }
-        #closeIosPrompt {
-            background: #f1f5f9;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            color: #475569;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        #closeIosPrompt:hover { background: #e2e8f0; }
+        #closeIosPrompt { background: #f1f5f9; border: none; padding: 8px 16px; border-radius: 6px; color: #475569; font-weight: bold; cursor: pointer; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -90,7 +40,7 @@
     </div>
 
     <script>
-        // 🚀 ดักจับข้อความสื่อสารจากภายใน iframe เพื่อเปลี่ยนเนื้อหาโดยไม่เปลี่ยน URL หน้าหลัก
+        // 🚀 ดักรับข้อความจาก window.top ที่ส่งมาจาก Apps Script
         window.addEventListener('message', function(event) {
             if (event.data && event.data.action === 'NAVIGATE') {
                 var iframe = document.getElementById('appIframe');
@@ -111,22 +61,14 @@
             "start_url": currentUrl, 
             "background_color": "#ffffff",
             "theme_color": "#2563eb",
-            "icons": [
-                {
-                    "src": "https://tephfkyo1011.github.io/research-office-dashboard/logo-lms-lab.png",
-                    "sizes": "512x512",
-                    "type": "image/png",
-                    "purpose": "any maskable"
-                }
-            ]
+            "icons": [{ "src": "https://tephfkyo1011.github.io/research-office-dashboard/logo-lms-lab.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }]
         };
 
         const base64Manifest = btoa(unescape(encodeURIComponent(JSON.stringify(manifestData))));
         document.getElementById('dynamic-manifest').href = 'data:application/manifest+json;base64,' + base64Manifest;
 
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js')
-            .catch(err => console.log('Service Worker Error:', err));
+            navigator.serviceWorker.register('./sw.js').catch(err => console.log('Service Worker Error:', err));
         }
 
         let deferredPrompt;
@@ -142,36 +84,20 @@
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    installBtn.style.display = 'none';
-                }
+                if (outcome === 'accepted') { installBtn.style.display = 'none'; }
                 deferredPrompt = null;
             }
         });
 
-        window.addEventListener('appinstalled', () => {
-            installBtn.style.display = 'none';
-        });
+        window.addEventListener('appinstalled', () => { installBtn.style.display = 'none'; });
 
-        const isIos = () => {
-            const userAgent = window.navigator.userAgent.toLowerCase();
-            return /iphone|ipad|ipod/.test(userAgent);
-        };
-
-        const isInStandaloneMode = () => {
-            return ('standalone' in window.navigator && window.navigator.standalone) || 
-                   window.matchMedia('(display-mode: standalone)').matches;
-        };
+        const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+        const isInStandaloneMode = () => ('standalone' in window.navigator && window.navigator.standalone) || window.matchMedia('(display-mode: standalone)').matches;
 
         if (isIos() && !isInStandaloneMode()) {
             const iosPrompt = document.getElementById('iosInstallPrompt');
-            const closeIosBtn = document.getElementById('closeIosPrompt');
-            
+            document.getElementById('closeIosPrompt').addEventListener('click', () => { iosPrompt.style.display = 'none'; });
             iosPrompt.style.display = 'block';
-            
-            closeIosBtn.addEventListener('click', () => {
-                iosPrompt.style.display = 'none';
-            });
         }
     </script>
 
