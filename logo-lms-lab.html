@@ -78,10 +78,11 @@
 <body>
 
     <iframe 
-  src="https://script.google.com/macros/s/AKfycbxZtGFYX2PnHWwNRY5INba6-65Yu5gylqKySJFgJYTufIVOU76Iieo41ANHI6mZ0DKWeQ/exec" 
-  allow="fullscreen; camera; micro-phone"
-  sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation allow-top-navigation-by-user-activation">
-</iframe>
+      id="mainIframe"
+      src="https://script.google.com/macros/s/AKfycbxZtGFYX2PnHWwNRY5INba6-65Yu5gylqKySJFgJYTufIVOU76Iieo41ANHI6mZ0DKWeQ/exec" 
+      allow="fullscreen; camera; microphone"
+      sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation allow-top-navigation-by-user-activation">
+    </iframe>
     
     <button id="installAppBtn">📲 ติดตั้งแอปนี้</button>
 
@@ -91,20 +92,27 @@
     </div>
 
     <script>
+        // 🚀 ดักรับคำสั่งเปลี่ยนหน้าภายใน iframe จาก Apps Script (ทำให้คงหน้า GitHub URL ไว้ได้ตลอดเวลา)
+        window.addEventListener("message", function(event) {
+            if (event.data && event.data.type === "CHANGE_IFRAME_URL") {
+                let iframe = document.getElementById('mainIframe');
+                if (iframe) {
+                    iframe.src = event.data.url;
+                }
+            }
+        });
+
         // 1. ดึง URL แบบเต็มของไฟล์นี้ เพื่อเอาไปล็อก Scope
         const currentUrl = window.location.origin + window.location.pathname;
 
         // 2. สร้าง Manifest ด้วย JavaScript
         const manifestData = {
-            "id": "app-lms-lab", // 🟢 กำหนด ID เฉพาะตัว
+            "id": "app-lms-lab",
             "name": "Lab Instrument Management System (LMS)",
             "short_name": "LMS Lab",
             "display": "standalone",
-            
-            // 🟢 ล็อก Scope และหน้าเริ่มต้นให้เป็นไฟล์นี้แบบเป๊ะๆ
             "scope": currentUrl, 
             "start_url": currentUrl, 
-            
             "background_color": "#ffffff",
             "theme_color": "#2563eb",
             "icons": [
@@ -117,17 +125,17 @@
             ]
         };
 
-        // 🟢 3. เข้ารหัสเป็น Base64 แทน Blob ป้องกันปัญหา Scope บน Chrome
+        // 3. เข้ารหัสเป็น Base64
         const base64Manifest = btoa(unescape(encodeURIComponent(JSON.stringify(manifestData))));
         document.getElementById('dynamic-manifest').href = 'data:application/manifest+json;base64,' + base64Manifest;
 
-        // 4. เรียกใช้ Service Worker ตัวจริงที่อยู่ในโฟลเดอร์หลัก
+        // 4. เรียกใช้ Service Worker
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js')
             .catch(err => console.log('Service Worker Error:', err));
         }
 
-        // 5. โค้ดสำหรับจัดการปุ่มติดตั้งแอป (Android & Chrome)
+        // 5. โค้ดจัดการปุ่มติดตั้งแอป (Android & Chrome)
         let deferredPrompt;
         const installBtn = document.getElementById('installAppBtn');
 
@@ -142,7 +150,6 @@
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
                 if (outcome === 'accepted') {
-                    console.log('ผู้ใช้ยอมรับการติดตั้ง');
                     installBtn.style.display = 'none';
                 }
                 deferredPrompt = null;
