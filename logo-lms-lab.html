@@ -19,7 +19,6 @@
         body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         iframe { width: 100%; height: 100%; border: none; }
 
-        /* สไตล์ของปุ่มติดตั้งแอป (Android/PC) */
         #installAppBtn {
             display: none;
             position: fixed;
@@ -42,7 +41,6 @@
             background-color: #1d4ed8;
         }
 
-        /* กล่องคำแนะนำสำหรับ iOS */
         #iosInstallPrompt {
             display: none;
             position: fixed;
@@ -77,8 +75,8 @@
 </head>
 <body>
 
-    <!-- 🟢 ใช้ URL Clean (ไม่มี /a/mahidol.ac.th/) -->
     <iframe 
+      id="appIframe"
       src="https://script.google.com/macros/s/AKfycbxZtGFYX2PnHWwNRY5INba6-65Yu5gylqKySJFgJYTufIVOU76Iieo41ANHI6mZ0DKWeQ/exec" 
       allow="fullscreen; camera; microphone"
       sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation allow-top-navigation-by-user-activation">
@@ -92,20 +90,18 @@
     </div>
 
     <script>
-        // 🚀 ดักรับคำสั่งเปลี่ยนหน้าภายใน iframe จาก Apps Script (ทำให้คงหน้า GitHub URL ไว้ได้ตลอดเวลา)
-        window.addEventListener("message", function(event) {
-            if (event.data && event.data.type === "CHANGE_IFRAME_URL") {
-                let iframe = document.getElementById('mainIframe');
-                if (iframe) {
+        // 🚀 ดักจับข้อความสื่อสารจากภายใน iframe เพื่อเปลี่ยนเนื้อหาโดยไม่เปลี่ยน URL หน้าหลัก
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.action === 'NAVIGATE') {
+                var iframe = document.getElementById('appIframe');
+                if (iframe && event.data.url) {
                     iframe.src = event.data.url;
                 }
             }
         });
 
-        // 1. ดึง URL แบบเต็มของไฟล์นี้ เพื่อเอาไปล็อก Scope
         const currentUrl = window.location.origin + window.location.pathname;
 
-        // 2. สร้าง Manifest ด้วย JavaScript
         const manifestData = {
             "id": "app-lms-lab",
             "name": "Lab Instrument Management System (LMS)",
@@ -125,17 +121,14 @@
             ]
         };
 
-        // 3. เข้ารหัสเป็น Base64
         const base64Manifest = btoa(unescape(encodeURIComponent(JSON.stringify(manifestData))));
         document.getElementById('dynamic-manifest').href = 'data:application/manifest+json;base64,' + base64Manifest;
 
-        // 4. เรียกใช้ Service Worker
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js')
             .catch(err => console.log('Service Worker Error:', err));
         }
 
-        // 5. โค้ดจัดการปุ่มติดตั้งแอป (Android & Chrome)
         let deferredPrompt;
         const installBtn = document.getElementById('installAppBtn');
 
@@ -160,7 +153,6 @@
             installBtn.style.display = 'none';
         });
 
-        // 6. 🍏 ตรวจจับและแสดงคำแนะนำสำหรับ iOS
         const isIos = () => {
             const userAgent = window.navigator.userAgent.toLowerCase();
             return /iphone|ipad|ipod/.test(userAgent);
