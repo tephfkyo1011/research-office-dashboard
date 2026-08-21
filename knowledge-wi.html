@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คลังความรู้ & WI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body, html { 
+            margin: 0; padding: 0; height: 100%; overflow: hidden; 
+            font-family: 'Sarabun', sans-serif; background-color: #f5f7fa; 
+        }
+        .top-bar { 
+            display: flex; align-items: center; background: #ffffff; 
+            padding: 10px 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
+            z-index: 10; position: relative; height: 65px; box-sizing: border-box; 
+            border-bottom: 2px solid #e2e8f0;
+            gap: 15px; 
+        }
+        .top-bar img.logo { 
+            height: 40px; border-radius: 6px; object-fit: contain;
+        }
+        .top-bar h1 { 
+            margin: 0; font-size: 1.25rem; color: #2d3748; font-weight: 600; 
+            flex-grow: 1; 
+        }
+        
+        /* ปุ่มเปิดแท็บใหม่ (ปุ่มแก้ปัญหา Google Error) */
+        .top-bar .fix-btn { 
+            text-decoration: none; color: #ffffff; 
+            background: #e53e3e; 
+            padding: 8px 16px; border-radius: 8px; 
+            font-size: 0.95rem; font-weight: 500; transition: all 0.2s ease; 
+            box-shadow: 0 2px 4px rgba(229,62,62,0.2);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .top-bar .fix-btn:hover { background: #c53030; transform: translateY(-1px); }
+
+        .top-bar .back-btn { 
+            text-decoration: none; color: #ffffff; 
+            background: #4a5568; padding: 8px 16px; border-radius: 8px; 
+            font-size: 0.95rem; font-weight: 500; transition: all 0.2s ease; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .top-bar .back-btn:hover { background: #2d3748; transform: translateY(-1px); }
+        
+        iframe { 
+            width: 100%; height: calc(100% - 65px); 
+            border: none; display: block; background: #f4f7f6;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <!-- ใส่โลโก้ของคุณตรงนี้ -->
+        <img src="https://via.placeholder.com/150x50?text=LOGO" alt="Logo" class="logo">
+        <h1>ระบบคลังความรู้ & WI</h1>
+        
+        <!-- ลิงก์ไปที่ Web App ของคุณ (เผื่อ User เปิด iframe ไม่ขึ้น) -->
+        <a href="https://script.google.com/macros/s/AKfycby34OaHqedwRIkIdi_otZrYjGkTcRTGFy-2pcmtO8xFjzIstheHJqNgCRvlZhfnUEds/exec" target="_blank" class="fix-btn" title="คลิกเพื่อเปิดหน้าต่างใหม่">
+            <i class="fa-solid fa-up-right-from-square"></i> เปิดแท็บใหม่ (แก้หน้าจอขาว)
+        </a>
+
+        <!-- ลิงก์กลับหน้า Portal หลัก -->
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-house"></i> กลับหน้าหลัก</a>
+    </div>
+
+    <!-- ฝังโปรแกรมของคุณลงใน iframe -->
+    <iframe src="https://script.google.com/macros/s/AKfycby34OaHqedwRIkIdi_otZrYjGkTcRTGFy-2pcmtO8xFjzIstheHJqNgCRvlZhfnUEds/exec"></iframe>
+
+</body>
+</html>
