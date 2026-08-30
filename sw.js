@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v42'; // 🟢 อัปเดตเป็น v41 เพื่อบังคับเคลียร์แคชเก่า ดึง app.js ตัวใหม่ แก้โค้ดต้องอัปเลขทุกครั้ง
+const CACHE_VERSION = 'v43'; // 🟢 อัปเดตเป็น v41 เพื่อบังคับเคลียร์แคชเก่า ดึง app.js ตัวใหม่ แก้โค้ดต้องอัปเลขทุกครั้ง
 const STATIC_CACHE = `kyogi-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `kyogi-dynamic-${CACHE_VERSION}`;
 const OFFLINE_URL = './offline.html';
