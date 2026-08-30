@@ -1,21 +1,27 @@
 const APP_VERSION = 'v43-TitanMode';
 console.log(`🚀 App Version: ${APP_VERSION} (Secure CSP)`);
 
-// 🟢 ฟังก์ชันบังคับเปิด Web App ด้วยบัญชี tephfgi@gmail.com เสมอ
+// 🟢 ฟังก์ชันบังคับสลับไปใช้บัญชี tephfgi@gmail.com เสมอ เพื่อข้ามการบล็อกของ Mahidol
 function getSmartGoogleUrl(rawUrl) {
     if (!rawUrl || !rawUrl.includes('script.google.com')) return rawUrl;
 
-    // 1. ตัด /u/0/, /u/1/, /u/2/ ออกจาก URL ทั้งหมด
+    // 1. ตัด /u/0/, /u/1/ ออกทั้งหมด
     let cleanUrl = rawUrl.replace(/\/u\/\d+\//g, '/');
 
-    // 2. บังคับใส่ authuser=tephfgi@gmail.com ต่อท้าย URL 
-    // เพื่อสั่งให้ Google สลับ Profile ไปที่ tephfgi@gmail.com อัตโนมัติ ไม่ว่าจะล็อกอินค้างไว้กี่บัญชีก็ตาม
-    const ownerEmail = 'tephfgi@gmail.com';
-
-    if (cleanUrl.includes('?')) {
-        return `${cleanUrl}&authuser=${encodeURIComponent(ownerEmail)}`;
-    } else {
-        return `${cleanUrl}?authuser=${encodeURIComponent(ownerEmail)}`;
+    // 2. ตัดพารามิเตอร์ authuser เดิมที่ติดมาออกให้หมด ป้องกันการเกิด authuser ซ้ำซ้อน
+    try {
+        let urlObj = new URL(cleanUrl);
+        urlObj.searchParams.delete('authuser');
+        
+        // 3. กำหนด authuser เป็นอีเมลเจ้าของสคริปต์ตัวจริง (tephfgi@gmail.com)
+        urlObj.searchParams.set('authuser', 'tephfgi@gmail.com');
+        return urlObj.toString();
+    } catch (e) {
+        // กรณี URL รูปแบบแปลกๆ ใช้ Regex จัดการแทน
+        cleanUrl = cleanUrl.replace(/([?&])authuser=[^&]*&?/g, '$1').replace(/[?&]$/, '');
+        return cleanUrl.includes('?') 
+            ? `${cleanUrl}&authuser=tephfgi@gmail.com` 
+            : `${cleanUrl}?authuser=tephfgi@gmail.com`;
     }
 }
 
