@@ -1,4 +1,4 @@
-const APP_VERSION = 'v41-TitanMode';
+const APP_VERSION = 'v42-TitanMode';
 console.log(`🚀 App Version: ${APP_VERSION} (Secure CSP)`);
 
 // 🟢 ฟังก์ชันคลีน URL ลบ /u/0/, /u/1/ ออกจาก Google Apps Script อัตโนมัติ
