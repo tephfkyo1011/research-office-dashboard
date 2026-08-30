@@ -1,13 +1,22 @@
 const APP_VERSION = 'v43-TitanMode';
 console.log(`🚀 App Version: ${APP_VERSION} (Secure CSP)`);
 
-// 🟢 ฟังก์ชันคลีน URL ลบ /u/0/, /u/1/ ออกจาก Google Apps Script อัตโนมัติ
-function cleanGoogleUrl(url) {
-    if (!url) return '';
-    if (!url.includes('script.google.com')) return url;
-    
-    // ตัด pattern /u/0/, /u/1/ ออกจาก URL ทุกรูปแบบ
-    return url.replace(/\/u\/\d+\//g, '/');
+// 🟢 ฟังก์ชันเลือกและคลีน URL ให้เหมาะกับสิทธิ์การเข้าใช้งาน (ทั้ง Gmail และ Mahidol)
+function getSmartGoogleUrl(rawUrl) {
+    if (!rawUrl || !rawUrl.includes('script.google.com')) return rawUrl;
+
+    // 1. ตัด /u/0/, /u/1/ ออกก่อนเพื่อป้องกันปัญหา Multi-account
+    let cleanUrl = rawUrl.replace(/\/u\/\d+\//g, '/');
+
+    // 2. ถ้าเป็นสคริปต์ของฝั่งองค์กร ให้บังคับสลับไปใช้ Profile Mahidol ทันที
+    // 💡 เปลี่ยน 'AKfycbSpX9iDz1wWLjQfNyJbWLfreGyHDl0vYasnF27DhiyLnYz8UZs7aZfz9ct5fNTKH-m' หรือคีย์ของมหิดล
+    if (cleanUrl.includes('AKfycb')) { 
+        return cleanUrl.includes('?') 
+            ? `${cleanUrl}&authuser=mahidol.ac.th` 
+            : `${cleanUrl}?authuser=mahidol.ac.th`;
+    }
+
+    return cleanUrl;
 }
 
 // 🟢 DOM Elements
@@ -95,9 +104,9 @@ async function initApp() {
         }
 
         document.querySelectorAll('.card').forEach(card => {
-            // 🟢 1. บังคับคลีน data-href ทันทีตั้งแต่ตอนอ่าน Element การ์ดขึ้นมา
+            // 🟢 1. จัดการคลีน URL และใส่พารามิเตอร์จำแนกบัญชีตั้งแต่ตอนเริ่มอ่าน Element
             if (card.dataset.href) {
-                card.dataset.href = cleanGoogleUrl(card.dataset.href);
+                card.dataset.href = getSmartGoogleUrl(card.dataset.href);
             }
 
             const name = card.dataset.name || '';
@@ -129,10 +138,11 @@ async function initApp() {
                     await localforage.setItem('lastUsed', name);
                 } catch(err) {}
 
-                // สั่งเปิดไปยัง URL ที่ถูกตัด /u/1/ ออกแล้วแน่นอน
+                // สั่งเปิดไปยัง URL ที่ปรับสิทธิ์เรียบร้อยแล้ว
                 const targetUrl = card.dataset.href;
                 if (targetUrl) {
-                    window.open(targetUrl, '_blank');
+                    const finalUrl = getSmartGoogleUrl(targetUrl);
+                    window.open(finalUrl, '_blank');
                 }
             });
         });
