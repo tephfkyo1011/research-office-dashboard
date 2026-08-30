@@ -122,10 +122,10 @@ async function initApp() {
                     await localforage.setItem('lastUsed', name);
                 } catch(err) {}
 
-                // 🟢 สั่งให้เปลี่ยนหน้าไปยังลิงก์ที่เก็บไว้ใน data-href
-                const targetUrl = card.dataset.href;
+                // 🟢 สั่งให้เปลี่ยนหน้าไปยังลิงก์ที่เก็บไว้ใน data-href (พร้อมคลีน URL)
+                const targetUrl = cleanGoogleUrl(card.dataset.href);
                 if (targetUrl) {
-                    window.location.href = targetUrl;
+                window.location.href = targetUrl;
                 }
             });
         }); // 🟢 เติมบรรทัดนี้ลงไปเพื่อปิด forEach ครับ!
