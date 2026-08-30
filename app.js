@@ -1,22 +1,22 @@
 const APP_VERSION = 'v43-TitanMode';
 console.log(`🚀 App Version: ${APP_VERSION} (Secure CSP)`);
 
-// 🟢 ฟังก์ชันเลือกและคลีน URL ให้เหมาะกับสิทธิ์การเข้าใช้งาน (ทั้ง Gmail และ Mahidol)
+// 🟢 ฟังก์ชันบังคับเปิด Web App ด้วยบัญชี tephfgi@gmail.com เสมอ
 function getSmartGoogleUrl(rawUrl) {
     if (!rawUrl || !rawUrl.includes('script.google.com')) return rawUrl;
 
-    // 1. ตัด /u/0/, /u/1/ ออกก่อนเพื่อป้องกันปัญหา Multi-account
+    // 1. ตัด /u/0/, /u/1/, /u/2/ ออกจาก URL ทั้งหมด
     let cleanUrl = rawUrl.replace(/\/u\/\d+\//g, '/');
 
-    // 2. ถ้าเป็นสคริปต์ของฝั่งองค์กร ให้บังคับสลับไปใช้ Profile Mahidol ทันที
-    // 💡 เปลี่ยน 'AKfycbSpX9iDz1wWLjQfNyJbWLfreGyHDl0vYasnF27DhiyLnYz8UZs7aZfz9ct5fNTKH-m' หรือคีย์ของมหิดล
-    if (cleanUrl.includes('AKfycb')) { 
-        return cleanUrl.includes('?') 
-            ? `${cleanUrl}&authuser=mahidol.ac.th` 
-            : `${cleanUrl}?authuser=mahidol.ac.th`;
-    }
+    // 2. บังคับใส่ authuser=tephfgi@gmail.com ต่อท้าย URL 
+    // เพื่อสั่งให้ Google สลับ Profile ไปที่ tephfgi@gmail.com อัตโนมัติ ไม่ว่าจะล็อกอินค้างไว้กี่บัญชีก็ตาม
+    const ownerEmail = 'tephfgi@gmail.com';
 
-    return cleanUrl;
+    if (cleanUrl.includes('?')) {
+        return `${cleanUrl}&authuser=${encodeURIComponent(ownerEmail)}`;
+    } else {
+        return `${cleanUrl}?authuser=${encodeURIComponent(ownerEmail)}`;
+    }
 }
 
 // 🟢 DOM Elements
