@@ -44,7 +44,7 @@ async function checkRealOnline() {
         const id = setTimeout(() => controller.abort(), 3000);
         const res = await fetch(`./ping.txt?_cb=${Date.now()}`, { method: 'HEAD', cache: 'no-store', signal: controller.signal });
         clearTimeout(id);
-        return res.ok; // 🟢 เพิ่มตรงนี้: คืนค่า true เฉพาะตอนที่เจอไฟล์ ping.txt จริงๆ (Status 200-299)
+        return res.ok;
     } catch { return false; }
 }
 
@@ -92,17 +92,22 @@ async function initApp() {
         }
 
         document.querySelectorAll('.card').forEach(card => {
+            // 🟢 1. บังคับคลีน data-href ทันทีตั้งแต่ตอนอ่าน Element การ์ดขึ้นมา
+            if (card.dataset.href) {
+                card.dataset.href = cleanGoogleUrl(card.dataset.href);
+            }
+
             const name = card.dataset.name || '';
             const title = card.querySelector('.card-title')?.innerText || '';
             const useCount = usage[name] || 0;
             
             // 🔥 Smart Prefetch: ถ้าระบบนี้ถูกใช้บ่อย (> 5 ครั้ง) ให้ Preload ลิงก์รอเลย
-            const cardUrl = cleanGoogleUrl(card.dataset.href);
+            const cardUrl = card.dataset.href;
             if (useCount >= 5 && cardUrl && !cardUrl.endsWith('#')) {
-            const link = document.createElement('link');
-            link.rel = 'prefetch';
-            link.href = cardUrl;
-            document.head.appendChild(link);
+                const link = document.createElement('link');
+                link.rel = 'prefetch';
+                link.href = cardUrl;
+                document.head.appendChild(link);
             }
 
             const userBoost = (Math.log(useCount + 1) * 10) + (name === lastUsed ? 15 : 0);
@@ -111,9 +116,8 @@ async function initApp() {
 
             cardsData.push({ id: name, title: title, keywords: card.dataset.keywords || '', element: card });
 
-            // Event Listeners สำหรับการกดการ์ด (เพราะ <div> เปลี่ยนหน้าเองไม่ได้ ต้องใช้ JS สั่ง)
+            // 🟢 2. Event Listener ตอนกดการ์ดเพื่อเปิดลิงก์
             card.addEventListener('click', async (e) => {
-                // ถ้าเผลอกดโดนปุ่ม Pin หรือไอคอนดาว ให้ข้ามไป ไม่ต้องเปิดลิงก์
                 if (e.target.closest('.pin')) return; 
 
                 usage[name] = (usage[name] || 0) + 1;
@@ -122,16 +126,16 @@ async function initApp() {
                     await localforage.setItem('lastUsed', name);
                 } catch(err) {}
 
-                // 🟢 สั่งให้เปลี่ยนหน้าไปยังลิงก์ที่เก็บไว้ใน data-href (พร้อมคลีน URL)
-                const targetUrl = cleanGoogleUrl(card.dataset.href);
+                // สั่งเปิดไปยัง URL ที่ถูกตัด /u/1/ ออกแล้วแน่นอน
+                const targetUrl = card.dataset.href;
                 if (targetUrl) {
-                window.location.href = targetUrl;
+                    window.location.href = targetUrl;
                 }
             });
-        }); // 🟢 เติมบรรทัดนี้ลงไปเพื่อปิด forEach ครับ!
+        });
 
         sortCards();
-        smartCheck(); // เริ่มระบบ Check
+        smartCheck(); 
     } catch(e) { console.warn('Init App Storage Error:', e); sortCards(); }
 }
 
@@ -142,8 +146,8 @@ function ensureFuse() {
     if (!fuse && cardsData.length > 0) {
         fuse = new Fuse(cardsData, {
             keys: [ { name: 'title', weight: 0.6 }, { name: 'keywords', weight: 0.4 } ],
-            threshold: 0.4, // 🟢 อนุญาตให้พิมพ์ผิดได้ (Typo Support)
-            minMatchCharLength: 2, // 🟢 เริ่มจับคู่ตั้งแต่ 2 ตัวอักษร
+            threshold: 0.4,
+            minMatchCharLength: 2,
             ignoreLocation: true, useExtendedSearch: true
         });
     }
@@ -214,7 +218,6 @@ if (SpeechRecognition) {
 
     recognition.onstart = () => { voiceBtn.classList.add('listening'); searchInput.placeholder = 'กำลังฟัง...'; };
     
-    // 🟢 อัปเกรด: รับเสียงปุ๊บ ค้นหาปั๊บ พร้อมซ่อน Keyboard (blur) ทันที UX ดีเยี่ยม
     recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         searchInput.value = transcript;
@@ -254,14 +257,13 @@ async function togglePin(event, card) {
 function sortCards() {
     const pinnedGrid = document.getElementById('grid-pinned');
     const pinnedSection = document.getElementById('pinned-section');
-    if (!pinnedGrid || !pinnedSection) return; // ป้องกัน Error ถ้าหา element ไม่เจอ
+    if (!pinnedGrid || !pinnedSection) return;
 
     pinnedGrid.innerHTML = '';
     let hasPinned = false;
     
     cardsData.forEach(item => {
         const c = item.element;
-        // ถ้ายกเลิกปักหมุด ให้เอากลับไปหมวดเดิม
         if(!pinnedCards.includes(c.dataset.name) && c.dataset.parent) {
             c.classList.remove('pinned');
             const parentEl = document.getElementById(c.dataset.parent);
@@ -273,7 +275,7 @@ function sortCards() {
         const item = cardsData.find(c => c.id === name);
         if (item) {
             item.element.classList.add('pinned');
-            pinnedGrid.appendChild(item.element); // ย้ายการ์ดมาที่โปรแกรมที่ชอบ
+            pinnedGrid.appendChild(item.element);
             hasPinned = true;
         }
     });
@@ -310,26 +312,19 @@ let deferredPrompt;
 const installBtn = document.getElementById('installPwaBtn');
 
 window.addEventListener('beforeinstallprompt', (e) => {
-    // ป้องกันไม่ให้เบราว์เซอร์โชว์ Prompt ขึ้นมาเอง (เราจะคุมเอง)
     e.preventDefault();
     deferredPrompt = e;
-    
-    // แสดงปุ่ม Install ขึ้นมาเมื่อระบบพร้อมให้ติดตั้ง
     if(installBtn) installBtn.style.display = 'block';
 });
 
 if(installBtn) {
     installBtn.addEventListener('click', async () => {
         if (deferredPrompt) {
-            // โชว์หน้าต่างยืนยันการติดตั้ง
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
-            
             if (outcome === 'accepted') {
                 console.log('ติดตั้ง PWA สำเร็จ');
             }
-            
-            // รีเซ็ตค่าและซ่อนปุ่ม
             deferredPrompt = null;
             installBtn.style.display = 'none';
         }
@@ -337,29 +332,25 @@ if(installBtn) {
 }
 
 window.addEventListener('appinstalled', () => {
-    // ซ่อนปุ่มทันทีที่ติดตั้งเสร็จ
     if(installBtn) installBtn.style.display = 'none';
     showToast('ติดตั้งแอปพลิเคชันลงเครื่องเรียบร้อย! 🎉');
 });
 
 /* =========================
-   📌 ระบบกด Fav (★) ขั้นเด็ดขาด (ป้องกันการเปิดลิงก์ 100%)
+   📌 ระบบกด Fav (★)
 ========================= */
 window.addEventListener('click', function(e) {
     const pinBtn = e.target.closest('.pin');
-    
     if (pinBtn) {
-        // คาถาหยุดเวลา 3 ชั้น! ห้ามเปิดลิงก์ ห้ามกระเพื่อม ห้ามทำอะไรทั้งนั้น
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
         
         const card = pinBtn.closest('.card');
-        
         if (card && typeof togglePin === 'function') {
-            togglePin(e, card); // เรียกฟังก์ชันย้ายขึ้นข้างบนของพี่
+            togglePin(e, card);
         } else {
             console.error("หาฟังก์ชัน togglePin ไม่เจอครับ!");
         }
     }
-}, true); // สำคัญมาก! ใส่ true เพื่อดักตบ Event ตั้งแต่ขาลง ก่อนที่แท็ก <a> หรือ <div> จะรู้ตัว
+}, true);
