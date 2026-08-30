@@ -16,8 +16,24 @@
     <link rel="manifest" id="dynamic-manifest">
 
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        iframe { width: 100%; height: 100%; border: none; }
+        body, html { 
+            margin: 0; padding: 0; height: 100%; 
+            background-color: #f4f6f9; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+
+        /* หน้า Loading ระหว่างรอข้ามหน้า */
+        .loader-box { text-align: center; color: #333; }
+        .spinner {
+            width: 45px; height: 45px;
+            border: 5px solid #e2e8f0;
+            border-top: 5px solid #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* สไตล์ของปุ่มติดตั้งแอป สำหรับ Android/PC */
         #installAppBtn {
@@ -77,8 +93,13 @@
 </head>
 <body>
 
-    <iframe src="https://script.google.com/macros/s/AKfycbwSpX9iDz1wWLjQfNyJbWLfreGyHDl0vYasnF27DhiyLnYz8UZs7aZfz9ct5fNTKH-m/exec" allow="fullscreen"></iframe>
-    
+    <!-- หน้าแสดงสถานะกำลังเข้าสู่ระบบ -->
+    <div class="loader-box">
+        <div class="spinner"></div>
+        <h3 style="margin: 0; color: #1e293b;">กำลังนำคุณเข้าสู่ระบบบริหารจัดการแก๊ส...</h3>
+        <p style="color: #64748b; font-size: 13px; margin-top: 5px;">โปรดรอสักครู่ ระบบกำลังเปิดหน้าต่างหลัก</p>
+    </div>
+
     <button id="installAppBtn">📲 ติดตั้งแอปนี้</button>
 
     <div id="iosInstallPrompt">
@@ -87,20 +108,26 @@
     </div>
 
     <script>
+        // URL ของ Google Apps Script Web App
+        const webAppUrl = "https://script.google.com/macros/s/AKfycbwSpX9iDz1wWLjQfNyJbWLfreGyHDl0vYasnF27DhiyLnYz8UZs7aZfz9ct5fNTKH-m/exec";
+
+        // 🔥 จุดสำคัญ: Redirect หน้านี้ไปยัง Web App ตรงๆ (ข้ามปัญหา Multiple Accounts ใน iframe 100%)
+        // ใส่ delay เล็กน้อยเพื่อให้ระบบ PWA สแกน Manifest และพร้อมติดตั้งก่อน
+        setTimeout(() => {
+            window.location.replace(webAppUrl);
+        }, 600);
+
         // 1. ดึง URL แบบเต็มของไฟล์นี้ เพื่อเอาไปล็อก Scope
         const currentUrl = window.location.origin + window.location.pathname;
 
         // 2. สร้าง Manifest ด้วย JavaScript
         const manifestData = {
-            "id": "app-gas-stock", // 🟢 กำหนด ID เฉพาะตัว
+            "id": "app-gas-stock",
             "name": "ระบบบริหารจัดการแก๊ส & Stock",
             "short_name": "จัดการแก๊ส",
             "display": "standalone",
-            
-            // 🟢 ล็อก Scope และหน้าเริ่มต้นให้เป็นไฟล์นี้แบบเป๊ะๆ
             "scope": currentUrl, 
             "start_url": currentUrl, 
-            
             "background_color": "#ffffff",
             "theme_color": "#2563eb",
             "icons": [
@@ -113,11 +140,11 @@
             ]
         };
 
-        // 🟢 3. เข้ารหัสเป็น Base64 แทน Blob ป้องกันปัญหา Scope บน Chrome
+        // 3. เข้ารหัสเป็น Base64
         const base64Manifest = btoa(unescape(encodeURIComponent(JSON.stringify(manifestData))));
         document.getElementById('dynamic-manifest').href = 'data:application/manifest+json;base64,' + base64Manifest;
 
-        // 4. เรียกใช้ Service Worker ตัวจริง
+        // 4. เรียกใช้ Service Worker
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js')
             .catch(err => console.log('Service Worker Error:', err));
@@ -138,7 +165,6 @@
                 deferredPrompt.prompt(); 
                 const { outcome } = await deferredPrompt.userChoice;
                 if (outcome === 'accepted') {
-                    console.log('ผู้ใช้ยอมรับการติดตั้ง');
                     installBtn.style.display = 'none'; 
                 }
                 deferredPrompt = null;
