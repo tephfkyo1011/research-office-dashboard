@@ -97,12 +97,12 @@ async function initApp() {
             const useCount = usage[name] || 0;
             
             // 🔥 Smart Prefetch: ถ้าระบบนี้ถูกใช้บ่อย (> 5 ครั้ง) ให้ Preload ลิงก์รอเลย
-            const cardUrl = card.dataset.href;
+            const cardUrl = cleanGoogleUrl(card.dataset.href);
             if (useCount >= 5 && cardUrl && !cardUrl.endsWith('#')) {
-                const link = document.createElement('link');
-                link.rel = 'prefetch';
-                link.href = cardUrl;
-                document.head.appendChild(link);
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = cardUrl;
+            document.head.appendChild(link);
             }
 
             const userBoost = (Math.log(useCount + 1) * 10) + (name === lastUsed ? 15 : 0);
