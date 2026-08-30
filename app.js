@@ -4,7 +4,10 @@ console.log(`🚀 App Version: ${APP_VERSION} (Secure CSP)`);
 // 🟢 ฟังก์ชันคลีน URL ลบ /u/0/, /u/1/ ออกจาก Google Apps Script อัตโนมัติ
 function cleanGoogleUrl(url) {
     if (!url) return '';
-    return url.replace(/\/macros\/u\/\d+\//, '/macros/');
+    if (!url.includes('script.google.com')) return url;
+    
+    // ตัด pattern /u/0/, /u/1/ ออกจาก URL ทุกรูปแบบ
+    return url.replace(/\/u\/\d+\//g, '/');
 }
 
 // 🟢 DOM Elements
@@ -129,7 +132,7 @@ async function initApp() {
                 // สั่งเปิดไปยัง URL ที่ถูกตัด /u/1/ ออกแล้วแน่นอน
                 const targetUrl = card.dataset.href;
                 if (targetUrl) {
-                    window.location.href = targetUrl;
+                    window.open(targetUrl, '_blank');
                 }
             });
         });
