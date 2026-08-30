@@ -1,6 +1,12 @@
 const APP_VERSION = 'v41-TitanMode';
 console.log(`🚀 App Version: ${APP_VERSION} (Secure CSP)`);
 
+// 🟢 ฟังก์ชันคลีน URL ลบ /u/0/, /u/1/ ออกจาก Google Apps Script อัตโนมัติ
+function cleanGoogleUrl(url) {
+    if (!url) return '';
+    return url.replace(/\/macros\/u\/\d+\//, '/macros/');
+}
+
 // 🟢 DOM Elements
 const offlineBadge = document.getElementById('offlineBadge');
 const systemToast = document.getElementById('systemToast');
