@@ -1245,7 +1245,7 @@ function setQuickDate(type) {
     }
 }
 
-function executeReportSearch() {
+async function executeReportSearch() {
     const filter = {
         recorder: document.getElementById('reportSelectedRecorder')?.value || document.getElementById('reportSearchInput')?.value.trim() || '',
         types: document.getElementById('reportGasType')?.value ? [document.getElementById('reportGasType').value] : [],
@@ -1254,7 +1254,23 @@ function executeReportSearch() {
     };
 
     document.getElementById('loadingOverlay').style.display = 'flex';
-    google.script.run.withSuccessHandler(displayReportResults).getFilteredHistory(filter);
+    
+    try {
+        // เปลี่ยนมาใช้ apiCall รอรับข้อมูล แล้วค่อยส่งไปแสดงผล
+        const data = await apiCall('getFilteredHistory', filter);
+        displayReportResults(data);
+        
+        // ปิดหน้าจอโหลดเมื่อเสร็จสิ้น
+        document.getElementById('loadingOverlay').style.display = 'none';
+    } catch (error) {
+        document.getElementById('loadingOverlay').style.display = 'none';
+        console.error("Report Search Error:", error);
+        Swal.fire({ 
+            icon: 'error', 
+            title: 'เกิดข้อผิดพลาด', 
+            text: 'ไม่สามารถค้นหาข้อมูลรายงานได้' 
+        });
+    }
 }
 
 // ==========================================
