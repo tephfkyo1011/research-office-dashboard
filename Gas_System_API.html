@@ -73,6 +73,15 @@
     .spinner{width:45px; height:45px; border:5px solid #f3f3f3; border-top:5px solid #1abc9c; border-radius:50%; animation:spin 1s linear infinite;}
     @keyframes spin{0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);}}
 
+    /* สีไฮไลท์สำหรับค้นหาข้อความใน Dropdown ทั้ง 2 หน้า */
+    .highlight-match {
+    background-color: #ffeaa7 !important; /* สีพื้นหลังไฮไลท์ (สีเหลืองอ่อน) */
+    color: #d35400 !important; /* สีตัวอักษร (สีส้มเข้ม) */
+    font-weight: bold;
+    border-radius: 2px;
+    padding: 0 2px;
+    }
+
     /* 👤 Styles สำหรับ Contact Card ใน Dropdown */
     .dropdown-card { display: flex; align-items: center; padding: 10px 15px; border-bottom: 1px solid #ecf0f1; cursor: pointer; transition: background 0.2s; }
     .dropdown-card:hover { background: #f4f6f7; }
@@ -519,17 +528,26 @@ google.charts.setOnLoadCallback(function() {
 });
 
 $(document).ready(function() {
-    // Initialize Select2
-    $('#recorder, #type, #status, #location').select2({ width: '100%' });
+    // Initialize Select2 สำหรับช่องทั่วไป
+    $('#type, #status, #location').select2({ width: '100%' });
 
-    // Auto-focus ช่องค้นหาใน Select2 เมื่อเปิด Dropdown
-    $(document).on('select2:open', function() {
-        setTimeout(function() {
-            const searchField = document.querySelector('.select2-search__field');
-            if(searchField) searchField.focus();
-        }, 50);
+    // Initialize Select2 สำหรับช่องรายชื่อ (เพิ่มระบบ Highlight Match)
+    $('#recorder').select2({
+        width: '100%',
+        templateResult: function(item) {
+            if (!item.id) return item.text; 
+            
+            const term = $('.select2-search__field').val() || '';
+            if (!term) return item.text;
+            
+            const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+            const highlighted = item.text.replace(regex, `<span class="highlight-match">$1</span>`);
+            
+            return $('<span>').html(highlighted);
+        },
+        escapeMarkup: function(m) { return m; } 
     });
-
+  
     // Event เมื่อเปลี่ยนประเภทแก๊ส หรือสถานที่
     $('#type, #location').on('change', function() {
         updateCalcDays();
@@ -604,15 +622,26 @@ window.onload = async function() {
           });
       }
 
-      // 🟢 เพิ่มระบบ Autocomplete ให้ช่องค้นหาพนักงานในหน้ารายงาน
-      // (รองรับทั้ง id="searchRecorder" หรือ "reportSearchRecorder")
-      const searchInput = $('#searchRecorder').length ? $('#searchRecorder') : ($('#reportSearchRecorder').length ? $('#reportSearchRecorder') : null);
-      if (searchInput && typeof searchInput.autocomplete === 'function') {
-          searchInput.autocomplete({
-              source: masterReportRecorders,
-              minLength: 0 // พิมพ์แค่ 1 ตัวอักษร หรือคลิกช่องว่างก็แสดงข้อมูลเลย
-          }).on('focus', function() {
-              $(this).autocomplete('search', $(this).val());
+      // ✅ นำส่วนนี้ไปวางแทน
+      // 🟢 Event Listener สำหรับช่องค้นหาพนักงานในหน้ารายงาน (คลิกปุ๊บโชว์ปั๊บ + พิมพ์หาได้)
+      const reportInput = document.getElementById('reportSearchInput');
+      if (reportInput) {
+          reportInput.addEventListener('focus', function() {
+              renderReportOptions(this.value);
+          });
+          reportInput.addEventListener('click', function() {
+              renderReportOptions(this.value);
+          });
+          reportInput.addEventListener('input', function() {
+              renderReportOptions(this.value);
+          });
+          
+          // ปิด Dropdown เมื่อผู้ใช้คลิกพื้นที่อื่น
+          document.addEventListener('click', function(e) {
+              if (!e.target.closest('#reportSearchInput') && !e.target.closest('#reportDropdownList')) {
+                  const dropList = document.getElementById('reportDropdownList');
+                  if (dropList) dropList.style.display = 'none';
+              }
           });
       }
 
