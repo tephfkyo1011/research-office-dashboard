@@ -852,10 +852,24 @@ function formatSelect2Highlight(item) {
   updateCalcDays(); 
 }
 
-    function renderDashboard(data) {
+// 🟢 [แทรกฟังก์ชันนี้กลับเข้ามาตรงนี้ครับ] 🟢
+async function loadDashboard() { 
+  showLoading('กำลังโหลดข้อมูล Dashboard...');
+  try {
+    const data = await apiCall('getDashboardData');
+    hideLoading();
+    renderDashboard(data);
+  } catch (err) {
+    hideLoading();
+    Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: err.message || err });
+  }
+}
+
+function renderDashboard(data) {
   cachedDashboardData = data;
   
   data = data || {};
+  // ... (โค้ด renderDashboard เดิมของคุณทำงานต่อตรงนี้)
   const stockList = data.stock || [];
   const budgetData = data.budget || {};
   const gasStats = data.gasStats || {};
