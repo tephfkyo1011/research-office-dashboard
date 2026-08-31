@@ -5,11 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ระบบบริหารจัดการแก๊ส & Stock</title>
 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <!-- 1 & 2: Performance (defer) & CDN Security (SRI จาก cdnjs) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.3/sweetalert2.all.min.js" integrity="sha512-BZXSccQO5aKxO+8KGPigBNTg/hNvwJnaH/6m22NqGye+r4xOer4hKz4Kx9KjX1f4hGAV1a4HHzj8zJEMGjI5A==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+  
+  <!-- Google Charts ไม่รองรับ SRI แบบ Static (เพราะโหลดสคริปต์ย่อยแบบ Dynamic) แต่ใส่ defer ได้ -->
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js" defer></script>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
@@ -137,14 +142,16 @@
     <div style="margin-top:12px; font-weight:bold; color:#2c3e50;" id="loadingText">กำลังประมวลผล...</div>
   </div>
 
-  <div class="navbar">
+  <!-- 4. Semantic HTML: เปลี่ยนเป็น <nav> -->
+  <nav class="navbar">
     <button class="nav-btn active" onclick="switchPage('form')">📝 บันทึก</button>
     <button class="nav-btn" onclick="switchPage('dashboard')">📊 รายงาน</button>
     <button class="nav-btn" onclick="switchPage('report')">🔍 ค้นหา/รายงาน</button>
     <button class="nav-btn" onclick="openWI()">📘 คู่มือ WI</button>
-  </div>
+  </nav>
 
-  <div class="container">
+  <!-- 4. Semantic HTML: ใช้ <main> ห่อหุ้มคอนเทนต์หลัก -->
+  <main class="container">
 
     <!-- Page: บันทึกข้อมูล -->
     <div id="page-form" class="page active">
@@ -153,33 +160,45 @@
       <form id="gasForm">
         <div class="section" style="border-left: 5px solid #34495e;">
           <div class="row">
-            <div class="col-half"><label>👤 ผู้จดบันทึก</label><select id="recorder" name="recorder"><option value="" disabled selected>พิมพ์ค้นหา...</option></select></div>
-            <div class="col-half"><label>📍 สถานที่</label><select id="location" name="location"><option value="" disabled selected>พิมพ์ค้นหา...</option></select></div>
+            <!-- 3. UX & Accessibility: เพิ่ม for=id และ required -->
+            <div class="col-half">
+                <label for="recorder">👤 ผู้จดบันทึก</label>
+                <select id="recorder" name="recorder" required><option value="" disabled selected>พิมพ์ค้นหา...</option></select>
+            </div>
+            <div class="col-half">
+                <label for="location">📍 สถานที่</label>
+                <select id="location" name="location" required><option value="" disabled selected>พิมพ์ค้นหา...</option></select>
+            </div>
           </div>
           <div class="row" style="margin-top:15px;">
-             <div class="col-full"><label>🗂 ประเภทแก๊ส</label><select id="type" name="type"><option value="" disabled selected>พิมพ์ค้นหา...</option></select></div>
+             <div class="col-full">
+                 <label for="type">🗂 ประเภทแก๊ส</label>
+                 <select id="type" name="type" required><option value="" disabled selected>พิมพ์ค้นหา...</option></select>
+             </div>
           </div>
         </div>
 
         <div class="section" style="border-left: 5px solid #00acc1;">
           <div class="section-title">🎛 ระดับแรงดัน (Pressure)</div>
           <div class="row">
-            <div class="col-half"><label>ชุด A (ถ้ามี)</label><input type="number" id="pressA" step="any" placeholder="ค่าความดัน"></div>
-            <div class="col-half"><label>ชุด B (ถ้ามี)</label><input type="number" id="pressB" step="any" placeholder="ค่าความดัน"></div>
-            <div class="col-full"><label>แรงดันใช้งาน</label><input type="number" id="pressUse" step="any" placeholder="ค่าความดันการใช้งาน"></div>
+            <!-- 3. UX & Accessibility: ผูก Label เข้ากับ Input -->
+            <div class="col-half"><label for="pressA">ชุด A (ถ้ามี)</label><input type="number" id="pressA" step="any" placeholder="ค่าความดัน"></div>
+            <div class="col-half"><label for="pressB">ชุด B (ถ้ามี)</label><input type="number" id="pressB" step="any" placeholder="ค่าความดัน"></div>
+            <div class="col-full"><label for="pressUse">แรงดันใช้งาน</label><input type="number" id="pressUse" step="any" placeholder="ค่าความดันการใช้งาน" required></div>
           </div>
         </div>
 
         <div class="section" style="border-left: 5px solid #f39c12;">
           <div class="section-title">📦 จัดการสต๊อก</div>
           <div class="refill-box">
-             <label class="checkbox-wrapper"><input type="checkbox" id="isRefill" onchange="toggleRefill()">
+             <label for="isRefill" class="checkbox-wrapper">
+               <input type="checkbox" id="isRefill" onchange="toggleRefill()">
                <span>🚚 รับเข้าสต๊อก (Refill)</span>
              </label>
           </div>
           <div class="row" style="margin-top:15px; align-items: flex-start;">
             <div class="col-half">
-               <label id="lblCount" style="color:#d35400; display:block;">จำนวนถังที่เปลี่ยน (เบิกใช้)</label>
+               <label for="changeTankCount" id="lblCount" style="color:#d35400; display:block;">จำนวนถังที่เปลี่ยน (เบิกใช้)</label>
                <input type="number" id="changeTankCount" placeholder="ระบุจำนวนถัง" inputmode="numeric" style="height: 48px; margin-top: 5px;">
             </div>
             <div class="col-half" id="divDays">
@@ -195,13 +214,13 @@
         <div class="section">
             <div class="row">
                 <div class="col-half">
-                    <label>📌 สถานะ</label>
-                    <select id="status" name="status"><option value="" disabled selected>เลือกสถานะ...</option></select>
+                    <label for="status">📌 สถานะ</label>
+                    <select id="status" name="status" required><option value="" disabled selected>เลือกสถานะ...</option></select>
                 </div>
             </div>
             <div class="row" style="margin-top: 15px;">
                 <div class="col-full">
-                    <label>📝 หมายเหตุ</label>
+                    <label for="note">📝 หมายเหตุ</label>
                     <textarea id="note" rows="2" placeholder="รายละเอียดเพิ่มเติม (ถ้ามี)"></textarea>
                 </div>
             </div>
@@ -452,6 +471,7 @@
     </div>
   </div>
 </div>
+</main>
 
   <script>
 // ใส่ URL ที่ได้จากการ Deploy Web App ของคุณ
