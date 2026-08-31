@@ -822,31 +822,35 @@ function formatSelect2Highlight(item) {
     }
 
     function toggleRefill() {
-      const isRefill = document.getElementById('isRefill').checked;
-      const lbl = document.getElementById('lblCount');
-      if(isRefill) {
-        lbl.innerText = "จำนวนถังที่รับเข้า (Refill)";
-        lbl.style.color = "#27ae60";
-        document.getElementById('divDays').style.opacity = "0.3";
-      } else {
-        lbl.innerText = "จำนวนถังที่เปลี่ยน (เบิกใช้)";
-        lbl.style.color = "#d35400";
-        document.getElementById('divDays').style.opacity = "1";
-      }
-      updateCalcDays(); 
-    }
+  const isRefill = document.getElementById('isRefill').checked;
+  const lbl = document.getElementById('lblCount');
 
-    async function loadDashboard() { 
-       showLoading('กำลังโหลดข้อมูล Dashboard...');
-       try {
-         const data = await apiCall('getDashboardData');
-         hideLoading();
-         renderDashboard(data);
-       } catch (err) {
-         hideLoading();
-         Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: err.message || err });
-       }
-    }
+  // อ้างอิง Element ช่องกรอกแรงดัน
+  const pressA = document.getElementById('pressA');
+  const pressB = document.getElementById('pressB');
+  const pressUse = document.getElementById('pressUse');
+
+  if(isRefill) {
+    lbl.innerText = "จำนวนถังที่รับเข้า (Refill)";
+    lbl.style.color = "#27ae60";
+    document.getElementById('divDays').style.opacity = "0.3";
+
+    // 🟢 ปลดล็อค required ออกทั้งหมด เมื่อเป็นโหมดรับเข้าสต๊อก (Refill)
+    if (pressA) pressA.required = false;
+    if (pressB) pressB.required = false;
+    if (pressUse) pressUse.required = false;
+
+  } else {
+    lbl.innerText = "จำนวนถังที่เปลี่ยน (เบิกใช้)";
+    lbl.style.color = "#d35400";
+    document.getElementById('divDays').style.opacity = "1";
+
+    // 🔴 คืนค่า required ให้ช่องแรงดันใช้งาน (pressUse) เมื่อกลับสู่โหมดเบิกปกติ
+    if (pressUse) pressUse.required = true;
+  }
+
+  updateCalcDays(); 
+}
 
     function renderDashboard(data) {
   cachedDashboardData = data;
