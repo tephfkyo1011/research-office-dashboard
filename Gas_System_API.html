@@ -642,7 +642,7 @@ $(document).on('select2:open', function() {
 });
     
 // ==========================================
-// แปลง window.onload ให้รองรับ async/await + Select2 หน้ารายงาน
+// แปลง window.onload ให้รองรับ async/await + Select2 + Filter Active Staff
 // ==========================================
 window.onload = async function() {
   const savedName = localStorage.getItem('myLastUserName');
@@ -657,15 +657,25 @@ window.onload = async function() {
   try {
       const initData = await apiCall('getInitialData');
       
-      // ฟังก์ชันช่วยเคลียร์ข้อมูล
+      // ฟังก์ชันช่วยเคลียร์ข้อมูลอาร์เรย์ทั่วไป
       const cleanData = (data) => Array.isArray(data) ? data.map(item => Array.isArray(item) ? item[0] : item).filter(Boolean) : [];
 
-      const cleanRecorders = cleanData(initData.recorders);
+      // 🔴🟢 [จุดที่เพิ่มใหม่] กรองเฉพาะพนักงานที่ "ยังปฏิบัติงานอยู่"
+      const cleanRecorders = (initData.recorders || []).filter(item => {
+          if (!item) return false;
+          const status = (typeof item === 'object' && item.status) ? String(item.status).trim() : '';
+          
+          // เช็กว่ามีคำว่า ลาออก / เกษียณ / ไม่ได้ทำแล้ว หรือไม่
+          const isInactive = ['ลาออก', 'เกษียณ', 'ไม่ได้ทำแล้ว', 'ยกเลิก', 'Inactive'].some(k => status.includes(k));
+          
+          return !isInactive; // เอาเฉพาะคนที่ไม่เข้าเงื่อนไข Inactive
+      });
+
       const cleanGasTypes = cleanData(initData.gasTypes);
       const cleanStatuses = cleanData(initData.statuses);
       const cleanLocations = cleanData(initData.locations);
 
-      // โหลดข้อมูลเข้า Dropdown (ใช้ fillSelect2 ตัวเดียวกันทั้งหมด)
+      // โหลดข้อมูลเข้า Dropdown (ใช้ cleanRecorders ที่ผ่านการกรองแล้ว)
       fillSelect2('recorder', cleanRecorders, savedName);
       fillSelect2('type', cleanGasTypes, savedGas || 'CO2');
       fillSelect2('status', cleanStatuses, 'ปกติ');
@@ -710,7 +720,7 @@ window.onload = async function() {
       console.error("เกิดข้อผิดพลาดในการโหลดข้อมูลเริ่มต้น:", error);
   }
 };
-
+    
   // ฟังก์ชันช่วยทำ Highlight สีตัวอักษรสำหรับ Select2
 function formatSelect2Highlight(item) {
     if (!item.id) return item.text; 
