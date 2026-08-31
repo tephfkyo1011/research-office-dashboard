@@ -77,6 +77,14 @@
     .spinner{width:45px; height:45px; border:5px solid #f3f3f3; border-top:5px solid #1abc9c; border-radius:50%; animation:spin 1s linear infinite;}
     @keyframes spin{0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);}}
 
+    /* 👤 Styles สำหรับ Contact Card ใน Dropdown */
+    .dropdown-card { display: flex; align-items: center; padding: 10px 15px; border-bottom: 1px solid #ecf0f1; cursor: pointer; transition: background 0.2s; }
+    .dropdown-card:hover { background: #f4f6f7; }
+    .dropdown-avatar { width: 38px; height: 38px; background: #e8f8f5; color: #1abc9c; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; margin-right: 12px; flex-shrink: 0; }
+    .dropdown-info { display: flex; flex-direction: column; text-align: left; }
+    .dropdown-name { font-weight: 500; color: #2c3e50; font-size: 15px; }
+    .dropdown-id { font-size: 12px; color: #7f8c8d; margin-top: 2px; }
+
     @media (max-width:768px){.col-half{flex:1 1 100%;} .container{padding:10px;} .search-box{max-width:100%; margin-top:10px;}}
 
     /* =========================================
@@ -953,7 +961,7 @@ window.onload = async function() {
     }
 
     // ==========================================
-    // 1. ระบบค้นหาชื่อพนักงาน (Auto-complete)
+    // 1. ระบบค้นหาชื่อพนักงาน (Auto-complete) - อัปเดต UI Card & Filter
     // ==========================================
     function renderReportOptions(query) {
       const repListElement = document.getElementById('reportDropdownList');
@@ -964,13 +972,17 @@ window.onload = async function() {
       if (!repListElement) return;
       repListElement.innerHTML = "";
       
-      const listToRender = query.trim() === "" ? masterReportRecorders : masterReportRecorders.filter(item => 
-          item.text.toLowerCase().includes(query.toLowerCase()) || 
-          item.id.toLowerCase().includes(query.toLowerCase())
-      );
+      // กรองเฉพาะคนที่สถานะ 'Active' (หรือสถานะที่คุณตั้งไว้ในคอลัมน์ F) และค้นหาตามข้อความ
+      const listToRender = query.trim() === "" 
+          ? masterReportRecorders.filter(item => item.status === 'Active' || item.status === 'ทำงาน') 
+          : masterReportRecorders.filter(item => 
+              (item.status === 'Active' || item.status === 'ทำงาน') && 
+              (item.text.toLowerCase().includes(query.toLowerCase()) || 
+               item.id.toLowerCase().includes(query.toLowerCase()))
+          );
 
       if (listToRender.length === 0) {
-        repListElement.innerHTML = `<div class="dropdown-item" style="color:#e74c3c; text-align:center;">❌ ไม่พบข้อมูลที่ตรงกัน</div>`;
+        repListElement.innerHTML = `<div class="dropdown-item" style="color:#e74c3c; text-align:center; padding:15px;">❌ ไม่พบข้อมูลที่ตรงกัน หรือ พนักงานพ้นสภาพแล้ว</div>`;
         repInput.className = "search-input-custom status-invalid";
         if (repHint) repHint.innerText = "❌ ไม่พบชื่อ หรือ รหัสนี้ในระบบ";
         repListElement.style.display = 'block';
@@ -980,39 +992,42 @@ window.onload = async function() {
       listToRender.forEach(item => {
         const div = document.createElement('div');
         div.className = 'dropdown-item';
+        div.style.padding = '0'; // ลบ padding เดิมของ dropdown-item ออกเพื่อให้ card เต็มพื้นที่
         
-        if (query.trim() === "") {
-           div.innerHTML = item.text;
-        } else {
+        let displayName = item.text;
+        let displayId = item.id;
+        
+        // ทำ Highlight ข้อความที่พิมพ์ค้นหา
+        if (query.trim() !== "") {
            const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-           div.innerHTML = item.text.replace(regex, `<span class="highlight-match">$1</span>`);
+           displayName = item.text.replace(regex, `<span class="highlight-match">$1</span>`);
+           displayId = item.id.replace(regex, `<span class="highlight-match">$1</span>`);
         }
 
+        // โครงสร้าง HTML สำหรับการ์ดรายชื่อ
+        div.innerHTML = `
+            <div class="dropdown-card">
+                <div class="dropdown-avatar">👤</div>
+                <div class="dropdown-info">
+                    <span class="dropdown-name">${displayName}</span>
+                    <span class="dropdown-id">รหัสพนักงาน: ${displayId}</span>
+                </div>
+            </div>
+        `;
+
         div.addEventListener('click', () => {
-          repInput.value = item.text;
-          repHidden.value = item.id; 
+          repInput.value = item.text; // แสดงชื่อในช่องค้นหา
+          repHidden.value = item.id;  // เก็บค่า ID ไว้หลังบ้าน
           repInput.className = "search-input-custom status-valid";
           if (repHint) repHint.innerText = "✅ เลือกข้อมูลเรียบร้อยแล้ว";
           repListElement.style.display = 'none';
         });
+        
         repListElement.appendChild(div);
       });
       
       repListElement.style.display = 'block';
     }
-
-    // Event Listener พิมพ์ค้นหาหน้า Report
-    $(document).on('input click', '#reportSearchInput', function(e) {
-        renderReportOptions(this.value);
-    });
-
-    document.addEventListener('click', (e) => {
-        const repListElement = document.getElementById('reportDropdownList');
-        const repInput = document.getElementById('reportSearchInput');
-        if (repListElement && e.target !== repInput && !repListElement.contains(e.target)) {
-            repListElement.style.display = 'none';
-        }
-    });
 
 // ==========================================
 // 1. ฟังก์ชันเปิด Modal เลือกรูปแบบการพิมพ์รายงาน
@@ -1232,10 +1247,7 @@ function executePrintOut(reportData = currentReportData, reportTitle = 'รา�
 }
 
 // ==========================================
-// 5. ฟังก์ชันตั้งค่าดรอปดาวน์ และค้นหาข้อมูลรายงาน
-// ==========================================
-// ==========================================
-// แปลง initReportDropdown ให้รองรับ async/await
+// 5. ฟังก์ชันตั้งค่าดรอปดาวน์ และค้นหาข้อมูลรายงาน แปลง initReportDropdown ให้รองรับ async/await
 // ==========================================
 async function initReportDropdown() {
     try {
