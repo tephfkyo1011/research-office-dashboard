@@ -526,23 +526,6 @@ google.charts.setOnLoadCallback(function() {
 $(document).ready(function() {
     // Initialize Select2 สำหรับช่องทั่วไป
     $('#type, #status, #location').select2({ width: '100%' });
-
-    // Initialize Select2 สำหรับช่องรายชื่อ (เพิ่มระบบ Highlight Match)
-    $('#recorder').select2({
-        width: '100%',
-        templateResult: function(item) {
-            if (!item.id) return item.text; 
-            
-            const term = $('.select2-search__field').val() || '';
-            if (!term) return item.text;
-            
-            const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-            const highlighted = item.text.replace(regex, `<span class="highlight-match">$1</span>`);
-            
-            return $('<span>').html(highlighted);
-        },
-        escapeMarkup: function(m) { return m; } 
-    });
   
     // Event เมื่อเปลี่ยนประเภทแก๊ส หรือสถานที่
     $('#type, #location').on('change', function() {
