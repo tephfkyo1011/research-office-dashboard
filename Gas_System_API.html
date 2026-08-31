@@ -165,6 +165,60 @@
         body.print-wi h3 { font-size: 16px !important; }
         body.print-wi p, body.print-wi div, body.print-wi strong, body.print-wi li { font-size: 13px !important; }
     }
+
+    /* 📊 Styles สำหรับหลอดงบประมาณ (Quota Progress Bar) */
+.quota-item {
+    margin-bottom: 15px;
+}
+
+.quota-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 14px;
+}
+
+.quota-title {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.quota-value {
+    color: #555;
+    font-weight: 500;
+}
+
+.quota-bar-bg {
+    width: 100%;
+    height: 20px;
+    background-color: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.quota-bar-fill {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 10px;
+    transition: width 0.5s ease-in-out;
+}
+
+/* สีปกติ (ยังไม่เกินโควต้า) -> สีเขียว */
+.quota-bar-fill.normal {
+    background-color: #2ecc71;
+}
+
+/* สีเกินโควต้า -> สีแดง */
+.quota-bar-fill.exceeded {
+    background-color: #e74c3c;
+}
 </style>
 </head>
 <body>
@@ -785,119 +839,148 @@ function formatSelect2Highlight(item) {
     }
 
     function renderDashboard(data) {
-      cachedDashboardData = data;
+  cachedDashboardData = data;
+  
+  data = data || {};
+  const stockList = data.stock || [];
+  const budgetData = data.budget || {};
+  const gasStats = data.gasStats || {};
+  const personStats = data.personStats || {};
+  const historyList = data.history || [];
+
+  let totalFull = 0, totalEmpty = 0;
+  var chartData = [['Type', 'Full', {role:'annotation'}, 'Empty', {role:'annotation'}]];
+  
+  stockList.forEach(s => {
+    let fullVal = Number(s.full) || 0;
+    let emptyVal = Number(s.empty) || 0;
+    totalFull += fullVal; 
+    totalEmpty += emptyVal;
+    chartData.push([s.type || '-', fullVal, fullVal > 0 ? fullVal : '', emptyVal, emptyVal > 0 ? emptyVal : '']);
+  });
+
+  const years = Object.keys(budgetData).sort().reverse();
+  const currentYear = years.length > 0 ? years[0] : new Date().getFullYear();
+  let currentUsage = 0;
+  const usageMap = budgetData[currentYear] || {};
+  Object.values(usageMap).forEach(v => currentUsage += (Number(v) || 0));
+
+  document.getElementById("kpi-full").innerText = totalFull;
+  document.getElementById("kpi-empty").innerText = totalEmpty;
+  document.getElementById("kpi-usage").innerText = currentUsage;
+
+  // 📊 แสดงผลกราฟสต๊อก
+  if (chartsLoaded && stockList.length > 0) {
+      var dt = google.visualization.arrayToDataTable(chartData);
+      var opts = { 
+        isStacked: true, 
+        colors: ['#27ae60', '#e74c3c'], 
+        legend: {position: 'bottom', maxLines: 2}, 
+        fontName: 'Kanit', 
+        chartArea: {width: '85%', height: '75%'}, 
+        fontSize: 12 
+      };
+      new google.visualization.ColumnChart(document.getElementById('stock_chart_div')).draw(dt, opts);
+  } else if (!chartsLoaded) {
+      document.getElementById('stock_chart_div').innerHTML = '<p align="center" style="color:#7f8c8d; padding: 20px;">⏳ กำลังดาวน์โหลดแผนภูมิสต๊อก...</p>';
+  } else {
+      document.getElementById('stock_chart_div').innerHTML = '<p align="center" style="color:#7f8c8d; padding: 20px;">ไม่มีข้อมูลสต๊อกแก๊ส</p>';
+  }
+
+  // -------------------------------------------------------------
+  // 💰 🎯 ปรับปรุงส่วนการวาดหลอด งบประมาณ (Quota) ใหม่
+  // -------------------------------------------------------------
+  const barsDiv = document.getElementById('budget_bars');
+  const tableDiv = document.getElementById('budget_table_container');
+  let barsHtml = ''; 
+  let tableHtml = '';
+
+  stockList.forEach(s => {
+      let quota = Number(s.quota) || 0; 
+      let used = Number(usageMap[s.type]) || 0; 
       
-      data = data || {};
-      const stockList = data.stock || [];
-      const budgetData = data.budget || {};
-      const gasStats = data.gasStats || {};
-      const personStats = data.personStats || {};
-      const historyList = data.history || [];
-
-      let totalFull = 0, totalEmpty = 0;
-      var chartData = [['Type', 'Full', {role:'annotation'}, 'Empty', {role:'annotation'}]];
-      
-      stockList.forEach(s => {
-        let fullVal = Number(s.full) || 0;
-        let emptyVal = Number(s.empty) || 0;
-        totalFull += fullVal; 
-        totalEmpty += emptyVal;
-        chartData.push([s.type || '-', fullVal, fullVal > 0 ? fullVal : '', emptyVal, emptyVal > 0 ? emptyVal : '']);
-      });
-
-      const years = Object.keys(budgetData).sort().reverse();
-      const currentYear = years.length > 0 ? years[0] : new Date().getFullYear();
-      let currentUsage = 0;
-      const usageMap = budgetData[currentYear] || {};
-      Object.values(usageMap).forEach(v => currentUsage += (Number(v) || 0));
-
-      document.getElementById("kpi-full").innerText = totalFull;
-      document.getElementById("kpi-empty").innerText = totalEmpty;
-      document.getElementById("kpi-usage").innerText = currentUsage;
-
-      if (chartsLoaded && stockList.length > 0) {
-         var dt = google.visualization.arrayToDataTable(chartData);
-         var opts = { 
-           isStacked: true, 
-           colors: ['#27ae60', '#e74c3c'], 
-           legend: {position: 'bottom', maxLines: 2}, 
-           fontName: 'Kanit', 
-           chartArea: {width: '85%', height: '75%'}, 
-           fontSize: 12 
-         };
-         new google.visualization.ColumnChart(document.getElementById('stock_chart_div')).draw(dt, opts);
-      } else if (!chartsLoaded) {
-         document.getElementById('stock_chart_div').innerHTML = '<p align="center" style="color:#7f8c8d; padding: 20px;">⏳ กำลังดาวน์โหลดแผนภูมิสต๊อก...</p>';
+      if(!quota || quota <= 0) {
+          barsHtml += `
+            <div style="margin-bottom: 15px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px; font-size:14px;">
+                    <span style="font-weight:bold; color:#2c3e50;">${s.type}</span>
+                    <span style="color:#7f8c8d;">เบิกสะสมปีนี้: ${used} ถัง (ไม่ระบุโควต้า)</span>
+                </div>
+            </div>`;
       } else {
-         document.getElementById('stock_chart_div').innerHTML = '<p align="center" style="color:#7f8c8d; padding: 20px;">ไม่มีข้อมูลสต๊อกแก๊ส</p>';
-      }
-
-      const barsDiv = document.getElementById('budget_bars');
-      const tableDiv = document.getElementById('budget_table_container');
-      let barsHtml = ''; 
-      let tableHtml = '';
-
-      stockList.forEach(s => {
-          let quota = Number(s.quota); 
-          let used = usageMap[s.type] || 0; 
+          let percent = Math.round((used / quota) * 100);
+          let barWidth = Math.min(percent, 100); // ความกว้างหลอดไม่เกิน 100%
           
-          if(!quota || quota <= 0) {
-             barsHtml += `<div class="prog-container"><div class="prog-labels"><span><b>${s.type}</b></span><span style="color:#7f8c8d;">ใช้สะสมปีนี้: ${used} ถัง (ไม่ระบุโควต้า)</span></div></div>`;
-          } else {
-             let rawPct = Math.round((used / quota) * 100);
-             let barWidth = Math.min(rawPct, 100);
-             let color = rawPct < 50 ? 'bg-safe' : (rawPct < 80 ? 'bg-warn' : 'bg-crit');
-             barsHtml += `<div class="prog-container"><div class="prog-labels"><span><b>${s.type}</b></span><span>${used}/${quota} ถัง (${rawPct}%)</span></div><div class="prog-bg"><div class="prog-fill ${color}" style="width:${barWidth}%">${rawPct}%</div></div></div>`;
-          }
-      });
-      barsDiv.innerHTML = barsHtml || '<p align="center">ยังไม่มีข้อมูลโควต้า</p>';
-
-      if(years.length === 0) {
-        tableHtml = '<p align="center">ไม่มีข้อมูลประวัติงบประมาณ</p>';
-      } else {
-        years.forEach(year => {
-          tableHtml += `<div style="margin-bottom:15px; border:1px solid #eee; border-radius:8px; overflow:hidden;"><div style="background:#f1f2f6; padding:8px 10px; font-weight:bold; font-size:13px;">📅 ปีงบประมาณ ${year}</div><table class="modern-table"><tr><th>ประเภท</th><th>เบิกแล้ว</th></tr>`;
-          let total = 0;
-          for (const [type, count] of Object.entries(budgetData[year] || {})) {
-            let cnt = Number(count) || 0;
-            tableHtml += `<tr><td>${type}</td><td>${cnt} ถัง</td></tr>`;
-            total += cnt;
-          }
-          tableHtml += `<tr style="background:#fffef0;"><td style="text-align:right; font-weight:bold;">รวมเบิกทั้งหมด</td><td style="font-weight:bold;">${total} ถัง</td></tr></table></div>`;
-        });
+          // ถ้าเกิน 100% แสดงสีแดง (#e74c3c) ถ้าไม่เกินแสดงสีเขียว (#2ecc71)
+          let barColor = percent > 100 ? '#e74c3c' : '#2ecc71';
+          
+          barsHtml += `
+            <div style="margin-bottom: 16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px; font-size:14px;">
+                    <span style="font-weight:bold; color:#2c3e50;">${s.type}</span>
+                    <span style="font-weight:bold; color:#555;">${used}/${quota} ถัง (${percent}%)</span>
+                </div>
+                <div style="width:100%; height:20px; background-color:#e9ecef; border-radius:10px; overflow:hidden;">
+                    <div style="width:${barWidth}%; height:100%; background-color:${barColor}; display:flex; align-items:center; justify-content:center; color:white; font-size:11px; font-weight:bold; border-radius:10px; transition: width 0.5s ease-in-out;">
+                        ${percent > 0 ? percent + '%' : ''}
+                    </div>
+                </div>
+            </div>`;
       }
-      tableDiv.innerHTML = tableHtml;
+  });
+  barsDiv.innerHTML = barsHtml || '<p align="center">ยังไม่มีข้อมูลโควต้า</p>';
 
-      let gasRows = '';
-      Object.keys(gasStats)
-        .sort((a,b) => (gasStats[b].total || 0) - (gasStats[a].total || 0))
-        .forEach((t, i) => {
-          let stat = gasStats[t] || {}; 
-          let avg = stat.count > 0 ? (stat.sumDays / stat.count).toFixed(1) : "-";
-          gasRows += `<tr><td align="center">${i+1}</td><td style="color:#2980b9;font-weight:bold;">${t}</td><td>${stat.total || 0}</td><td>${avg} วัน</td></tr>`;
-      });
-      document.querySelector('#gasStatsTable tbody').innerHTML = gasRows;
+  // -------------------------------------------------------------
+  // 📅 รายละเอียดเบิกจ่ายประจำปี
+  // -------------------------------------------------------------
+  if(years.length === 0) {
+    tableHtml = '<p align="center">ไม่มีข้อมูลประวัติงบประมาณ</p>';
+  } else {
+    years.forEach(year => {
+      tableHtml += `<div style="margin-bottom:15px; border:1px solid #eee; border-radius:8px; overflow:hidden;"><div style="background:#f1f2f6; padding:8px 10px; font-weight:bold; font-size:13px;">📅 ปีงบประมาณ ${year}</div><table class="modern-table"><tr><th>ประเภท</th><th>เบิกแล้ว</th></tr>`;
+      let total = 0;
+      for (const [type, count] of Object.entries(budgetData[year] || {})) {
+        let cnt = Number(count) || 0;
+        tableHtml += `<tr><td>${type}</td><td>${cnt} ถัง</td></tr>`;
+        total += cnt;
+      }
+      tableHtml += `<tr style="background:#fffef0;"><td style="text-align:right; font-weight:bold;">รวมเบิกทั้งหมด</td><td style="font-weight:bold;">${total} ถัง</td></tr></table></div>`;
+    });
+  }
+  tableDiv.innerHTML = tableHtml;
 
-      let personRows = '';
-      Object.keys(personStats)
-        .sort((a,b) => (personStats[b] || 0) - (personStats[a] || 0))
-        .forEach((p, i) => {
-          personRows += `<tr><td>${i+1}</td><td>${p}</td><td style="font-weight:bold;">${personStats[p]} ถัง</td></tr>`;
-      });
-      document.querySelector('#personTable tbody').innerHTML = personRows;
+  // 📈 สถิติการใช้แก๊ส
+  let gasRows = '';
+  Object.keys(gasStats)
+    .sort((a,b) => (gasStats[b].total || 0) - (gasStats[a].total || 0))
+    .forEach((t, i) => {
+      let stat = gasStats[t] || {}; 
+      let avg = stat.count > 0 ? (stat.sumDays / stat.count).toFixed(1) : "-";
+      gasRows += `<tr><td align="center">${i+1}</td><td style="color:#2980b9;font-weight:bold;">${t}</td><td>${stat.total || 0}</td><td>${avg} วัน</td></tr>`;
+  });
+  document.querySelector('#gasStatsTable tbody').innerHTML = gasRows;
 
-      let historyRows = '';
-      historyList.forEach(r => {
-          let statusStr = r.status || '';
-          let badgeClass = "badge-check";
-          if(statusStr.includes('รับเข้า')) badgeClass = "badge-refill";
-          else if(statusStr.includes('เบิก')) badgeClass = "badge-withdraw";
+  // 🏆 สถิติผู้จดบันทึก
+  let personRows = '';
+  Object.keys(personStats)
+    .sort((a,b) => (personStats[b] || 0) - (personStats[a] || 0))
+    .forEach((p, i) => {
+      personRows += `<tr><td>${i+1}</td><td>${p}</td><td style="font-weight:bold;">${personStats[p]} ถัง</td></tr>`;
+  });
+  document.querySelector('#personTable tbody').innerHTML = personRows;
 
-          historyRows += `<tr><td>${r.date || '-'}</td><td><span class="badge ${badgeClass}">${statusStr}</span><br><span style="font-size:12px; color:#777;">${r.recorder || '-'}</span></td><td>${r.location || '-'}</td><td style="font-weight:bold;">${r.type || '-'}</td></tr>`;
-      });
-      document.querySelector('#historyTable tbody').innerHTML = historyRows;
-    }
+  // 🕒 ประวัติล่าสุด
+  let historyRows = '';
+  historyList.forEach(r => {
+      let statusStr = r.status || '';
+      let badgeClass = "badge-check";
+      if(statusStr.includes('รับเข้า')) badgeClass = "badge-refill";
+      else if(statusStr.includes('เบิก')) badgeClass = "badge-withdraw";
 
+      historyRows += `<tr><td>${r.date || '-'}</td><td><span class="badge ${badgeClass}">${statusStr}</span><br><span style="font-size:12px; color:#777;">${r.recorder || '-'}</span></td><td>${r.location || '-'}</td><td style="font-weight:bold;">${r.type || '-'}</td></tr>`;
+  });
+  document.querySelector('#historyTable tbody').innerHTML = historyRows;
+}
     function filterTable() {
       let filter = document.getElementById("searchPerson").value.toUpperCase();
       let rows = document.getElementById("personTable").getElementsByTagName("tr");
