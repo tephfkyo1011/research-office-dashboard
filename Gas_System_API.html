@@ -5,16 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ระบบบริหารจัดการแก๊ส & Stock</title>
 
-  <!-- 1 & 2: Performance (defer) & CDN Security (SRI จาก cdnjs) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
-  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.3/sweetalert2.all.min.js" integrity="sha512-BZXSccQO5aKxO+8KGPigBNTg/hNvwJnaH/6m22NqGye+r4xOer4hKz4Kx9KjX1f4hGAV1a4HHzj8zJEMGjI5A==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
-  
-  <!-- Google Charts ไม่รองรับ SRI แบบ Static (เพราะโหลดสคริปต์ย่อยแบบ Dynamic) แต่ใส่ defer ได้ -->
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
@@ -509,6 +504,12 @@ var cachedDashboardData = null;
 var scriptProperties = {};
 var masterReportRecorders = []; 
 let repList = [];
+
+// 🟢 เพิ่มตัวแปรสำหรับหน้ารายงาน (Report) ไว้ตรงนี้ครับ
+let currentReportData = []; 
+let currentReportSummary = {}; 
+let currentPage = 1; 
+const rowsPerPage = 20;
 
 google.charts.load('current', {'packages':['corechart']});
 google.charts.setOnLoadCallback(function() {
