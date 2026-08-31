@@ -593,6 +593,8 @@ window.onload = async function() {
 
   try {
       const initData = await apiCall('getInitialData');
+      
+      // ฟังก์ชันช่วยเคลียร์ข้อมูล (ถ้าเป็น Object จากหลังบ้านแล้ว ให้ระวังการใช้ filter)
       const cleanData = (data) => Array.isArray(data) ? data.map(item => Array.isArray(item) ? item[0] : item).filter(Boolean) : [];
 
       const cleanRecorders = cleanData(initData.recorders);
@@ -605,6 +607,26 @@ window.onload = async function() {
       fillSelect2('type', cleanGasTypes, savedGas || 'CO2');
       fillSelect2('status', cleanStatuses, 'ปกติ');
       fillSelect2('location', cleanLocations, savedLocation || 'สำนักงานวิจัย');
+
+      // 🟢 ตั้งค่า Select2 สำหรับช่องผู้จดบันทึกใหม่ เพื่อเปิดใช้งานระบบ Highlight สี (ต้องทำหลัง fillSelect2)
+      $('#recorder').select2({
+          width: '100%',
+          templateResult: function(item) {
+              // ถ้าไม่มีข้อมูล ให้คืนค่าข้อความปกติ
+              if (!item.id) return item.text; 
+              
+              // ดึงคำที่กำลังพิมพ์อยู่ในช่องค้นหาของ Select2
+              const term = $('.select2-search__field').val() || '';
+              if (!term) return item.text;
+              
+              // ทำการ Highlight คำที่ตรงกัน
+              const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+              const highlighted = item.text.replace(regex, `<span class="highlight-match">$1</span>`);
+              
+              return $('<span>').html(highlighted);
+          },
+          escapeMarkup: function(m) { return m; } // ปิดป้องกัน HTML เพื่อให้เบราว์เซอร์อ่านแท็ก <span> ได้
+      });
 
       $('#recorder').on('change', function() { localStorage.setItem('myLastUserName', $(this).val()); });
       $('#type').on('change', function() { localStorage.setItem('myLastGas', $(this).val()); });
@@ -622,8 +644,7 @@ window.onload = async function() {
           });
       }
 
-      // ✅ นำส่วนนี้ไปวางแทน
-      // 🟢 Event Listener สำหรับช่องค้นหาพนักงานในหน้ารายงาน (คลิกปุ๊บโชว์ปั๊บ + พิมพ์หาได้)
+      // ✅ Event Listener สำหรับช่องค้นหาพนักงานในหน้ารายงาน (คลิกปุ๊บโชว์ปั๊บ + พิมพ์หาได้)
       const reportInput = document.getElementById('reportSearchInput');
       if (reportInput) {
           reportInput.addEventListener('focus', function() {
