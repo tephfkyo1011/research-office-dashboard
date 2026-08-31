@@ -310,15 +310,11 @@
         </div>
 
         <div class="card" style="margin-bottom: 20px;">
-            <div class="form-group">
-                <label>👤 ค้นหาพนักงาน (ชื่อ หรือ รหัสพนักงาน)</label>
-                <div class="search-dropdown-container">
-                    <input type="text" id="reportSearchInput" class="search-input-custom" placeholder="พิมพ์ชื่อ หรือ รหัสพนักงาน..." autocomplete="off">
-                    <input type="hidden" id="reportSelectedRecorder">
-                    <div id="reportDropdownList" class="dropdown-list"></div>
-                    <small id="reportStatusHint" style="color: #7f8c8d; display: block; margin-top: 8px;">💡 พิมพ์เพื่อค้นหา หรือ ปล่อยว่างเพื่อดูทุกคน</small>
-                </div>
-            </div>
+    <div class="form-group">
+        <label class="form-label font-weight-bold">👤 ค้นหาพนักงาน (ชื่อ หรือ รหัสพนักงาน)</label>
+        <select id="reportSearchInput" class="form-control" style="width: 100%;"></select>
+    </div>
+</div>
 
             <div class="form-group" style="margin-top: 15px;">
                 <label>🧪 ประเภทแก๊ส</label>
@@ -579,7 +575,7 @@ $(document).ready(function() {
 });
 
 // ==========================================
-// แปลง window.onload ให้รองรับ async/await
+// แปลง window.onload ให้รองรับ async/await + Select2 หน้ารายงาน
 // ==========================================
 window.onload = async function() {
   const savedName = localStorage.getItem('myLastUserName');
@@ -594,7 +590,7 @@ window.onload = async function() {
   try {
       const initData = await apiCall('getInitialData');
       
-      // ฟังก์ชันช่วยเคลียร์ข้อมูล (ถ้าเป็น Object จากหลังบ้านแล้ว ให้ระวังการใช้ filter)
+      // ฟังก์ชันช่วยเคลียร์ข้อมูล
       const cleanData = (data) => Array.isArray(data) ? data.map(item => Array.isArray(item) ? item[0] : item).filter(Boolean) : [];
 
       const cleanRecorders = cleanData(initData.recorders);
@@ -602,38 +598,56 @@ window.onload = async function() {
       const cleanStatuses = cleanData(initData.statuses);
       const cleanLocations = cleanData(initData.locations);
 
-      // โหลดข้อมูลเข้า Dropdown
+      // โหลดข้อมูลเข้า Dropdown หน้าบันทึก
       fillSelect2('recorder', cleanRecorders, savedName);
       fillSelect2('type', cleanGasTypes, savedGas || 'CO2');
       fillSelect2('status', cleanStatuses, 'ปกติ');
       fillSelect2('location', cleanLocations, savedLocation || 'สำนักงานวิจัย');
 
-      // 🟢 ตั้งค่า Select2 สำหรับช่องผู้จดบันทึกใหม่ เพื่อเปิดใช้งานระบบ Highlight สี (ต้องทำหลัง fillSelect2)
+      // 🟢 ตั้งค่า Select2 ช่องผู้จดบันทึก (หน้าบันทึก) + Highlight คำค้นหา
       $('#recorder').select2({
           width: '100%',
           templateResult: function(item) {
-              // ถ้าไม่มีข้อมูล ให้คืนค่าข้อความปกติ
               if (!item.id) return item.text; 
-              
-              // ดึงคำที่กำลังพิมพ์อยู่ในช่องค้นหาของ Select2
               const term = $('.select2-search__field').val() || '';
               if (!term) return item.text;
-              
-              // ทำการ Highlight คำที่ตรงกัน
               const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
               const highlighted = item.text.replace(regex, `<span class="highlight-match">$1</span>`);
-              
               return $('<span>').html(highlighted);
           },
-          escapeMarkup: function(m) { return m; } // ปิดป้องกัน HTML เพื่อให้เบราว์เซอร์อ่านแท็ก <span> ได้
+          escapeMarkup: function(m) { return m; }
       });
 
       $('#recorder').on('change', function() { localStorage.setItem('myLastUserName', $(this).val()); });
       $('#type').on('change', function() { localStorage.setItem('myLastGas', $(this).val()); });
       $('#location').on('change', function() { localStorage.setItem('myLastLocation', $(this).val()); });
 
-      masterReportRecorders = cleanRecorders; 
-      
+      // 🟢 [ใหม่] ตั้งค่า Select2 ค้นหาพนักงาน (หน้ารายงาน)
+      const $reportSelect = $('#reportSearchInput');
+      if ($reportSelect.length) {
+          $reportSelect.empty().append('<option value="">-- พนักงานทุกคน (ทั้งหมด) --</option>');
+          
+          cleanRecorders.forEach(rec => {
+              $reportSelect.append(new Option(rec, rec));
+          });
+
+          $reportSelect.select2({
+              width: '100%',
+              placeholder: 'พิมพ์ชื่อ หรือ รหัสพนักงาน...',
+              allowClear: true,
+              templateResult: function(item) {
+                  if (!item.id) return item.text;
+                  const term = $('.select2-search__field').val() || '';
+                  if (!term) return item.text;
+                  const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                  const highlighted = item.text.replace(regex, `<span class="highlight-match">$1</span>`);
+                  return $('<span>').html(highlighted);
+              },
+              escapeMarkup: function(m) { return m; }
+          });
+      }
+
+      // ดรอปดาวน์แก๊สในหน้ารายงาน
       const reportGasDropdown = document.getElementById('reportGasType');
       if (reportGasDropdown) {
           reportGasDropdown.innerHTML = '<option value="">-- ทั้งหมด --</option>';
@@ -641,28 +655,6 @@ window.onload = async function() {
               let opt = document.createElement('option');
               opt.value = g; opt.innerText = g;
               reportGasDropdown.appendChild(opt);
-          });
-      }
-
-      // ✅ Event Listener สำหรับช่องค้นหาพนักงานในหน้ารายงาน (คลิกปุ๊บโชว์ปั๊บ + พิมพ์หาได้)
-      const reportInput = document.getElementById('reportSearchInput');
-      if (reportInput) {
-          reportInput.addEventListener('focus', function() {
-              renderReportOptions(this.value);
-          });
-          reportInput.addEventListener('click', function() {
-              renderReportOptions(this.value);
-          });
-          reportInput.addEventListener('input', function() {
-              renderReportOptions(this.value);
-          });
-          
-          // ปิด Dropdown เมื่อผู้ใช้คลิกพื้นที่อื่น
-          document.addEventListener('click', function(e) {
-              if (!e.target.closest('#reportSearchInput') && !e.target.closest('#reportDropdownList')) {
-                  const dropList = document.getElementById('reportDropdownList');
-                  if (dropList) dropList.style.display = 'none';
-              }
           });
       }
 
@@ -674,7 +666,6 @@ window.onload = async function() {
       console.error("เกิดข้อผิดพลาดในการโหลดข้อมูลเริ่มต้น:", error);
   }
 };
-
     function showLoading(msg) {
       $('#loadingText').text(msg || 'กำลังประมวลผล...');
       $('#loadingOverlay').css('display', 'flex');
@@ -1028,75 +1019,6 @@ window.onload = async function() {
           $('#pressUse').attr('placeholder', 'ค่าความดันการใช้งาน');
         }
       }
-    }
-
-    // ==========================================
-    // 1. ระบบค้นหาชื่อพนักงาน (Auto-complete) - อัปเดต UI Card & Filter
-    // ==========================================
-    function renderReportOptions(query) {
-      const repListElement = document.getElementById('reportDropdownList');
-      const repInput = document.getElementById('reportSearchInput');
-      const repHidden = document.getElementById('reportSelectedRecorder');
-      const repHint = document.getElementById('reportStatusHint'); 
-
-      if (!repListElement) return;
-      repListElement.innerHTML = "";
-      
-      // กรองเฉพาะคนที่สถานะ 'Active' (หรือสถานะที่คุณตั้งไว้ในคอลัมน์ F) และค้นหาตามข้อความ
-      const listToRender = query.trim() === "" 
-          ? masterReportRecorders.filter(item => item.status === 'Active' || item.status === 'ทำงาน') 
-          : masterReportRecorders.filter(item => 
-              (item.status === 'Active' || item.status === 'ทำงาน') && 
-              (item.text.toLowerCase().includes(query.toLowerCase()) || 
-               item.id.toLowerCase().includes(query.toLowerCase()))
-          );
-
-      if (listToRender.length === 0) {
-        repListElement.innerHTML = `<div class="dropdown-item" style="color:#e74c3c; text-align:center; padding:15px;">❌ ไม่พบข้อมูลที่ตรงกัน หรือ พนักงานพ้นสภาพแล้ว</div>`;
-        repInput.className = "search-input-custom status-invalid";
-        if (repHint) repHint.innerText = "❌ ไม่พบชื่อ หรือ รหัสนี้ในระบบ";
-        repListElement.style.display = 'block';
-        return;
-      }
-
-      listToRender.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'dropdown-item';
-        div.style.padding = '0'; // ลบ padding เดิมของ dropdown-item ออกเพื่อให้ card เต็มพื้นที่
-        
-        let displayName = item.text;
-        let displayId = item.id;
-        
-        // ทำ Highlight ข้อความที่พิมพ์ค้นหา
-        if (query.trim() !== "") {
-           const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-           displayName = item.text.replace(regex, `<span class="highlight-match">$1</span>`);
-           displayId = item.id.replace(regex, `<span class="highlight-match">$1</span>`);
-        }
-
-        // โครงสร้าง HTML สำหรับการ์ดรายชื่อ
-        div.innerHTML = `
-            <div class="dropdown-card">
-                <div class="dropdown-avatar">👤</div>
-                <div class="dropdown-info">
-                    <span class="dropdown-name">${displayName}</span>
-                    <span class="dropdown-id">รหัสพนักงาน: ${displayId}</span>
-                </div>
-            </div>
-        `;
-
-        div.addEventListener('click', () => {
-          repInput.value = item.text; // แสดงชื่อในช่องค้นหา
-          repHidden.value = item.id;  // เก็บค่า ID ไว้หลังบ้าน
-          repInput.className = "search-input-custom status-valid";
-          if (repHint) repHint.innerText = "✅ เลือกข้อมูลเรียบร้อยแล้ว";
-          repListElement.style.display = 'none';
-        });
-        
-        repListElement.appendChild(div);
-      });
-      
-      repListElement.style.display = 'block';
     }
 
 // ==========================================
