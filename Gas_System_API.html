@@ -92,6 +92,26 @@
 
     @media (max-width:768px){.col-half{flex:1 1 100%;} .container{padding:10px;} .search-box{max-width:100%; margin-top:10px;}}
 
+    /* ปรับแต่งช่องพิมพ์ค้นหาด้านใน Select2 ให้กลมกลืน */
+.select2-container--default .select2-dropdown {
+    border-radius: 8px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
+    overflow: hidden;
+}
+
+.select2-container--default .select2-search--dropdown {
+    padding: 8px 8px 4px 8px !important;
+    background-color: #f8f9fa;
+}
+
+.select2-container--default .select2-search--dropdown .select2-search__field {
+    border: 1px solid #1abc9c !important;
+    border-radius: 6px !important;
+    padding: 6px 10px !important;
+    outline: none !important;
+    font-size: 14px;
+}
+    
     /* =========================================
        📄 Styles สำหรับหน้าคู่มือ (WI) ปกติ
        ========================================= */
@@ -557,6 +577,16 @@ $(document).ready(function() {
     });
 });
 
+    // 🟢 แก้ปัญหาต้องคลิกซ้ำ: พอกดเปิด Select2 ปุ๊บ ให้โฟกัสที่ช่องพิมพ์ค้นหาทันที พิมพ์ต่อได้เลย
+$(document).on('select2:open', function() {
+    setTimeout(function() {
+        const searchInput = document.querySelector('.select2-container--open .select2-search__field');
+        if (searchInput) {
+            searchInput.focus();
+        }
+    }, 10);
+});
+    
 // ==========================================
 // แปลง window.onload ให้รองรับ async/await + Select2 หน้ารายงาน
 // ==========================================
