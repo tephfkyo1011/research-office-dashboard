@@ -957,21 +957,6 @@ window.onload = async function() {
         $('#pressUse').attr('placeholder', 'ค่าความดันการใช้งาน');
     }
 
-    function openWI() {
-       if (typeof showWI === 'function') {
-          showWI();
-       } else if (document.getElementById('wiModal')) {
-          $('#wiModal').fadeIn();
-       } else {
-          Swal.fire({
-             title: '📘 คู่มือการใช้งานระบบ (WI)',
-             html: 'กรุณาเรียกดูรายละเอียดคู่มือการบันทึกแก๊ส และตรวจสอบจากไฟล์ WI ที่เตรียมไว้ในระบบ',
-             icon: 'info',
-             confirmButtonColor: '#34495e'
-          });
-       }
-    }
-
     function updateWorkingPressure() {
       const gasType = $('#type').val();
       const location = $('#location').val();
@@ -1509,10 +1494,21 @@ function exportTableToCSV(filename) {
 }
 
     function openWI() {
-    document.getElementById('wiModal').style.display = 'block';
-    document.body.style.overflow = 'hidden';
-    document.addEventListener('keydown', handleEsc);
-  }
+    const wiModal = document.getElementById('wiModal');
+    if (wiModal) {
+        wiModal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        document.addEventListener('keydown', handleEsc);
+    } else {
+        // ถ้าไม่มี Modal ให้ใช้ SweetAlert แทน
+        Swal.fire({
+            title: '📘 คู่มือการใช้งานระบบ (WI)',
+            html: 'กรุณาเรียกดูรายละเอียดคู่มือการบันทึกแก๊ส และตรวจสอบจากไฟล์ WI ที่เตรียมไว้ในระบบ',
+            icon: 'info',
+            confirmButtonColor: '#34495e'
+        });
+    }
+}
 
   function closeWI() {
     document.getElementById('wiModal').style.display = 'none';
