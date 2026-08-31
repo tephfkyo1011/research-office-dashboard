@@ -564,7 +564,6 @@ $(document).ready(function() {
 // แปลง window.onload ให้รองรับ async/await
 // ==========================================
 window.onload = async function() {
-  // 🟢 ดึงค่าที่เคยเลือกไว้ล่าสุดจากความจำเบราว์เซอร์
   const savedName = localStorage.getItem('myLastUserName');
   const savedGas = localStorage.getItem('myLastGas');
   const savedLocation = localStorage.getItem('myLastLocation');
@@ -575,9 +574,7 @@ window.onload = async function() {
   }
 
   try {
-      // 🚀 ยิง API แค่ครั้งเดียว ได้ข้อมูลครบทุกอย่าง (โหลดเร็ว 1-2 วินาที)
       const initData = await apiCall('getInitialData');
-
       const cleanData = (data) => Array.isArray(data) ? data.map(item => Array.isArray(item) ? item[0] : item).filter(Boolean) : [];
 
       const cleanRecorders = cleanData(initData.recorders);
@@ -585,18 +582,16 @@ window.onload = async function() {
       const cleanStatuses = cleanData(initData.statuses);
       const cleanLocations = cleanData(initData.locations);
 
-      // --- นำข้อมูลใส่ Dropdown และตั้งค่าให้ตรงกับที่เคยเลือกไว้ ---
+      // โหลดข้อมูลเข้า Dropdown
       fillSelect2('recorder', cleanRecorders, savedName);
       fillSelect2('type', cleanGasTypes, savedGas || 'CO2');
       fillSelect2('status', cleanStatuses, 'ปกติ');
       fillSelect2('location', cleanLocations, savedLocation || 'สำนักงานวิจัย');
 
-      // --- สั่งให้ระบบจดจำค่าใหม่ทุกครั้งที่ผู้ใช้กดเลือก ---
       $('#recorder').on('change', function() { localStorage.setItem('myLastUserName', $(this).val()); });
       $('#type').on('change', function() { localStorage.setItem('myLastGas', $(this).val()); });
       $('#location').on('change', function() { localStorage.setItem('myLastLocation', $(this).val()); });
 
-      // --- ส่งข้อมูลรายชื่อที่จัดรูปแบบแล้ว [ID] Name ให้หน้าค้นหา/รายงาน ---
       masterReportRecorders = cleanRecorders; 
       
       const reportGasDropdown = document.getElementById('reportGasType');
@@ -606,6 +601,18 @@ window.onload = async function() {
               let opt = document.createElement('option');
               opt.value = g; opt.innerText = g;
               reportGasDropdown.appendChild(opt);
+          });
+      }
+
+      // 🟢 เพิ่มระบบ Autocomplete ให้ช่องค้นหาพนักงานในหน้ารายงาน
+      // (รองรับทั้ง id="searchRecorder" หรือ "reportSearchRecorder")
+      const searchInput = $('#searchRecorder').length ? $('#searchRecorder') : ($('#reportSearchRecorder').length ? $('#reportSearchRecorder') : null);
+      if (searchInput && typeof searchInput.autocomplete === 'function') {
+          searchInput.autocomplete({
+              source: masterReportRecorders,
+              minLength: 0 // พิมพ์แค่ 1 ตัวอักษร หรือคลิกช่องว่างก็แสดงข้อมูลเลย
+          }).on('focus', function() {
+              $(this).autocomplete('search', $(this).val());
           });
       }
 
