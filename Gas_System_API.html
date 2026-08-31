@@ -1324,10 +1324,6 @@ async function executeReportSearch() {
 // ==========================================
 // 6. ตารางรายงาน และ Pagination บนหน้าเว็บ
 // ==========================================
-let currentReportData = [];
-let currentPage = 1;
-const rowsPerPage = 15;
-
 function displayReportResults(response) {
     document.getElementById('loadingOverlay').style.display = 'none';
     
