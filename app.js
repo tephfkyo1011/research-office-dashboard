@@ -148,7 +148,8 @@ async function initApp() {
                 const targetUrl = card.dataset.href;
                 if (targetUrl) {
                     const finalUrl = getSmartGoogleUrl(targetUrl);
-                    window.open(finalUrl, '_blank');
+                    // เปลี่ยนจากการเปิดแท็บใหม่ เป็นการเปิดทับหน้าเดิมเลย
+                    window.location.href = finalUrl; 
                 }
             });
         });
