@@ -1,4 +1,4 @@
-const APP_VERSION = 'v43-TitanMode';
+const APP_VERSION = 'v44-TitanMode';
 console.log(`🚀 App Version: ${APP_VERSION} (Secure CSP)`);
 
 // 🟢 ฟังก์ชันบังคับสลับไปใช้บัญชี tephfgi@gmail.com เสมอ เพื่อข้ามการบล็อกของ Mahidol
