@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v45'; // 🟢 อัปเดตเป็น v45 เพื่อบังคับเคลียร์แคชเก่า
+const CACHE_VERSION = 'v46'; // 🟢 อัปเดตเป็น v45 เพื่อบังคับเคลียร์แคชเก่า
 const STATIC_CACHE = `kyogi-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `kyogi-dynamic-${CACHE_VERSION}`;
 const OFFLINE_URL = './offline.html';
@@ -9,7 +9,7 @@ const STATIC_ASSETS = [
   // --- ⚙️ โซนที่ 1: ไฟล์ระบบหลัก (Core Files) ---
   './',
   './index.html',
-  './app.js?v=45', // 🟢 อัปเดตเวอร์ชันให้ตรงกับ CACHE_VERSION
+  './app.js?v=46', // 🟢 อัปเดตเวอร์ชันให้ตรงกับ CACHE_VERSION
   './offline.html',
   './ping.txt',
   './manifest.json', // 📌 เพิ่ม Manifest
