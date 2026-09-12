@@ -20,9 +20,26 @@
     <link rel="manifest" id="dynamic-manifest">
 
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        iframe { width: 100%; height: 100%; border: none; }
+        body, html { 
+            margin: 0; padding: 0; height: 100%; 
+            background-color: #f4f6f9; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
 
+        /* หน้า Loading ระหว่างรอข้ามหน้า */
+        .loader-box { text-align: center; color: #333; }
+        .spinner {
+            width: 45px; height: 45px;
+            border: 5px solid #e2e8f0;
+            border-top: 5px solid #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* สไตล์ของปุ่มติดตั้งแอป (Android/PC) */
         #installAppBtn {
             display: none;
             position: fixed;
@@ -38,8 +55,14 @@
             box-shadow: 0 8px 15px rgba(37, 99, 235, 0.4);
             cursor: pointer;
             z-index: 9999;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        #installAppBtn:hover {
+            transform: scale(1.05);
+            background-color: #1d4ed8;
         }
 
+        /* กล่องคำแนะนำสำหรับ iOS */
         #iosInstallPrompt {
             display: none;
             position: fixed;
@@ -59,15 +82,38 @@
         }
         #iosInstallPrompt p { margin: 0 0 10px 0; font-size: 14px; line-height: 1.4; }
         #iosInstallPrompt .icon-share { display: inline-block; font-size: 18px; color: #2563eb; margin: 0 5px; }
-        #closeIosPrompt { background: #f1f5f9; border: none; padding: 8px 16px; border-radius: 6px; color: #475569; font-weight: bold; cursor: pointer; font-size: 14px; }
+        #closeIosPrompt {
+            background: #f1f5f9;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: #475569;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        #closeIosPrompt:hover { background: #e2e8f0; }
     </style>
 </head>
 <body>
 
-    <!-- สคริปต์ดัก LINE และล้าง Cache (รันก่อนสร้าง iframe) -->
+    <!-- หน้า Loading แสดงสถานะแทน iframe -->
+    <div class="loader-box">
+        <div class="spinner"></div>
+        <h3 style="margin: 0; color: #1e293b;">กำลังนำคุณเข้าสู่ระบบ LMS Lab...</h3>
+        <p style="color: #64748b; font-size: 13px; margin-top: 5px;">โปรดรอสักครู่ ระบบกำลังเปิดหน้าต่างหลัก</p>
+    </div>
+    
+    <button id="installAppBtn">📲 ติดตั้งแอปนี้</button>
+
+    <div id="iosInstallPrompt">
+        <p><strong>ติดตั้งแอปบน iOS</strong><br>แตะที่ไอคอน <span class="icon-share">⎋</span> (แชร์) ด้านล่าง<br>แล้วเลือก <strong>"เพิ่มไปยังหน้าจอโฮม"</strong><br>(Add to Home Screen)</p>
+        <button id="closeIosPrompt">รับทราบ</button>
+    </div>
+
     <script>
         // ==========================================
-        // 🚀 1. ดักจับ LINE และบังคับทะลุเปิดใน Chrome / External Browser
+        // 🚀 1. ดักจับ LINE และบังคับทะลุเปิดใน External Browser
         // ==========================================
         (function bypassLineBrowser() {
             var ua = navigator.userAgent || navigator.vendor || window.opera;
@@ -82,7 +128,7 @@
                                        "#Intent;scheme=https;package=com.android.chrome;end;";
                     window.location.href = chromeIntent;
                 } 
-                // สำหรับ iOS (iPhone/iPad): ใส่พารามิเตอร์ openExternalBrowser=1
+                // สำหรับ iOS: ใส่พารามิเตอร์ openExternalBrowser=1
                 else if (/iphone|ipad|ipod/i.test(ua)) {
                     if (currentFullUrl.indexOf('openExternalBrowser=1') === -1) {
                         var joinChar = currentFullUrl.indexOf('?') > -1 ? '&' : '?';
@@ -93,75 +139,22 @@
         })();
 
         // ==========================================
-        // 🧹 2. สั่งล้าง Cache, Storage และ Service Worker เก่าทั้งหมด
+        // 🔥 2. Redirect ตรงไปยัง Apps Script Web App (พร้อมส่งต่อ Parameter)
         // ==========================================
-        (function clearAppCache() {
-            try {
-                // ล้าง Storage ในเครื่อง
-                if (window.localStorage) window.localStorage.clear();
-                if (window.sessionStorage) window.sessionStorage.clear();
+        const baseUrl = "https://script.google.com/macros/s/AKfycbxZtGFYX2PnHWwNRY5INba6-65Yu5gylqKySJFgJYTufIVOU76Iieo41ANHI6mZ0DKWeQ/exec";
+        const searchParams = window.location.search;
+        const joinChar = searchParams ? '&' : '?';
+        const targetUrl = baseUrl + searchParams + joinChar + "v=" + new Date().getTime();
 
-                // ลบ Service Worker
-                if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                        for (let registration of registrations) {
-                            registration.unregister();
-                        }
-                    });
-                }
-                // ลบ Cache Storage
-                if ('caches' in window) {
-                    caches.keys().then(function(names) {
-                        for (let name of names) {
-                            caches.delete(name);
-                        }
-                    });
-                }
-            } catch(e) {
-                console.log("Clear cache error: ", e);
-            }
-        })();
-    </script>
+        setTimeout(() => {
+            window.location.replace(targetUrl);
+        }, 600);
 
-    <!-- iframe ที่รองรับการอนุญาตสิทธิ์สมบูรณ์ -->
-    <iframe 
-      id="appIframe"
-      allow="fullscreen; camera; microphone"
-      sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation allow-top-navigation-by-user-activation">
-    </iframe>
-    
-    <button id="installAppBtn">📲 ติดตั้งแอปนี้</button>
-
-    <div id="iosInstallPrompt">
-        <p><strong>ติดตั้งแอปบน iOS</strong><br>แตะที่ไอคอน <span class="icon-share">⎋</span> (แชร์) ด้านล่าง<br>แล้วเลือก <strong>"เพิ่มไปยังหน้าจอโฮม"</strong><br>(Add to Home Screen)</p>
-        <button id="closeIosPrompt">รับทราบ</button>
-    </div>
-
-    <script>
-        // โหลด iframe พร้อมดักจับ Parameter ใน URL
-        (function loadCleanIframe() {
-            var baseUrl = "https://script.google.com/macros/s/AKfycbxZtGFYX2PnHWwNRY5INba6-65Yu5gylqKySJFgJYTufIVOU76Iieo41ANHI6mZ0DKWeQ/exec";
-            var timestamp = new Date().getTime();
-            
-            // ส่งค่า Search Param (ถ้ามี) เช่น ?page=logbook ส่งต่อให้ iframe
-            var searchParams = window.location.search;
-            var joinChar = searchParams ? '&' : '?';
-            
-            document.getElementById('appIframe').src = baseUrl + searchParams + joinChar + "v=" + timestamp;
-        })();
-
-        // ดักรับคำสั่ง NAVIGATE จาก Apps Script
-        window.addEventListener('message', function(event) {
-            if (event.data && event.data.action === 'NAVIGATE') {
-                var iframe = document.getElementById('appIframe');
-                if (iframe && event.data.url) {
-                    iframe.src = event.data.url;
-                }
-            }
-        });
-
-        // PWA Manifest และ Installation
+        // ==========================================
+        // 3. PWA Dynamic Manifest และ Service Worker
+        // ==========================================
         const currentUrl = window.location.origin + window.location.pathname;
+
         const manifestData = {
             "id": "app-lms-lab",
             "name": "Lab Instrument Management System (LMS)",
@@ -171,12 +164,27 @@
             "start_url": currentUrl, 
             "background_color": "#ffffff",
             "theme_color": "#2563eb",
-            "icons": [{ "src": "https://tephfkyo1011.github.io/research-office-dashboard/logo-lms-lab.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }]
+            "icons": [
+                {
+                    "src": "https://tephfkyo1011.github.io/research-office-dashboard/logo-lms-lab.png",
+                    "sizes": "512x512",
+                    "type": "image/png",
+                    "purpose": "any maskable"
+                }
+            ]
         };
 
         const base64Manifest = btoa(unescape(encodeURIComponent(JSON.stringify(manifestData))));
         document.getElementById('dynamic-manifest').href = 'data:application/manifest+json;base64,' + base64Manifest;
 
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+            .catch(err => console.log('Service Worker Error:', err));
+        }
+
+        // ==========================================
+        // 4. การจัดการปุ่มติดตั้งแอป (Android & iOS)
+        // ==========================================
         let deferredPrompt;
         const installBtn = document.getElementById('installAppBtn');
 
