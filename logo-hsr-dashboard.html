@@ -16,8 +16,24 @@
     <link rel="manifest" id="dynamic-manifest">
 
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        iframe { width: 100%; height: 100%; border: none; }
+        body, html { 
+            margin: 0; padding: 0; height: 100%; 
+            background-color: #f4f6f9; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+
+        /* หน้า Loading ระหว่างรอข้ามหน้า */
+        .loader-box { text-align: center; color: #333; }
+        .spinner {
+            width: 45px; height: 45px;
+            border: 5px solid #e2e8f0;
+            border-top: 5px solid #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* สไตล์ของปุ่มติดตั้งแอป (Android/PC) */
         #installAppBtn {
@@ -77,7 +93,12 @@
 </head>
 <body>
 
-    <iframe src="https://script.google.com/macros/s/AKfycbxbcCDzD5mabYhFnw0MP00-ZkOoCJg4bZc-daedF9GhHIq0xVUMMIKmB7l4_69oyNQ/exec" allow="fullscreen"></iframe>
+    <!-- เปลี่ยนจาก iframe เป็นหน้า Loading -->
+    <div class="loader-box">
+        <div class="spinner"></div>
+        <h3 style="margin: 0; color: #1e293b;">กำลังนำคุณเข้าสู่ระบบครุภัณฑ์ HSR...</h3>
+        <p style="color: #64748b; font-size: 13px; margin-top: 5px;">โปรดรอสักครู่ ระบบกำลังเปิดหน้าต่างหลัก</p>
+    </div>
     
     <button id="installAppBtn">📲 ติดตั้งแอปนี้</button>
 
@@ -87,7 +108,15 @@
     </div>
 
     <script>
-        // 🟢 1. ดึง URL แบบเต็มของไฟล์นี้ (ตัดพวกเครื่องหมาย ? ต่อท้ายออกเพื่อความชัวร์)
+        // URL ของ Google Apps Script Web App
+        const webAppUrl = "https://script.google.com/macros/s/AKfycbxbcCDzD5mabYhFnw0MP00-ZkOoCJg4bZc-daedF9GhHIq0xVUMMIKmB7l4_69oyNQ/exec";
+
+        // 🔥 Redirect หน้าต่างไปยัง Web App ตรงๆ ป้องกันปัญหา iframe หน้าจอขาว
+        setTimeout(() => {
+            window.location.replace(webAppUrl);
+        }, 600);
+
+        // 🟢 1. ดึง URL แบบเต็มของไฟล์นี้ 
         const currentUrl = window.location.origin + window.location.pathname;
 
         // 2. สร้าง Manifest ด้วย JavaScript
@@ -97,7 +126,7 @@
             "short_name": "ครุภัณฑ์ HSR",
             "display": "standalone",
             
-            // 🟢 3. จุดสำคัญที่สุด: บังคับ Scope และ Start URL ให้ล็อคตายตัวที่ไฟล์นี้ไฟล์เดียว!
+            // 🟢 3. บังคับ Scope และ Start URL ให้ล็อคตายตัว
             "scope": currentUrl, 
             "start_url": currentUrl, 
             
@@ -113,7 +142,7 @@
             ]
         };
 
-        // 🟢 4. เปลี่ยนมาใช้ Base64 ในการเข้ารหัสแทน Blob (แก้ปัญหา Chrome สับสน Scope 100%)
+        // 🟢 4. เข้ารหัส Base64
         const base64Manifest = btoa(unescape(encodeURIComponent(JSON.stringify(manifestData))));
         document.getElementById('dynamic-manifest').href = 'data:application/manifest+json;base64,' + base64Manifest;
 
@@ -127,14 +156,12 @@
         let deferredPrompt;
         const installBtn = document.getElementById('installAppBtn');
 
-        // ดักจับเมื่อเบราว์เซอร์พร้อมให้ติดตั้ง
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
             installBtn.style.display = 'block';
         });
 
-        // เมื่อผู้ใช้กดปุ่มติดตั้งของเรา
         installBtn.addEventListener('click', async () => {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
@@ -147,7 +174,6 @@
             }
         });
 
-        // ซ่อนปุ่มอัตโนมัติ ถ้าแอปนี้ถูกติดตั้งลงเครื่องไปแล้ว
         window.addEventListener('appinstalled', () => {
             installBtn.style.display = 'none';
         });
