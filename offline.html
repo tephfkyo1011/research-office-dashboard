@@ -2,67 +2,143 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ออฟไลน์ - KYOGI Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ออฟไลน์ - Research Office Portal</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&family=Sarabun:wght@400&display=swap" rel="stylesheet">
+    
     <style>
-        * { box-sizing: border-box; }
+        :root {
+            --bg-color: #f4f6f9;
+            --text-main: #2c3e50;
+            --text-sub: #6c757d;
+            --primary-grad: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+        }
+
+        /* รองรับ Dark mode ผ่าน System preference เป็นพื้นฐาน */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #1e1e2f;
+                --text-main: #ffffff;
+                --text-sub: #bbbbbb;
+            }
+        }
+
+        /* คลาส Dark mode ที่ดึงจาก localStorage */
+        body.dark {
+            --bg-color: #1e1e2f;
+            --text-main: #ffffff;
+            --text-sub: #bbbbbb;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            font-family: 'Sarabun', sans-serif; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
-            height: 100vh; 
+            min-height: 100vh; 
             margin: 0;
-            background-color: #f4f6f9; 
-            color: #2c3e50; 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
             text-align: center; 
             padding: 20px; 
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
-        .icon {
-            font-size: 4rem;
-            margin-bottom: 10px;
-            animation: pulse 2s infinite;
+        
+        .icon-container {
+            font-size: 5rem;
+            margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
         }
+        
         h1 { 
-            font-size: 2rem; 
+            font-family: 'Prompt', sans-serif;
+            font-size: 1.8rem; 
             margin: 0 0 10px 0; 
-            color: #0f2027;
+            font-weight: 600;
         }
+        
         p { 
-            color: #6c757d; 
-            line-height: 1.5;
-            margin-bottom: 30px;
+            color: var(--text-sub); 
+            line-height: 1.6;
+            margin-bottom: 35px;
+            font-size: 1rem;
+            max-width: 400px;
         }
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
         .btn { 
-            padding: 12px 24px; 
-            background: #0f2027; 
+            padding: 12px 28px; 
+            background: var(--primary-grad); 
             color: white; 
             text-decoration: none; 
-            border-radius: 8px; 
-            font-weight: bold;
+            border-radius: 30px; 
+            font-family: 'Prompt', sans-serif;
+            font-weight: 500;
+            font-size: 1rem;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+            border: none;
+            cursor: pointer;
         }
+        
         .btn:hover {
-            background: #203a43;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.2);
         }
+        
         .btn:active {
-            transform: translateY(0);
+            transform: translateY(1px);
         }
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(0.95); }
-            100% { opacity: 1; transform: scale(1); }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-main);
+            border: 2px solid #ccc;
+            box-shadow: none;
+        }
+        
+        body.dark .btn-outline {
+            border-color: #555;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
         }
     </style>
 </head>
 <body>
-    <div class="icon">📡</div>
+    <div class="icon-container">📡</div>
     <h1>ขาดการเชื่อมต่ออินเทอร์เน็ต</h1>
-    <p>ดูเหมือนว่าคุณจะออฟไลน์อยู่ หรือระบบเครือข่ายมีปัญหา<br>โปรดตรวจสอบการเชื่อมต่อของคุณแล้วลองใหม่อีกครั้ง</p>
-    <a href="./index.html" class="btn">ลองโหลดใหม่</a>
+    <p>ไม่สามารถโหลดเนื้อหาได้ในขณะนี้<br>โปรดตรวจสอบสัญญาณ Wi-Fi หรืออินเทอร์เน็ตของคุณแล้วลองใหม่อีกครั้ง</p>
+    
+    <div class="btn-group">
+        <!-- ปุ่มย้อนกลับไปหน้าแรก (ซึ่งสามารถโหลดได้ตอนออฟไลน์เพราะ Cache ไว้แล้ว) -->
+        <a href="./index.html" class="btn">กลับหน้าแรก</a>
+        <!-- ปุ่มลองโหลดหน้านี้ใหม่ -->
+        <button onclick="window.location.reload()" class="btn btn-outline">ลองอีกครั้ง</button>
+    </div>
+
+    <script>
+        // ซิงค์ Dark Mode ให้ตรงกับหน้าเว็บหลัก
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark') {
+            document.body.classList.add('dark');
+        }
+    </script>
 </body>
 </html>
