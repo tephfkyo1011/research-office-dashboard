@@ -2,6 +2,10 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
+    <!-- ป้องกันการจำ Cache หน้า HTML -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>ระบบลงเวลาปฏิบัติงานนอกเวลา</title> 
     
@@ -16,32 +20,24 @@
     <link rel="manifest" id="dynamic-manifest">
 
     <style>
-        /* 🌟 บังคับ body ให้เต็มจอ 100% และห้ามเลื่อนเด็ดขาด */
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%; 
-            overflow: hidden; background-color: #f4f6f9; 
+            background-color: #f4f6f9; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
 
-        /* 🌟 สร้างกล่องพิเศษสำหรับ iOS เพื่อให้เลื่อนเฉพาะข้างใน Iframe ได้ลื่นไหล */
-        .iframe-wrapper {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            -webkit-overflow-scrolling: touch;
-            overflow-y: auto;
-            width: 100%;
-            height: 100%;
+        /* หน้า Loading แสดงสถานะการเปลี่ยนหน้า */
+        .loader-box { text-align: center; color: #333; }
+        .spinner {
+            width: 45px; height: 45px;
+            border: 5px solid #e2e8f0;
+            border-top: 5px solid #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px auto;
         }
-
-        /* 🌟 เทคนิคหลอก iOS: ตั้ง width=1px แต่ min-width=100% ป้องกันการขยายกรอบมั่วๆ */
-        iframe { 
-            width: 1px; 
-            min-width: 100%; 
-            height: 100%; 
-            border: none; 
-            display: block;
-            transition: opacity 0.3s ease; /* เพิ่มลูกเล่นตอนเปลี่ยนหน้า */
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* สไตล์ของปุ่มติดตั้งแอป (Android/PC) */
         #installAppBtn {
@@ -73,8 +69,11 @@
 </head>
 <body>
 
-    <div class="iframe-wrapper">
-        <iframe id="mainIframe" src="https://script.google.com/macros/s/AKfycbzO_77wN89GjfbaoqkcH_j9iziyK-_mbKP_8PGnUuvPOsnjkyx2HZWo1naZJWwuuo8wVg/exec" allow="fullscreen"></iframe>
+    <!-- หน้า Loading แทนที่ Iframe -->
+    <div class="loader-box">
+        <div class="spinner"></div>
+        <h3 style="margin: 0; color: #1e293b;">กำลังนำคุณเข้าสู่ระบบลงเวลาปฏิบัติงานนอกเวลา...</h3>
+        <p style="color: #64748b; font-size: 13px; margin-top: 5px;">โปรดรอสักครู่ ระบบกำลังเปิดหน้าต่างหลัก</p>
     </div>
     
     <button id="installAppBtn">📲 ติดตั้งแอปนี้</button>
@@ -86,25 +85,45 @@
 
     <script>
         // ==========================================
-        // 🌟 1. ระบบรับสัญญาณวิทยุจาก Iframe (แก้บั๊ก iOS สลับหน้าแล้วค้าง)
+        // 🚀 1. ดักจับ LINE In-App Browser และบังคับเปิดใน Browser หลัก
         // ==========================================
-        window.addEventListener('message', function(event) {
-            if (event.data && event.data.action === 'changePage') {
-                const iframe = document.getElementById('mainIframe');
-                if (iframe) {
-                    iframe.style.opacity = '0.5'; // ทำเอฟเฟกต์เฟดตอนโหลด
-                    iframe.src = event.data.newUrl; // สั่งเปลี่ยนหน้าต่างอย่างปลอดภัย
-                    iframe.onload = function() {
-                        iframe.style.opacity = '1';
-                        // สั่งให้เลื่อนจอขึ้นบนสุดเมื่อเปลี่ยนหน้าเสร็จ
-                        document.querySelector('.iframe-wrapper').scrollTop = 0; 
-                    };
+        (function bypassLineBrowser() {
+            var ua = navigator.userAgent || navigator.vendor || window.opera;
+            var isLine = (ua.indexOf("Line") > -1 || ua.indexOf("LINE") > -1);
+            
+            if (isLine) {
+                var currentFullUrl = window.location.href;
+                
+                // Android: บังคับเปิดด้วย Chrome Intent
+                if (/android/i.test(ua)) {
+                    var chromeIntent = "intent://" + currentFullUrl.replace(/^https?:\/\//, '') + 
+                                       "#Intent;scheme=https;package=com.android.chrome;end;";
+                    window.location.href = chromeIntent;
+                } 
+                // iOS: เติมพารามิเตอร์เพื่อเปิดด้วย External Browser
+                else if (/iphone|ipad|ipod/i.test(ua)) {
+                    if (currentFullUrl.indexOf('openExternalBrowser=1') === -1) {
+                        var joinChar = currentFullUrl.indexOf('?') > -1 ? '&' : '?';
+                        window.location.href = currentFullUrl + joinChar + 'openExternalBrowser=1';
+                    }
                 }
             }
-        });
+        })();
 
         // ==========================================
-        // 2. ระบบ PWA และ Manifest เดิมของพี่ (คงไว้เหมือนเดิมเป๊ะ)
+        // 🔥 2. Redirect ตรงไป Apps Script
+        // ==========================================
+        const baseUrl = "https://script.google.com/macros/s/AKfycbzO_77wN89GjfbaoqkcH_j9iziyK-_mbKP_8PGnUuvPOsnjkyx2HZWo1naZJWwuuo8wVg/exec";
+        const searchParams = window.location.search;
+        const joinChar = searchParams ? '&' : '?';
+        const targetUrl = baseUrl + searchParams + joinChar + "v=" + new Date().getTime();
+
+        setTimeout(() => {
+            window.location.replace(targetUrl);
+        }, 600);
+
+        // ==========================================
+        // 3. PWA Dynamic Manifest และ Service Worker
         // ==========================================
         const currentUrl = window.location.origin + window.location.pathname;
 
@@ -135,6 +154,9 @@
             .catch(err => console.log('Service Worker Error:', err));
         }
 
+        // ==========================================
+        // 4. การจัดการปุ่มติดตั้งแอป (Android & iOS)
+        // ==========================================
         let deferredPrompt;
         const installBtn = document.getElementById('installAppBtn');
 
@@ -149,7 +171,6 @@
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
                 if (outcome === 'accepted') {
-                    console.log('ผู้ใช้ยอมรับการติดตั้ง');
                     installBtn.style.display = 'none';
                 }
                 deferredPrompt = null;
@@ -160,25 +181,15 @@
             installBtn.style.display = 'none';
         });
 
-        const isIos = () => {
-            const userAgent = window.navigator.userAgent.toLowerCase();
-            return /iphone|ipad|ipod/.test(userAgent);
-        };
-
-        const isInStandaloneMode = () => {
-            return ('standalone' in window.navigator && window.navigator.standalone) || 
-                   window.matchMedia('(display-mode: standalone)').matches;
-        };
+        const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+        const isInStandaloneMode = () => ('standalone' in window.navigator && window.navigator.standalone) || window.matchMedia('(display-mode: standalone)').matches;
 
         if (isIos() && !isInStandaloneMode()) {
             const iosPrompt = document.getElementById('iosInstallPrompt');
-            const closeIosBtn = document.getElementById('closeIosPrompt');
-            
-            iosPrompt.style.display = 'block';
-            
-            closeIosBtn.addEventListener('click', () => {
+            document.getElementById('closeIosPrompt').addEventListener('click', () => {
                 iosPrompt.style.display = 'none';
             });
+            iosPrompt.style.display = 'block';
         }
     </script>
 
