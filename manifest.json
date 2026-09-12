@@ -2,19 +2,20 @@
   "id": "research-portal-main", 
   "name": "Research Office Portal - KYOGI",
   "short_name": "Portal",
+  "description": "ศูนย์รวมระบบสารสนเทศ สำนักงานวิจัย",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f4f6f9",
   "theme_color": "#0f2027",
   "icons": [
     {
-      "src": "https://tephfkyo1011.github.io/research-office-dashboard/Research_Office_KYOGI.png",
+      "src": "./Research_Office_KYOGI.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://tephfkyo1011.github.io/research-office-dashboard/Research_Office_KYOGI.png",
+      "src": "./Research_Office_KYOGI.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
