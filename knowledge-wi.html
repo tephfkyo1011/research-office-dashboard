@@ -1,113 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+  <title>คลังความรู้ & WI - KYOGI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- 📌 เพิ่ม SweetAlert2 สำหรับแจ้งเตือนแบบสวยงาม -->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  
   <style>
     body { background-color: #f4f7f6; font-family: 'Sarabun', sans-serif; }
-    .card { border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .card { border-radius: 15px; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
     pre { background: #f8f9fa; padding: 15px; border-radius: 10px; white-space: pre-wrap; font-family: 'Sarabun', sans-serif; border: 1px solid #ddd; }
-    tbody tr:hover { background-color: #e9ecef !important; }
-    .pagination .page-link { color: #0d6efd; border-radius: 5px; margin: 0 3px; }
-    .pagination .active .page-link { background-color: #0d6efd; color: white; border: none; }
+    tbody tr:hover { background-color: #e9ecef !important; transition: 0.2s; }
+    .pagination .page-link { color: #0d6efd; border-radius: 8px; margin: 0 4px; border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .pagination .active .page-link { background-color: #0d6efd; color: white; }
     
-    /* 💡 ตั้งค่าสำหรับการพิมพ์ (Print) โดยเฉพาะ */
+    /* 💡 ตั้งค่าสำหรับการพิมพ์ (Print) */
     .no-print { display: block; }
     @media print { 
       body { background-color: #fff !important; }
-      .no-print { display: none !important; }
-      .container { display: none !important; } 
-      
+      .no-print, .container > *:not(.modal) { display: none !important; } 
       .modal { position: static !important; display: block !important; opacity: 1 !important; }
       .modal-dialog { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
       .modal-content { border: none !important; box-shadow: none !important; }
-      .modal-header { border-bottom: 2px solid #000 !important; background-color: transparent !important; color: #000 !important; padding-left: 0; padding-right: 0; }
+      .modal-header { border-bottom: 2px solid #000 !important; background-color: transparent !important; color: #000 !important; padding: 0; }
       .modal-header .badge { background-color: transparent !important; color: #000 !important; border: 1px solid #000; }
       .modal-body { padding: 0 !important; margin-top: 15px !important; }
-      
-      #m_content { 
-        background: transparent !important; border: none !important; padding: 0 !important; 
-        color: #000 !important; font-size: 16px !important; overflow: visible !important; 
-        white-space: pre-wrap !important; word-wrap: break-word !important; 
-      }
-      
-      a { text-decoration: none !important; color: #000 !important; word-break: break-all; }
+      #m_content { background: transparent !important; border: none !important; padding: 0 !important; color: #000 !important; font-size: 16px !important; }
     }
   </style>
 </head>
 <body>
   <div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4 no-print">
-      <h2 class="text-primary fw-bold">คลังความรู้ & WI</h2>
-      <button class="btn btn-success shadow-sm" onclick="showAddForm()">+ เพิ่มข้อมูล</button>
+    <!-- 📌 1. เพิ่มปุ่มกลับหน้าหลัก (Back Button) & ปุ่ม Sync -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 no-print gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <a href="./index.html" class="btn btn-outline-secondary shadow-sm rounded-circle p-2" title="กลับหน้าแรก">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+          </svg>
+        </a>
+        <h2 class="text-primary fw-bold mb-0">คลังความรู้ & WI</h2>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-light shadow-sm text-primary" onclick="loadDataFromServer(true)" title="โหลดข้อมูลใหม่">🔄 Sync</button>
+        <button class="btn btn-success shadow-sm fw-bold" onclick="showAddForm()">+ เพิ่มบทความ</button>
+      </div>
     </div>
 
-    <div id="formBox" class="card p-4 mb-4 no-print" style="display:none; background: #fff; border: 2px solid #198754;">
+    <!-- ฟอร์มเพิ่ม/แก้ไข -->
+    <div id="formBox" class="card p-4 mb-4 no-print" style="display:none; border: 2px solid #198754;">
       <h4 class="mb-3 text-success fw-bold" id="formTitle">📝 เพิ่มบทความใหม่</h4>
       <div class="row g-3">
-        <div class="col-md-6"><input type="text" id="cat" class="form-control" placeholder="หมวดหมู่"></div>
-        <div class="col-md-6"><input type="text" id="ttl" class="form-control" placeholder="ชื่อเรื่อง"></div>
-        <div class="col-12"><textarea id="cont" class="form-control" rows="8" placeholder="เนื้อหาบทความ..."></textarea></div>
-        <div class="col-md-6"><input type="text" id="vids" class="form-control" placeholder="ลิงก์ YouTube (ถ้ามี)"></div>
-        <div class="col-md-6"><input type="text" id="keyw" class="form-control" placeholder="คำค้นหาเพิ่มเติม"></div>
+        <div class="col-md-6"><input type="text" id="cat" class="form-control bg-light" placeholder="หมวดหมู่ (เช่น WI, สรุปความรู้, คู่มือ)"></div>
+        <div class="col-md-6"><input type="text" id="ttl" class="form-control bg-light" placeholder="ชื่อเรื่อง"></div>
+        <div class="col-12"><textarea id="cont" class="form-control bg-light" rows="8" placeholder="เนื้อหาบทความ..."></textarea></div>
+        <div class="col-md-6"><input type="text" id="vids" class="form-control bg-light" placeholder="ลิงก์ YouTube (ถ้ามี)"></div>
+        <div class="col-md-6"><input type="text" id="keyw" class="form-control bg-light" placeholder="คำค้นหาเพิ่มเติม (คั่นด้วยลูกน้ำ)"></div>
       </div>
       <div class="mt-4">
-        <button class="btn btn-primary px-4" id="saveBtn" onclick="saveData()">💾 บันทึกข้อมูล</button>
-        <button class="btn btn-light px-4" onclick="document.getElementById('formBox').style.display='none'">ยกเลิก</button>
+        <button class="btn btn-primary px-4 shadow-sm" id="saveBtn" onclick="saveData()">💾 บันทึกข้อมูล</button>
+        <button class="btn btn-light px-4 shadow-sm" onclick="document.getElementById('formBox').style.display='none'">ยกเลิก</button>
       </div>
     </div>
 
-    <input type="text" id="search" class="form-control mb-4 no-print shadow-sm" placeholder="🔍 ค้นหาหัวข้อ, หมวดหมู่ หรือเนื้อหาที่นี่..." onkeyup="searchMe()">
+    <input type="text" id="search" class="form-control form-control-lg mb-4 no-print shadow-sm" placeholder="🔍 ค้นหาหัวข้อ, หมวดหมู่ หรือเนื้อหาที่นี่..." onkeyup="searchMe()">
 
+    <!-- ตารางข้อมูล -->
     <div class="card shadow-sm no-print">
       <div class="card-body p-0">
         <div class="table-responsive">
-          <table class="table mb-0">
+          <table class="table mb-0 align-middle">
             <thead class="table-dark">
               <tr>
-                <th style="width: 80px;">ID</th>
-                <th style="width: 150px;">หมวดหมู่</th>
+                <th class="d-none d-md-table-cell text-center" style="width: 80px;">ID</th> <!-- 📌 ซ่อน ID บนจอมือถือ -->
+                <th style="width: 120px;">หมวดหมู่</th>
                 <th>หัวข้อบทความ</th>
-                <th style="width: 150px;">วันที่แก้ไข</th>
-                <th style="width: 100px;" class="text-center">วิดีโอ</th> 
+                <th class="d-none d-sm-table-cell" style="width: 120px;">อัปเดตล่าสุด</th> <!-- 📌 ซ่อนวันที่บนจอมือถือ -->
+                <th style="width: 80px;" class="text-center">สื่อ</th> 
               </tr>
             </thead>
             <tbody id="tableBody">
-              <tr><td colspan="5" class="text-center py-4">กำลังโหลดข้อมูล...</td></tr>
+              <tr><td colspan="5" class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><div class="mt-2 text-muted">กำลังโหลดข้อมูล...</div></td></tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
     
-    <nav id="paginationNav" class="no-print"></nav>
-
+    <nav id="paginationNav" class="no-print mt-4"></nav>
   </div>
 
+  <!-- Modal อ่านบทความ -->
   <div class="modal fade" id="infoModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable"> <!-- 📌 ทำให้ Modal เลื่อนได้อิสระ -->
       <div class="modal-content">
-        <div class="modal-header bg-primary text-white">
+        <div class="modal-header bg-primary text-white border-0">
           <h5 class="modal-title fw-bold" id="m_title">หัวข้อบทความ</h5>
           <button type="button" class="btn-close btn-close-white no-print" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body p-4">
           <div class="d-flex gap-2 mb-3">
-            <span class="badge bg-info text-dark" id="m_cat"></span>
-            <small class="text-muted" id="m_date"></small>
+            <span class="badge bg-info text-dark px-3 py-2" id="m_cat"></span>
+            <small class="text-muted mt-1" id="m_date"></small>
           </div>
-          <pre id="m_content"></pre>
+          <pre id="m_content" class="shadow-sm"></pre>
           <div id="m_vids"></div>
         </div>
-        <div class="modal-footer d-flex justify-content-between no-print">
+        <div class="modal-footer d-flex justify-content-between no-print bg-light border-0">
           <div>
-            <button type="button" class="btn btn-warning fw-bold text-dark" id="btnEdit">✏️ แก้ไขข้อมูล</button>
+            <button type="button" class="btn btn-warning fw-bold text-dark shadow-sm" id="btnEdit">✏️ แก้ไข</button>
           </div>
           <div>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-            <button type="button" class="btn btn-outline-primary" onclick="window.print()">🖨️ พิมพ์ PDF</button>
+            <button type="button" class="btn btn-outline-primary bg-white shadow-sm" onclick="window.print()">🖨️ พิมพ์ PDF</button>
+            <button type="button" class="btn btn-secondary shadow-sm" data-bs-dismiss="modal">ปิด</button>
           </div>
         </div>
       </div>
@@ -115,54 +123,52 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- 📌 เพิ่ม Script ของ SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
-    // ⚠️ เอา Web App URL ที่เพิ่ง Deploy ใหม่ มาใส่ในเครื่องหมายคำพูดด้านล่างนี้
-    const API_URL = "https://script.google.com/macros/s/AKfycbyVS1gf9_MW2KUm2qOEPfiNNf1SGQ3i8rQFd0EW7X9chVhbqyYkBHqeGGjtetb6fHjUyw/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbyVS1gf9_MW2KUm2qOEPfiNNf1SGQ3i8rQFd0EW7X9chVhbqyYkBHqeGGjtetb6fHjUyw/exec"; // ระบุ URL ของคุณ
 
     let masterData = [];
     let currentFilteredData = [];
     let myModal;
-    
     let currentPage = 1;
-    const rowsPerPage = 15; 
+    const rowsPerPage = 10; // 📌 ปรับลดเหลือหน้าละ 10 เพื่อให้อ่านในมือถือง่ายขึ้น
     let editingId = null; 
 
     window.onload = function() {
       myModal = new bootstrap.Modal(document.getElementById('infoModal'));
-      loadDataFromServer();
+      loadDataFromServer(false);
     };
 
-    function loadDataFromServer() {
-      // 1. ลองโหลดข้อมูลจาก Cache (จำไว้ในเครื่อง) มาแสดงก่อน จะได้ไม่ต้องรอ!
-      let cachedData = localStorage.getItem('knowledgeDataCache');
-      if (cachedData) {
-        masterData = JSON.parse(cachedData);
-        currentFilteredData = masterData;
-        displayPage(1); // ข้อมูลเด้งขึ้นมาทันทีใน 0.1 วินาที
-      } else {
-        document.getElementById('tableBody').innerHTML = '<tr><td colspan="5" class="text-center py-4">กำลังเชื่อมต่อฐานข้อมูล...</td></tr>';
+    function loadDataFromServer(forceSync = false) {
+      if(forceSync) {
+        Swal.fire({ title: 'กำลังซิงค์ข้อมูล...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
       }
 
-      // 2. แอบดึงข้อมูลล่าสุดจาก Google Sheet เบื้องหลัง
-      fetch(API_URL + "?action=getData", { redirect: "follow" }) // เพิ่ม redirect: follow กันเหนียว
+      let cachedData = localStorage.getItem('knowledgeDataCache');
+      if (cachedData && !forceSync) {
+        masterData = JSON.parse(cachedData);
+        currentFilteredData = masterData;
+        displayPage(1); 
+      }
+
+      fetch(API_URL + "?action=getData", { redirect: "follow" })
         .then(response => response.json())
         .then(data => {
           masterData = data;
           masterData.sort((a, b) => b.id - a.id); 
           currentFilteredData = masterData;
-          
-          // อัปเดตข้อมูลใหม่ลง Cache
           localStorage.setItem('knowledgeDataCache', JSON.stringify(masterData)); 
-          
-          // รีเฟรชตารางอีกครั้งเพื่อแสดงข้อมูลที่สดใหม่ที่สุด
           displayPage(currentPage); 
+          
+          if(forceSync) {
+            Swal.fire({ icon: 'success', title: 'ซิงค์ข้อมูลล่าสุดสำเร็จ!', timer: 1500, showConfirmButton: false });
+          }
         })
         .catch(error => {
-          console.error("Error fetching data: ", error);
-          if (!cachedData) {
-            document.getElementById('tableBody').innerHTML = '<tr><td colspan="5" class="text-center py-4 text-danger">❌ เกิดข้อผิดพลาด: โปรดตรวจสอบว่า Web App ตั้งค่า "Who has access" เป็น "Anyone" หรือไม่</td></tr>';
-          }
+          console.error("Fetch error: ", error);
+          if (forceSync) Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้' });
         });
     }
 
@@ -176,24 +182,24 @@
       const paginatedItems = currentFilteredData.slice(start, end);
 
       if(paginatedItems.length === 0) {
-         tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">ไม่พบข้อมูล</td></tr>';
+         tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted"><h4>📭</h4> ไม่พบข้อมูล</td></tr>';
          document.getElementById('paginationNav').innerHTML = '';
          return;
       }
 
       paginatedItems.forEach(item => {
         let videoStatus = (item.videos && item.videos.length > 0 && item.videos[0].trim() !== "") 
-                          ? '<span class="badge bg-danger">🎬 YouTube</span>' 
+                          ? '<span class="badge bg-danger rounded-pill">▶ YouTube</span>' 
                           : '<span class="text-muted">-</span>';
 
         const tr = document.createElement('tr');
         tr.style.cursor = 'pointer';
         tr.onclick = () => openDetail(item);
         tr.innerHTML = `
-          <td>${item.id}</td>
-          <td><span class="badge bg-secondary">${item.category}</span></td>
-          <td class="fw-bold text-primary">${item.title}</td>
-          <td class="text-muted small">${item.date}</td>
+          <td class="d-none d-md-table-cell text-center text-muted">${item.id}</td>
+          <td><span class="badge bg-light text-dark border border-secondary">${item.category}</span></td>
+          <td class="fw-bold text-primary text-break">${item.title}</td>
+          <td class="d-none d-sm-table-cell text-muted small">${item.date}</td>
           <td class="text-center">${videoStatus}</td>
         `;
         tbody.appendChild(tr);
@@ -207,26 +213,27 @@
       const nav = document.getElementById('paginationNav');
       if (pageCount <= 1) { nav.innerHTML = ''; return; }
 
-      let html = '<ul class="pagination justify-content-center mt-3">';
-      html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-                 <a class="page-link" href="javascript:void(0)" onclick="displayPage(${currentPage - 1})">ก่อนหน้า</a>
-               </li>`;
+      let html = '<ul class="pagination justify-content-center">';
+      html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}"><a class="page-link" href="javascript:void(0)" onclick="displayPage(${currentPage - 1})">«</a></li>`;
 
       for (let i = 1; i <= pageCount; i++) {
-        const active = i === currentPage ? 'active' : '';
-        html += `<li class="page-item ${active}"><a class="page-link" href="javascript:void(0)" onclick="displayPage(${i})">${i}</a></li>`;
+        // ย่อเลขหน้าถ้าเยอะเกินไป
+        if (i === 1 || i === pageCount || (i >= currentPage - 2 && i <= currentPage + 2)) {
+          const active = i === currentPage ? 'active' : '';
+          html += `<li class="page-item ${active}"><a class="page-link" href="javascript:void(0)" onclick="displayPage(${i})">${i}</a></li>`;
+        } else if (i === currentPage - 3 || i === currentPage + 3) {
+          html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+        }
       }
 
-      html += `<li class="page-item ${currentPage === pageCount ? 'disabled' : ''}">
-                 <a class="page-link" href="javascript:void(0)" onclick="displayPage(${currentPage + 1})">ถัดไป</a>
-               </li>`;
+      html += `<li class="page-item ${currentPage === pageCount ? 'disabled' : ''}"><a class="page-link" href="javascript:void(0)" onclick="displayPage(${currentPage + 1})">»</a></li>`;
       html += '</ul>';
       nav.innerHTML = html;
     }
 
     function openDetail(item) {
       document.getElementById('m_title').innerText = item.title;
-      document.getElementById('m_cat').innerText = item.category;
+      document.getElementById('m_cat').innerText = "📂 " + item.category;
       document.getElementById('m_date').innerText = "แก้ไขล่าสุด: " + item.date;
       
       let safeText = escapeHtml(item.content);
@@ -237,7 +244,7 @@
       if(item.videos && item.videos[0]) {
          item.videos.forEach(v => {
            let vId = extractVideoID(v.trim());
-           if(vId) vidArea.innerHTML += `<div class="mt-3 no-print"><iframe width="100%" height="315" src="https://www.youtube.com/embed/${vId}" frameborder="0" allowfullscreen></iframe></div>`;
+           if(vId) vidArea.innerHTML += `<div class="mt-4 no-print shadow-sm rounded overflow-hidden"><iframe width="100%" height="315" src="https://www.youtube.com/embed/${vId}" frameborder="0" allowfullscreen></iframe></div>`;
          });
       }
       
@@ -248,13 +255,13 @@
     function showAddForm() {
       editingId = null; 
       document.getElementById('formTitle').className = "mb-3 text-success fw-bold";
-      document.getElementById('formTitle').innerText = "📝 เพิ่มบทความใหม่";
-      document.getElementById('saveBtn').className = "btn btn-primary px-4";
-      document.getElementById('saveBtn').innerText = "💾 บันทึกข้อมูลใหม่";
+      document.getElementById('formTitle').innerHTML = "📝 เพิ่มบทความใหม่";
+      document.getElementById('saveBtn').className = "btn btn-primary px-4 shadow-sm";
+      document.getElementById('saveBtn').innerText = "💾 บันทึกข้อมูล";
       
       clearForm();
       document.getElementById('formBox').style.display = 'block';
-      window.scrollTo(0,0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function prepareEdit(item) {
@@ -262,8 +269,8 @@
       editingId = item.id; 
       
       document.getElementById('formTitle').className = "mb-3 text-warning text-dark fw-bold";
-      document.getElementById('formTitle').innerText = `✏️ แก้ไขบทความ (ID: ${item.id})`;
-      document.getElementById('saveBtn').className = "btn btn-warning px-4 fw-bold text-dark";
+      document.getElementById('formTitle').innerHTML = `✏️ แก้ไขบทความ <span class="badge bg-secondary">ID: ${item.id}</span>`;
+      document.getElementById('saveBtn').className = "btn btn-warning px-4 fw-bold text-dark shadow-sm";
       document.getElementById('saveBtn').innerText = "💾 บันทึกการแก้ไข";
 
       document.getElementById('cat').value = item.category;
@@ -273,23 +280,26 @@
       document.getElementById('keyw').value = item.keywords;
 
       document.getElementById('formBox').style.display = 'block';
-      window.scrollTo(0,0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function saveData() {
       const obj = {
         id: editingId, 
-        category: document.getElementById('cat').value,
-        title: document.getElementById('ttl').value,
-        content: document.getElementById('cont').value,
-        videos: document.getElementById('vids').value,
-        keywords: document.getElementById('keyw').value
+        category: document.getElementById('cat').value.trim(),
+        title: document.getElementById('ttl').value.trim(),
+        content: document.getElementById('cont').value.trim(),
+        videos: document.getElementById('vids').value.trim(),
+        keywords: document.getElementById('keyw').value.trim()
       };
 
-      if(!obj.title || !obj.content) { alert("❌ กรุณากรอกชื่อเรื่องและเนื้อหาครับ"); return; }
+      if(!obj.title || !obj.content) { 
+        Swal.fire({ icon: 'warning', title: 'กรอกข้อมูลไม่ครบ', text: 'กรุณากรอกชื่อเรื่องและเนื้อหาครับ' });
+        return; 
+      }
 
       const btn = document.getElementById('saveBtn');
-      btn.innerText = "⏳ กำลังดำเนินการ...";
+      btn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> กำลังบันทึก...`;
       btn.disabled = true;
 
       const action = editingId === null ? 'saveNewData' : 'updateData';
@@ -301,22 +311,18 @@
       })
       .then(res => res.json())
       .then(res => {
-        finishSave(res.message, btn);
+        Swal.fire({ icon: 'success', title: 'สำเร็จ', text: res.message, timer: 1500, showConfirmButton: false });
+        clearForm();
+        document.getElementById('formBox').style.display = 'none';
+        btn.disabled = false;
+        loadDataFromServer(); 
       })
       .catch(err => {
-        console.error("Error saving data:", err);
-        alert("❌ เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+        console.error("Save error:", err);
+        Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: 'เกิดข้อผิดพลาดในการบันทึกข้อมูล' });
         btn.disabled = false;
         btn.innerText = "💾 บันทึกข้อมูล";
       });
-    }
-
-    function finishSave(msg, btn) {
-      alert(msg);
-      clearForm();
-      document.getElementById('formBox').style.display = 'none';
-      btn.disabled = false;
-      loadDataFromServer(); 
     }
 
     function clearForm() {
