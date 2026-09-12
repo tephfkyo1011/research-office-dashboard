@@ -2,6 +2,10 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
+    <!-- บังคับไม่ให้เบราว์เซอร์จำ Cache หน้า HTML นี้ -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard ระบบทดสอบคุณภาพ Spore Test</title> 
     
@@ -16,8 +20,24 @@
     <link rel="manifest" id="dynamic-manifest">
 
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        iframe { width: 100%; height: 100%; border: none; }
+        body, html { 
+            margin: 0; padding: 0; height: 100%; 
+            background-color: #f4f6f9; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+
+        /* หน้า Loading แสดงสถานะการเปลี่ยนหน้า */
+        .loader-box { text-align: center; color: #333; }
+        .spinner {
+            width: 45px; height: 45px;
+            border: 5px solid #e2e8f0;
+            border-top: 5px solid #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* สไตล์ของปุ่มติดตั้งแอป (Android/PC) */
         #installAppBtn {
@@ -77,7 +97,12 @@
 </head>
 <body>
 
-    <iframe src="https://script.google.com/macros/s/AKfycbywokYQopgjsln6hY-WeQvPIaqpahfgeKCDEA4x6MRVlnPJaYMHUyYXEUwY3L8mLzwM8A/exec?page=Dashboard" allow="fullscreen"></iframe>
+    <!-- หน้า Loading แสดงสถานะแทน iframe -->
+    <div class="loader-box">
+        <div class="spinner"></div>
+        <h3 style="margin: 0; color: #1e293b;">กำลังนำคุณเข้าสู่ Dashboard ระบบทดสอบคุณภาพ Spore Test...</h3>
+        <p style="color: #64748b; font-size: 13px; margin-top: 5px;">โปรดรอสักครู่ ระบบกำลังเปิดหน้าต่างหลัก</p>
+    </div>
     
     <button id="installAppBtn">📲 ติดตั้งแอปนี้</button>
 
@@ -87,20 +112,62 @@
     </div>
 
     <script>
-        // 1. ดึง URL แบบเต็มของไฟล์นี้ เพื่อเอาไปล็อก Scope
+        // ==========================================
+        // 🚀 1. ดักจับ LINE In-App Browser และบังคับเปิดใน Browser หลัก
+        // ==========================================
+        (function bypassLineBrowser() {
+            var ua = navigator.userAgent || navigator.vendor || window.opera;
+            var isLine = (ua.indexOf("Line") > -1 || ua.indexOf("LINE") > -1);
+            
+            if (isLine) {
+                var currentFullUrl = window.location.href;
+                
+                // สำหรับ Android: บังคับเปิดด้วย Chrome Intent
+                if (/android/i.test(ua)) {
+                    var chromeIntent = "intent://" + currentFullUrl.replace(/^https?:\/\//, '') + 
+                                       "#Intent;scheme=https;package=com.android.chrome;end;";
+                    window.location.href = chromeIntent;
+                } 
+                // สำหรับ iOS: เติมพารามิเตอร์เพื่อให้ LINE เปิดผ่าน External Browser
+                else if (/iphone|ipad|ipod/i.test(ua)) {
+                    if (currentFullUrl.indexOf('openExternalBrowser=1') === -1) {
+                        var joinChar = currentFullUrl.indexOf('?') > -1 ? '&' : '?';
+                        window.location.href = currentFullUrl + joinChar + 'openExternalBrowser=1';
+                    }
+                }
+            }
+        })();
+
+        // ==========================================
+        // 🔥 2. Redirect ตรงไปยัง Apps Script Web App (พร้อมส่งต่อ Parameter)
+        // ==========================================
+        const baseUrl = "https://script.google.com/macros/s/AKfycbywokYQopgjsln6hY-WeQvPIaqpahfgeKCDEA4x6MRVlnPJaYMHUyYXEUwY3L8mLzwM8A/exec";
+        const searchParams = window.location.search;
+        let targetUrl = baseUrl;
+
+        if (searchParams) {
+            const joinChar = searchParams.includes('page=') ? '' : '&page=Dashboard';
+            targetUrl += searchParams + joinChar + "&v=" + new Date().getTime();
+        } else {
+            targetUrl += "?page=Dashboard&v=" + new Date().getTime();
+        }
+
+        setTimeout(() => {
+            window.location.replace(targetUrl);
+        }, 600);
+
+        // ==========================================
+        // 3. PWA Dynamic Manifest และ Service Worker
+        // ==========================================
         const currentUrl = window.location.origin + window.location.pathname;
 
-        // 2. สร้าง Manifest ด้วย JavaScript
         const manifestData = {
-            "id": "app-spore-dashboard", // 🟢 กำหนด ID เฉพาะตัว
+            "id": "app-spore-dashboard",
             "name": "Dashboard ระบบทดสอบคุณภาพ Spore Test",
             "short_name": "Spore Dash",
             "display": "standalone",
-            
-            // 🟢 ล็อก Scope และหน้าเริ่มต้นให้เป็นไฟล์นี้แบบเป๊ะๆ
             "scope": currentUrl, 
             "start_url": currentUrl, 
-            
             "background_color": "#ffffff",
             "theme_color": "#2563eb",
             "icons": [
@@ -113,17 +180,17 @@
             ]
         };
 
-        // 🟢 3. เข้ารหัสเป็น Base64 แทน Blob ป้องกันปัญหา Scope บน Chrome
         const base64Manifest = btoa(unescape(encodeURIComponent(JSON.stringify(manifestData))));
         document.getElementById('dynamic-manifest').href = 'data:application/manifest+json;base64,' + base64Manifest;
 
-        // 4. เรียกใช้ Service Worker ตัวจริงที่อยู่ในโฟลเดอร์หลัก
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js')
             .catch(err => console.log('Service Worker Error:', err));
         }
 
-        // 5. โค้ดสำหรับจัดการปุ่มติดตั้งแอป (Android & Chrome)
+        // ==========================================
+        // 4. การจัดการปุ่มติดตั้งแอป (Android & iOS)
+        // ==========================================
         let deferredPrompt;
         const installBtn = document.getElementById('installAppBtn');
 
@@ -138,7 +205,6 @@
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
                 if (outcome === 'accepted') {
-                    console.log('ผู้ใช้ยอมรับการติดตั้ง');
                     installBtn.style.display = 'none';
                 }
                 deferredPrompt = null;
@@ -149,26 +215,15 @@
             installBtn.style.display = 'none';
         });
 
-        // 6. 🍏 ตรวจจับและแสดงคำแนะนำสำหรับ iOS
-        const isIos = () => {
-            const userAgent = window.navigator.userAgent.toLowerCase();
-            return /iphone|ipad|ipod/.test(userAgent);
-        };
-
-        const isInStandaloneMode = () => {
-            return ('standalone' in window.navigator && window.navigator.standalone) || 
-                   window.matchMedia('(display-mode: standalone)').matches;
-        };
+        const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+        const isInStandaloneMode = () => ('standalone' in window.navigator && window.navigator.standalone) || window.matchMedia('(display-mode: standalone)').matches;
 
         if (isIos() && !isInStandaloneMode()) {
             const iosPrompt = document.getElementById('iosInstallPrompt');
-            const closeIosBtn = document.getElementById('closeIosPrompt');
-            
-            iosPrompt.style.display = 'block';
-            
-            closeIosBtn.addEventListener('click', () => {
+            document.getElementById('closeIosPrompt').addEventListener('click', () => {
                 iosPrompt.style.display = 'none';
             });
+            iosPrompt.style.display = 'block';
         }
     </script>
 
