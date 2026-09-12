@@ -93,29 +93,37 @@
         })();
 
         // ==========================================
-        // 🧹 2. สั่งล้าง Cache / Service Worker เก่าทิ้งทั้งหมดอัตโนมัติ
+        // 🧹 2. สั่งล้าง Cache, Storage และ Service Worker เก่าทั้งหมด
         // ==========================================
         (function clearAppCache() {
-            // ลบ Service Worker
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                    for (let registration of registrations) {
-                        registration.unregister();
-                    }
-                });
-            }
-            // ลบ Cache Storage ทั้งหมดในเครื่อง
-            if ('caches' in window) {
-                caches.keys().then(function(names) {
-                    for (let name of names) {
-                        caches.delete(name);
-                    }
-                });
+            try {
+                // ล้าง Storage ในเครื่อง
+                if (window.localStorage) window.localStorage.clear();
+                if (window.sessionStorage) window.sessionStorage.clear();
+
+                // ลบ Service Worker
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                        for (let registration of registrations) {
+                            registration.unregister();
+                        }
+                    });
+                }
+                // ลบ Cache Storage
+                if ('caches' in window) {
+                    caches.keys().then(function(names) {
+                        for (let name of names) {
+                            caches.delete(name);
+                        }
+                    });
+                }
+            } catch(e) {
+                console.log("Clear cache error: ", e);
             }
         })();
     </script>
 
-    <!-- iframe ที่ใส่พารามิเตอร์ป้องกัน Cache (Cache Busting timestamp) -->
+    <!-- iframe ที่รองรับการอนุญาตสิทธิ์สมบูรณ์ -->
     <iframe 
       id="appIframe"
       allow="fullscreen; camera; microphone"
@@ -130,14 +138,19 @@
     </div>
 
     <script>
-        // โหลด iframe พร้อมต่อท้าย Timestamp เพื่อป้องกัน Cache
+        // โหลด iframe พร้อมดักจับ Parameter ใน URL
         (function loadCleanIframe() {
             var baseUrl = "https://script.google.com/macros/s/AKfycbxZtGFYX2PnHWwNRY5INba6-65Yu5gylqKySJFgJYTufIVOU76Iieo41ANHI6mZ0DKWeQ/exec";
             var timestamp = new Date().getTime();
-            document.getElementById('appIframe').src = baseUrl + "?v=" + timestamp;
+            
+            // ส่งค่า Search Param (ถ้ามี) เช่น ?page=logbook ส่งต่อให้ iframe
+            var searchParams = window.location.search;
+            var joinChar = searchParams ? '&' : '?';
+            
+            document.getElementById('appIframe').src = baseUrl + searchParams + joinChar + "v=" + timestamp;
         })();
 
-        // ดักรับคำสั่ง NAVIGATE จาก Apps Script (ย้ายหน้าภายใน iframe)
+        // ดักรับคำสั่ง NAVIGATE จาก Apps Script
         window.addEventListener('message', function(event) {
             if (event.data && event.data.action === 'NAVIGATE') {
                 var iframe = document.getElementById('appIframe');
