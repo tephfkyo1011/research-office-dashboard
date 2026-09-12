@@ -213,10 +213,10 @@
     <div id="systemToast"><i class="fa-solid fa-bolt" aria-hidden="true"></i> <span id="toastMsg">กำลังใช้งานจาก Cache</span></div>
 
     <header>
-        <button id="installPwaBtn" class="btn-header btn-install">📱 Install</button>
-        <button class="btn-header btn-darkmode" id="darkModeBtn">🌙</button>
+        <button id="installPwaBtn" class="btn-header btn-install" aria-label="ติดตั้งแอปพลิเคชัน (Install PWA)">📱 Install</button>
+        <button class="btn-header btn-darkmode" id="darkModeBtn" aria-label="สลับโหมดมืด (Dark Mode)">🌙</button>
         <div class="portal-brand-container">
-            <img src="./Research_Office_KYOGI.png" alt="Logo" class="portal-main-logo" loading="lazy">
+            <img src="./Research_Office_KYOGI.png" alt="โลโก้ Research Office Portal" class="portal-main-logo" loading="lazy">
             <div class="brand-text">
                 <h1>Research Office Portal</h1>
                 <p class="subtitle">ศูนย์รวมระบบสารสนเทศ</p>
@@ -225,10 +225,10 @@
     </header>
 
     <div class="search-wrapper">
-        <input type="text" id="searchInput" class="search-box" placeholder="🔍 ค้นหา... (กด '/' เพื่อค้นหาด่วน)">
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 ค้นหา... (กด '/' เพื่อค้นหาด่วน)" aria-label="ช่องค้นหาระบบ">
         <div class="search-actions">
-            <span id="voiceSearch" class="voice-search" title="ค้นหาด้วยเสียง" style="display:none;"><i class="fa-solid fa-microphone" aria-hidden="true"></i></span>
-            <span id="clearSearch" class="clear-search"><i class="fa-solid fa-xmark" aria-hidden="true"></i></span>
+            <span id="voiceSearch" class="voice-search" title="ค้นหาด้วยเสียง" style="display:none;" aria-label="ค้นหาด้วยเสียง"><i class="fa-solid fa-microphone" aria-hidden="true"></i></span>
+            <span id="clearSearch" class="clear-search" aria-label="ล้างการค้นหา"><i class="fa-solid fa-xmark" aria-hidden="true"></i></span>
         </div>
     </div> 
     
@@ -247,161 +247,161 @@
         <div class="section-title theme-it"><i class="fa-solid fa-code" aria-hidden="true"></i> System by Kyo Gi</div>
         <div class="grid" id="grid-it">
             
-            <a href="knowledge-wi.html" class="card" data-name="คลังความรู้ & WI" data-keywords="ความรู้ คู่มือ wi knowledge เอกสาร">
+            <a href="knowledge-wi.html" class="card" data-name="คลังความรู้ & WI" data-keywords="ความรู้ คู่มือ wi knowledge เอกสาร" aria-label="เข้าสู่หน้า: คลังความรู้ & WI">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-book-open-reader" aria-hidden="true"></i></div>
                 <div class="card-title">คลังความรู้ & WI</div>
                 <div class="card-desc">คู่มือและขั้นตอนการทำงาน</div>
             </a>
 
-            <a href="https://script.google.com/macros/s/AKfycbyoBo2vR2Mij-MMqqlUtG2wj66vRVSprzT5ZGouvYvfmvtp5y72kPMJd0_CktRPlSSR/exec" class="card online-only" data-name="Car Management" data-keywords="รถ จองรถ ยานพาหนะ car ยืมรถ" target="_blank" rel="noopener noreferrer">
+            <a href="https://script.google.com/macros/s/AKfycbyoBo2vR2Mij-MMqqlUtG2wj66vRVSprzT5ZGouvYvfmvtp5y72kPMJd0_CktRPlSSR/exec" class="card online-only" data-name="Car Management" data-keywords="รถ จองรถ ยานพาหนะ car ยืมรถ" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ระบบจัดการยานพาหนะ Car Management">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-car" aria-hidden="true"></i></div>
                 <div class="card-title">Car Management</div>
                 <div class="card-desc">ระบบจัดการยานพาหนะ</div>
             </a>
             
-            <a href="https://www.appsheet.com/start/6e4cdc1f-da32-4ae1-87c6-3e7a0d81929f" class="card online-only" data-name="HSR Database" data-keywords="ครุภัณฑ์ asset inventory equipment ของ" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.appsheet.com/start/6e4cdc1f-da32-4ae1-87c6-3e7a0d81929f" class="card online-only" data-name="HSR Database" data-keywords="ครุภัณฑ์ asset inventory equipment ของ" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ระบบฐานข้อมูลครุภัณฑ์ HSR Database">
                 <div class="pin">★</div>
-                <div class="icon-circle"><img src="./logo-hsr-db.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=HSR&background=e74c3c&color=fff'"></div>
+                <div class="icon-circle"><img src="./logo-hsr-db.png" alt="" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=HSR&background=e74c3c&color=fff'"></div>
                 <div class="card-title">ระบบฐานข้อมูลครุภัณฑ์ HSR</div>
                 <div class="card-desc">AppSheet Online</div>
             </a>
 
-            <a href="./logo-hsr-dashboard.html" class="card" data-name="Dashboard ครุภัณฑ์" data-keywords="สรุป กราฟ chart report">
+            <a href="./logo-hsr-dashboard.html" class="card" data-name="Dashboard ครุภัณฑ์" data-keywords="สรุป กราฟ chart report" aria-label="เข้าสู่หน้า: Dashboard ครุภัณฑ์">
                 <div class="pin">★</div>
-                <div class="icon-circle"><img src="./logo-hsr-dashboard.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=Dash&background=e74c3c&color=fff'"></div>
+                <div class="icon-circle"><img src="./logo-hsr-dashboard.png" alt="" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=Dash&background=e74c3c&color=fff'"></div>
                 <div class="card-title">Dashboard ครุภัณฑ์</div>
                 <div class="card-desc">สรุปข้อมูลสำนักงานวิจัย</div>
             </a>
 
-            <a href="https://script.google.com/a/macros/mahidol.ac.th/s/AKfycbxprHKO3pzWfYU9oZ2cQl-ynTWTzUp8P8LY3Ens7WwP8mS1k4amv6hLnRhq2C2jb9YN/exec" class="card online-only" data-name="Phone Book สนง.วิจัย" data-keywords="เบอร์โทร โทรศัพท์ ติดต่อ ประสานงาน phone" target="_blank" rel="noopener noreferrer">
+            <a href="https://script.google.com/a/macros/mahidol.ac.th/s/AKfycbxprHKO3pzWfYU9oZ2cQl-ynTWTzUp8P8LY3Ens7WwP8mS1k4amv6hLnRhq2C2jb9YN/exec" class="card online-only" data-name="Phone Book สนง.วิจัย" data-keywords="เบอร์โทร โทรศัพท์ ติดต่อ ประสานงาน phone" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ระบบ Phone Book สนง.วิจัย">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-address-book" aria-hidden="true"></i></div>
                 <div class="card-title">Phone Book สนง.วิจัย</div>
                 <div class="card-desc">เบอร์ประสานงาน</div>
             </a>
             
-            <a href="./logo-health-family.html" class="card" data-name="Health Family" data-keywords="สุขภาพ health cg ครอบครัว">
+            <a href="./logo-health-family.html" class="card" data-name="Health Family" data-keywords="สุขภาพ health cg ครอบครัว" aria-label="เข้าสู่หน้า: Health Family">
                 <div class="pin">★</div>
-                <div class="icon-circle"><img src="./logo-health-family.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=HF&background=e74c3c&color=fff'"></div>
+                <div class="icon-circle"><img src="./logo-health-family.png" alt="" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=HF&background=e74c3c&color=fff'"></div>
                 <div class="card-title">Health Family By CG</div>
                 <div class="card-desc">Version 17</div>
             </a>
             
-            <a href="./logo-tumor-bank.html" class="card" data-name="Tumor Bank" data-keywords="ขนส่ง ขนย้าย transport มะเร็ง">
+            <a href="./logo-tumor-bank.html" class="card" data-name="Tumor Bank" data-keywords="ขนส่ง ขนย้าย transport มะเร็ง" aria-label="เข้าสู่หน้า: Tumor Bank Transport">
                 <div class="pin">★</div>
-                <div class="icon-circle"><img src="./logo-tumor-bank.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=TB&background=2ecc71&color=fff'"></div>
+                <div class="icon-circle"><img src="./logo-tumor-bank.png" alt="" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=TB&background=2ecc71&color=fff'"></div>
                 <div class="card-title">Tumor Bank Transport</div>
                 <div class="card-desc">ระบบขนส่ง</div>
             </a>
             
-            <a href="./logo-ot-time.html" class="card" data-name="OT Time" data-keywords="ล่วงเวลา โอที นอกเวลาราชการ ลงเวลา overtime">
+            <a href="./logo-ot-time.html" class="card" data-name="OT Time" data-keywords="ล่วงเวลา โอที นอกเวลาราชการ ลงเวลา overtime" aria-label="เข้าสู่หน้า: ระบบลงเวลานอกราชการ OT Time">
                 <div class="pin">★</div>
-                <div class="icon-circle"><img src="./logo-ot-time.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=OT&background=9b59b6&color=fff'"></div>
+                <div class="icon-circle"><img src="./logo-ot-time.png" alt="" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=OT&background=9b59b6&color=fff'"></div>
                 <div class="card-title">ระบบลงเวลานอกราชการ</div>
                 <div class="card-desc">OT สนง.วิจัย</div>
             </a>
             
-            <a href="https://script.google.com/macros/s/AKfycbwSpX9iDz1wWLjQfNyJbWLfreGyHDl0vYasnF27DhiyLnYz8UZs7aZfz9ct5fNTKH-m/exec" class="card online-only" data-name="Gas Stock" data-keywords="แก๊ส gas ถัง คลัง สต๊อก" target="_blank" rel="noopener noreferrer">
+            <a href="https://script.google.com/macros/s/AKfycbwSpX9iDz1wWLjQfNyJbWLfreGyHDl0vYasnF27DhiyLnYz8UZs7aZfz9ct5fNTKH-m/exec" class="card online-only" data-name="Gas Stock" data-keywords="แก๊ส gas ถัง คลัง สต๊อก" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ระบบแก๊ส & Stock">
                 <div class="pin">★</div>
-                <div class="icon-circle"><img src="./logo-gas-stock.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=GAS&background=34495e&color=fff'"></div>
+                <div class="icon-circle"><img src="./logo-gas-stock.png" alt="" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=GAS&background=34495e&color=fff'"></div>
                 <div class="card-title">ระบบแก๊ส & Stock</div>
                 <div class="card-desc">การจัดการคลังแก๊ส</div>
             </a>
 
-            <a href="./Gas_System_API.html" class="card" data-name="Gas Stock New API" data-keywords="แก๊ส gas ถัง คลัง สต๊อก ใหม่ api">
+            <a href="./Gas_System_API.html" class="card" data-name="Gas Stock New API" data-keywords="แก๊ส gas ถัง คลัง สต๊อก ใหม่ api" aria-label="เข้าสู่หน้า: ระบบแก๊ส (เวอร์ชันใหม่)">
                 <div class="pin" style="color: #f1c40f;">★</div>
-                <div class="icon-circle"><img src="./logo-gas-stock-new.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=NEW&background=27ae60&color=fff'"></div>
+                <div class="icon-circle"><img src="./logo-gas-stock-new.png" alt="" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=NEW&background=27ae60&color=fff'"></div>
                 <div class="card-title">ระบบแก๊ส (เวอร์ชันใหม่)</div>
                 <div class="card-desc">ทำงานผ่าน API เร็วขึ้น</div>
             </a>
             
-            <a href="./logo-ln2-log.html" class="card" data-name="LN2 Log" data-keywords="ไนโตรเจน เหลว nitrogen liquid เติม ln2">
+            <a href="./logo-ln2-log.html" class="card" data-name="LN2 Log" data-keywords="ไนโตรเจน เหลว nitrogen liquid เติม ln2" aria-label="เข้าสู่หน้า: บันทึก Liquid Nitrogen Log">
                 <div class="pin">★</div>
-                <div class="icon-circle"><img src="./logo-ln2-log.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=LN2&background=1abc9c&color=fff'"></div>
+                <div class="icon-circle"><img src="./logo-ln2-log.png" alt="" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=LN2&background=1abc9c&color=fff'"></div>
                 <div class="card-title">บันทึก Liquid Nitrogen</div>
                 <div class="card-desc">ระบบบันทึกข้อมูล</div>
             </a>
             
-            <a href="https://www.appsheet.com/start/2e8cd042-246d-4b55-abb8-a5884ba0c60d" class="card online-only" data-name="Specimen Bank" data-keywords="เก็บตัวอย่าง specimen เลือด ชิ้นเนื้อ" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.appsheet.com/start/2e8cd042-246d-4b55-abb8-a5884ba0c60d" class="card online-only" data-name="Specimen Bank" data-keywords="เก็บตัวอย่าง specimen เลือด ชิ้นเนื้อ" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ระบบจัดเก็บตัวอย่าง HSR Specimen Banking">
                 <div class="pin">★</div>
-                <div class="icon-circle"><img src="./logo-specimen-bank.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=SB&background=e67e22&color=fff'"></div>
+                <div class="icon-circle"><img src="./logo-specimen-bank.png" alt="" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=SB&background=e67e22&color=fff'"></div>
                 <div class="card-title">HSR Specimen Banking</div>
                 <div class="card-desc">ระบบจัดเก็บตัวอย่าง</div>
             </a>
             
-            <a href="./logo-specimen-dashboard.html" class="card" data-name="Specimen Dash" data-keywords="สรุปตัวอย่าง กราฟ dash">
+            <a href="./logo-specimen-dashboard.html" class="card" data-name="Specimen Dash" data-keywords="สรุปตัวอย่าง กราฟ dash" aria-label="เข้าสู่หน้า: HSR Banking Dashboard">
                 <div class="pin">★</div>
-                <div class="icon-circle"><img src="./logo-specimen-dashboard.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=DS&background=d35400&color=fff'"></div>
+                <div class="icon-circle"><img src="./logo-specimen-dashboard.png" alt="" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=DS&background=d35400&color=fff'"></div>
                 <div class="card-title">HSR Banking Dashboard</div>
                 <div class="card-desc">สรุปผลการจัดเก็บ</div>
             </a>
             
-            <a href="./logo-freezer-check.html" class="card" data-name="Freezer Check" data-keywords="ตู้แช่ เช็คอุณหภูมิ ln2 nitrogen freezer -80">
+            <a href="./logo-freezer-check.html" class="card" data-name="Freezer Check" data-keywords="ตู้แช่ เช็คอุณหภูมิ ln2 nitrogen freezer -80" aria-label="เข้าสู่หน้า: ตรวจสอบตู้แช่ & LN2 Freezer Check">
                 <div class="pin">★</div>
-                <div class="icon-circle"><img src="./logo-freezer-check.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=FZ&background=2980b9&color=fff'"></div>
+                <div class="icon-circle"><img src="./logo-freezer-check.png" alt="" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=FZ&background=2980b9&color=fff'"></div>
                 <div class="card-title">ตรวจสอบตู้แช่ & LN2</div>
                 <div class="card-desc">Monitoring System</div>
             </a>
             
-            <a href="./logo-withdraw-specimen.html" class="card" data-name="Withdraw Spec" data-keywords="เบิก จ่าย ตัวอย่าง withdraw คืน">
+            <a href="./logo-withdraw-specimen.html" class="card" data-name="Withdraw Spec" data-keywords="เบิก จ่าย ตัวอย่าง withdraw คืน" aria-label="เข้าสู่หน้า: ระบบบันทึกรายการตัวอย่าง Withdraw Spec">
                 <div class="pin">★</div>
-                <div class="icon-circle"><img src="./logo-withdraw-specimen.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=WD&background=27ae60&color=fff'"></div>
+                <div class="icon-circle"><img src="./logo-withdraw-specimen.png" alt="" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=WD&background=27ae60&color=fff'"></div>
                 <div class="card-title">ระบบบันทึกรายการตัวอย่าง</div>
                 <div class="card-desc">Management System</div>
             </a>
             
-            <a href="./logo-lms-lab.html" class="card" data-name="LMS Lab" data-keywords="จองเครื่องมือ lab booking reserve แล็บ">
+            <a href="./logo-lms-lab.html" class="card" data-name="LMS Lab" data-keywords="จองเครื่องมือ lab booking reserve แล็บ" aria-label="เข้าสู่หน้า: LMS จองเครื่องมือ Lab">
                 <div class="pin">★</div>
-                <div class="icon-circle"><img src="./logo-lms-lab.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=LMS&background=16a085&color=fff'"></div>
+                <div class="icon-circle"><img src="./logo-lms-lab.png" alt="" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=LMS&background=16a085&color=fff'"></div>
                 <div class="card-title">LMS จองเครื่องมือ Lab</div>
                 <div class="card-desc">Lab Management</div>
             </a>
             
-            <a href="./logo-lms-dashboard.html" class="card" data-name="LMS Dash" data-keywords="สรุปจองเครื่องมือ lms dashboard">
+            <a href="./logo-lms-dashboard.html" class="card" data-name="LMS Dash" data-keywords="สรุปจองเครื่องมือ lms dashboard" aria-label="เข้าสู่หน้า: Dashboard จองเครื่องมือ LMS">
                 <div class="pin">★</div>
-                <div class="icon-circle"><img src="./logo-lms-dashboard.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=LD&background=7f8c8d&color=fff'"></div>
+                <div class="icon-circle"><img src="./logo-lms-dashboard.png" alt="" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=LD&background=7f8c8d&color=fff'"></div>
                 <div class="card-title">Dashboard จองเครื่องมือ</div>
                 <div class="card-desc">LMS Summary</div>
             </a>
             
-            <a href="https://www.appsheet.com/start/c9f22d36-e90e-46aa-9aba-f26f59aff364" class="card online-only" data-name="Guest ครุภัณฑ์" data-keywords="แขก เยี่ยม guest บุคคลภายนอก" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.appsheet.com/start/c9f22d36-e90e-46aa-9aba-f26f59aff364" class="card online-only" data-name="Guest ครุภัณฑ์" data-keywords="แขก เยี่ยม guest บุคคลภายนอก" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ระบบ Guest ครุภัณฑ์">
                 <div class="pin">★</div>
-                <div class="icon-circle"><img src="./logo-hsr-guest.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=G&background=95a5a6&color=fff'"></div>
+                <div class="icon-circle"><img src="./logo-hsr-guest.png" alt="" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=G&background=95a5a6&color=fff'"></div>
                 <div class="card-title">Guest ครุภัณฑ์</div>
                 <div class="card-desc">สำนักงานวิจัย</div>
             </a>
             
-            <a href="./logo-spore-test.html" class="card" data-name="Spore Test" data-keywords="สปอร์ คุณภาพ เทส autoclave เชื้อ">
+            <a href="./logo-spore-test.html" class="card" data-name="Spore Test" data-keywords="สปอร์ คุณภาพ เทส autoclave เชื้อ" aria-label="เข้าสู่หน้า: ระบบ Spore Test">
                 <div class="pin">★</div>
-                <div class="icon-circle"><img src="./logo-spore-test.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=ST&background=c0392b&color=fff'"></div>
+                <div class="icon-circle"><img src="./logo-spore-test.png" alt="" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=ST&background=c0392b&color=fff'"></div>
                 <div class="card-title">ระบบ Spore Test</div>
                 <div class="card-desc">ทดสอบคุณภาพ</div>
             </a>
             
-            <a href="./logo-spore-dashboard.html" class="card" data-name="Spore Dash" data-keywords="สรุปสปอร์ dashboard spore">
+            <a href="./logo-spore-dashboard.html" class="card" data-name="Spore Dash" data-keywords="สรุปสปอร์ dashboard spore" aria-label="เข้าสู่หน้า: Dashboard Spore Test">
                 <div class="pin">★</div>
-                <div class="icon-circle"><img src="./logo-spore-dashboard.png" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=SD&background=7f8c8d&color=fff'"></div>
+                <div class="icon-circle"><img src="./logo-spore-dashboard.png" alt="" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=SD&background=7f8c8d&color=fff'"></div>
                 <div class="card-title">Dashboard Spore Test</div>
                 <div class="card-desc">สรุปผลทดสอบ</div>
             </a>
 
-            <a href="https://docs.google.com/spreadsheets/d/1RKZ_2ovlxldT9m5HT7StiVaYxyoQvM4T/edit?gid=176877453#gid=176877453" class="card online-only" data-name="กุญแจห้องสำนักงานวิจัย" data-keywords="กุญแจ key ห้อง" target="_blank" rel="noopener noreferrer">
+            <a href="https://docs.google.com/spreadsheets/d/1RKZ_2ovlxldT9m5HT7StiVaYxyoQvM4T/edit?gid=176877453#gid=176877453" class="card online-only" data-name="กุญแจห้องสำนักงานวิจัย" data-keywords="กุญแจ key ห้อง" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: กุญแจห้องสำนักงานวิจัย">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-key" aria-hidden="true"></i></div>
                 <div class="card-title">กุญแจห้องสำนักงานวิจัย</div>
                 <div class="card-desc">ข้อมูลผู้ถือกุญแจ</div>
             </a>
 
-            <a href="https://script.google.com/macros/s/AKfycbx9LXWfnKTIgMgZvlTj26P_e6iBK8ee_LtpuolbDsiB_q9g9is_HJKZm4ifBFJgxQU-wg/exec" class="card" data-name="ใบขอรับบริการ" data-keywords="หวย เลข ลอตเตอรี่ รวย เสี่ยงโชค" target="_blank" rel="noopener noreferrer">
+            <a href="https://script.google.com/macros/s/AKfycbx9LXWfnKTIgMgZvlTj26P_e6iBK8ee_LtpuolbDsiB_q9g9is_HJKZm4ifBFJgxQU-wg/exec" class="card online-only" data-name="ใบขอรับบริการ" data-keywords="ขอรับบริการ ใบอนุมัติ ซ่อม" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ใบขอรับบริการออนไลน์">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-money-bill-trend-up" aria-hidden="true"></i></div>
                 <div class="card-title">ใบขอรับบริการออนไลน์</div>
                 <div class="card-desc">ใบอนุมัติซ่อม</div>
             </a>
 
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLScYM8hJbXEhOFuXlU0zet2dqHfX8dSqLjcBNKSov0BMgnbPLQ/viewform" class="card online-only" data-name="Check List Overnight" data-keywords="เช็คลิสต์ overnight ข้ามคืน เครื่องมือ" target="_blank" rel="noopener noreferrer">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLScYM8hJbXEhOFuXlU0zet2dqHfX8dSqLjcBNKSov0BMgnbPLQ/viewform" class="card online-only" data-name="Check List Overnight" data-keywords="เช็คลิสต์ overnight ข้ามคืน เครื่องมือ" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ฟอร์ม Check List Overnight">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-clipboard-check" aria-hidden="true"></i></div>
                 <div class="card-title">Check List Overnight</div>
@@ -411,7 +411,8 @@
 
         <div class="section-title theme-central"><i class="fa-solid fa-hotel" aria-hidden="true"></i> ส่วนกลาง</div>
         <div class="grid" id="grid-central">
-            <a href="http://rai.intra.rama.mahidol.ac.th:8360/RAI/" class="card online-only" data-name="จองห้องประชุม สนง.วิจัย" data-keywords="meeting room book ห้องประชุม" target="_blank" rel="noopener noreferrer">
+            
+            <a href="http://rai.intra.rama.mahidol.ac.th:8360/RAI/" class="card lan-only" data-name="จองห้องประชุม สนง.วิจัย" data-keywords="meeting room book ห้องประชุม" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: จองห้องประชุม สนง.วิจัย (เฉพาะเครือข่ายภายใน)">
                 <span class="badge-lan" title="ใช้งานได้เฉพาะเครือข่ายอินเทอร์เน็ตภายในคณะฯ เท่านั้น">LAN</span>
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i></div>
@@ -419,7 +420,8 @@
                 <div class="card-desc">ระบบจองห้อง</div>
             </a>
             
-            <a href="http://10.6.22.52/ramapro/index.php" class="card online-only" data-name="ซ่อมบำรุงวิศวกรรม" data-keywords="ซ่อม แจ้งซ่อม repair fix แอร์ ช่าง" target="_blank" rel="noopener noreferrer">
+            <!-- แนะนำ: ควรเปลี่ยน IP 10.6.22.52 เป็น Hostname -->
+            <a href="http://10.6.22.52/ramapro/index.php" class="card lan-only" data-name="ซ่อมบำรุงวิศวกรรม" data-keywords="ซ่อม แจ้งซ่อม repair fix แอร์ ช่าง" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: แจ้งซ่อมบำรุงวิศวกรรม (เฉพาะเครือข่ายภายใน)">
                 <span class="badge-lan" title="ใช้งานได้เฉพาะเครือข่ายอินเทอร์เน็ตภายในคณะฯ เท่านั้น">LAN</span>
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i></div>
@@ -427,14 +429,15 @@
                 <div class="card-desc">Rama Pro</div>
             </a>
             
-            <a href="https://10-6-155-150.rcnas1838.direct.quickconnect.to:9443" class="card online-only" data-name="Synology NAS" data-keywords="เก็บข้อมูล ไฟล์ file drive แชร์" target="_blank" rel="noopener noreferrer">
+            <a href="https://10-6-155-150.rcnas1838.direct.quickconnect.to:9443" class="card online-only" data-name="Synology NAS" data-keywords="เก็บข้อมูล ไฟล์ file drive แชร์" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: เข้าสู่ระบบ Synology NAS">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-hard-drive" aria-hidden="true"></i></div>
                 <div class="card-title">Synology NAS</div>
                 <div class="card-desc">QuickConnect</div>
             </a>
             
-            <a href="http://192.168.1.150/" class="card online-only" data-name="XWEB ตรวจเช็คอุณหภูมิ" data-keywords="อุณหภูมิ temp monitor ตู้เย็น dixell" target="_blank" rel="noopener noreferrer">
+            <!-- แนะนำ: ควรเปลี่ยน IP 192.168.1.150 เป็น Hostname -->
+            <a href="http://192.168.1.150/" class="card lan-only" data-name="XWEB ตรวจเช็คอุณหภูมิ" data-keywords="อุณหภูมิ temp monitor ตู้เย็น dixell" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ระบบ XWEB ตรวจเช็คอุณหภูมิ (เฉพาะเครือข่ายภายใน)">
                 <span class="badge-lan" title="ใช้งานได้เฉพาะเครือข่ายอินเทอร์เน็ตภายในคณะฯ เท่านั้น">LAN</span>
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-temperature-arrow-up" aria-hidden="true"></i></div>
@@ -442,7 +445,7 @@
                 <div class="card-desc">Monitor ออนไลน์</div>
             </a>
 
-            <a href="http://intranet.rama.mahidol.ac.th/MI/Materials/list.htm" class="card online-only" data-name="วัสดุคอมพิวเตอร์ หมึก" data-keywords="วัสดุ คอม หมึก พิมพ์ คลัง เวชสารสนเทศ" target="_blank" rel="noopener noreferrer">
+            <a href="http://intranet.rama.mahidol.ac.th/MI/Materials/list.htm" class="card lan-only" data-name="วัสดุคอมพิวเตอร์ หมึก" data-keywords="วัสดุ คอม หมึก พิมพ์ คลัง เวชสารสนเทศ" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: รายการวัสดุคอมฯ & หมึก (เฉพาะเครือข่ายภายใน)">
                 <span class="badge-lan" title="ใช้งานได้เฉพาะเครือข่ายอินเทอร์เน็ตภายในคณะฯ เท่านั้น">LAN</span>
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-print" aria-hidden="true"></i></div>
@@ -450,14 +453,14 @@
                 <div class="card-desc">คลังเวชสารสนเทศ</div>
             </a>
 
-            <a href="https://www.rama.mahidol.ac.th/research/th" class="card online-only" data-name="เว็บ สำนักงานวิจัยฯ" data-keywords="เว็บ เว็บไซต์ research website" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.rama.mahidol.ac.th/research/th" class="card online-only" data-name="เว็บ สำนักงานวิจัยฯ" data-keywords="เว็บ เว็บไซต์ research website" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: เว็บไซต์สำนักงานวิจัย">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-globe" aria-hidden="true"></i></div>
                 <div class="card-title">เว็บไซต์สำนักงานวิจัย</div>
                 <div class="card-desc">รามาธิบดี</div>
             </a>
 
-            <a href="https://intra9.rama.mahidol.ac.th/online_requests" class="card online-only" data-name="บริการออนไลน์ รามาฯ" data-keywords="บริการ ออนไลน์ intra9 รพ รามา" target="_blank" rel="noopener noreferrer">
+            <a href="https://intra9.rama.mahidol.ac.th/online_requests" class="card lan-only" data-name="บริการออนไลน์ รามาฯ" data-keywords="บริการ ออนไลน์ intra9 รพ รามา" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: บริการออนไลน์ โรงพยาบาลรามาธิบดี (เฉพาะเครือข่ายภายใน)">
                 <span class="badge-lan" title="ใช้งานได้เฉพาะเครือข่ายอินเทอร์เน็ตภายในคณะฯ เท่านั้น">LAN</span>
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-desktop" aria-hidden="true"></i></div>
@@ -465,14 +468,14 @@
                 <div class="card-desc">รามาธิบดี</div>
             </a>
 
-            <a href="https://myinternet.mahidol.ac.th/" class="card online-only" data-name="สมัคร MyInternet" data-keywords="เน็ต internet wifi มหิดล" target="_blank" rel="noopener noreferrer">
+            <a href="https://myinternet.mahidol.ac.th/" class="card online-only" data-name="สมัคร MyInternet" data-keywords="เน็ต internet wifi มหิดล" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ระบบสมัคร MyInternet">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-wifi" aria-hidden="true"></i></div>
                 <div class="card-title">สมัคร MyInternet</div>
                 <div class="card-desc">มหาวิทยาลัยมหิดล</div>
             </a>
 
-            <a href="https://intra9.rama.mahidol.ac.th/rama/office" class="card online-only" data-name="หน่วยงานต่างๆ ในรามาฯ" data-keywords="หน่วยงาน องค์กร intra9 แผนก" target="_blank" rel="noopener noreferrer">
+            <a href="https://intra9.rama.mahidol.ac.th/rama/office" class="card lan-only" data-name="หน่วยงานต่างๆ ในรามาฯ" data-keywords="หน่วยงาน องค์กร intra9 แผนก" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ข้อมูลหน่วยงานต่างๆ ในรามาฯ (เฉพาะเครือข่ายภายใน)">
                 <span class="badge-lan" title="ใช้งานได้เฉพาะเครือข่ายอินเทอร์เน็ตภายในคณะฯ เท่านั้น">LAN</span>
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-sitemap" aria-hidden="true"></i></div>
@@ -480,21 +483,21 @@
                 <div class="card-desc">โรงพยาบาลรามาธิบดี</div>
             </a>
 
-            <a href="https://softwaredownload.mahidol.ac.th/" class="card online-only" data-name="ดาวน์โหลดโปรแกรม" data-keywords="โหลด download โปรแกรม software" target="_blank" rel="noopener noreferrer">
+            <a href="https://softwaredownload.mahidol.ac.th/" class="card online-only" data-name="ดาวน์โหลดโปรแกรม" data-keywords="โหลด download โปรแกรม software" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ศูนย์ดาวน์โหลดโปรแกรม มหาวิทยาลัยมหิดล">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-download" aria-hidden="true"></i></div>
                 <div class="card-title">ดาวน์โหลดโปรแกรม</div>
                 <div class="card-desc">มหาวิทยาลัยมหิดล</div>
             </a>
 
-            <a href="https://www.si.mahidol.ac.th/musaving/index.asp" class="card online-only" data-name="สหกรณ์ออมทรัพย์" data-keywords="สหกรณ์ ออมทรัพย์ เงิน กู้" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.si.mahidol.ac.th/musaving/index.asp" class="card online-only" data-name="สหกรณ์ออมทรัพย์" data-keywords="สหกรณ์ ออมทรัพย์ เงิน กู้" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: สหกรณ์ออมทรัพย์ มหาวิทยาลัยมหิดล">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-piggy-bank" aria-hidden="true"></i></div>
                 <div class="card-title">สหกรณ์ออมทรัพย์</div>
                 <div class="card-desc">มหาวิทยาลัยมหิดล</div>
             </a>
 
-            <a href="https://intra9.rama.mahidol.ac.th/inventory/th/miniecat/miniecatbook" class="card online-only" data-name="Mini Ecat Book พัสดุ" data-keywords="พัสดุ ecat book แคตตาล็อก" target="_blank" rel="noopener noreferrer">
+            <a href="https://intra9.rama.mahidol.ac.th/inventory/th/miniecat/miniecatbook" class="card lan-only" data-name="Mini Ecat Book พัสดุ" data-keywords="พัสดุ ecat book แคตตาล็อก" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: Mini Ecat Book พัสดุ (เฉพาะเครือข่ายภายใน)">
                 <span class="badge-lan" title="ใช้งานได้เฉพาะเครือข่ายอินเทอร์เน็ตภายในคณะฯ เท่านั้น">LAN</span>
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-box-open" aria-hidden="true"></i></div>
@@ -502,21 +505,22 @@
                 <div class="card-desc">ระบบพัสดุ</div>
             </a>
 
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfvbmmBQiKiBhxSI15sjVilYxFuxHhc5S1i8IFnir9jzAtvGw/viewform" class="card online-only" data-name="ของานออนไลน์ ยืมอุปกรณ์" data-keywords="ยืม อุปกรณ์ จัดสวน สถานที่ ของาน" target="_blank" rel="noopener noreferrer">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfvbmmBQiKiBhxSI15sjVilYxFuxHhc5S1i8IFnir9jzAtvGw/viewform" class="card online-only" data-name="ของานออนไลน์ ยืมอุปกรณ์" data-keywords="ยืม อุปกรณ์ จัดสวน สถานที่ ของาน" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ของานออนไลน์ และยืมของ">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-hand-holding-hand" aria-hidden="true"></i></div>
                 <div class="card-title">ของานออนไลน์ / ยืมของ</div>
                 <div class="card-desc">จัดสถานที่จัดสวนและต้นไม้</div>
             </a>
 
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeZsB6jzHqx8iDCnPD4ebpzCBQBTOHMdyUeUPJWPsk9ZYGK-g/viewform" class="card" data-name="ขนย้ายวัสดุและครุภัณฑ์" data-keywords="ย้าย ขนย้าย ขนของ วัสดุ ครุภัณฑ์" target="_blank" rel="noopener noreferrer">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeZsB6jzHqx8iDCnPD4ebpzCBQBTOHMdyUeUPJWPsk9ZYGK-g/viewform" class="card" data-name="ขนย้ายวัสดุและครุภัณฑ์" data-keywords="ย้าย ขนย้าย ขนของ วัสดุ ครุภัณฑ์" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ระบบขนย้ายวัสดุ">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-truck-moving" aria-hidden="true"></i></div>
                 <div class="card-title">ระบบขนย้ายวัสดุ</div>
                 <div class="card-desc">ขนย้ายครุภัณฑ์</div>
             </a>
 
-            <a href="http://10.6.155.38/" class="card" data-name="ประตู หน้าสำนักงานวิจัย 38" data-keywords="ประตู เข้าออก door 38 สแกน" target="_blank" rel="noopener noreferrer">
+            <!-- แนะนำ: ควรเปลี่ยน IP Address เป็น Hostname หากมีระบบ Local DNS (เช่น http://door38.rama.local) -->
+            <a href="http://10.6.155.38/" class="card lan-only" data-name="ประตู หน้าสำนักงานวิจัย 38" data-keywords="ประตู เข้าออก door 38 สแกน" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ประตู หน้า สนง.วิจัย 38 (เฉพาะเครือข่ายภายใน)">
                 <span class="badge-lan" title="ใช้งานได้เฉพาะเครือข่ายอินเทอร์เน็ตภายในคณะฯ เท่านั้น">LAN</span>
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-door-open" aria-hidden="true"></i></div>
@@ -524,7 +528,7 @@
                 <div class="card-desc">ระบบเข้า-ออก</div>
             </a>
 
-            <a href="http://10.6.155.225/" class="card" data-name="ประตูเข้า LAB 225" data-keywords="ประตู เข้า lab 225 door" target="_blank" rel="noopener noreferrer">
+            <a href="http://10.6.155.225/" class="card lan-only" data-name="ประตูเข้า LAB 225" data-keywords="ประตู เข้า lab 225 door" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ประตูเข้า LAB 225 (เฉพาะเครือข่ายภายใน)">
                 <span class="badge-lan" title="ใช้งานได้เฉพาะเครือข่ายอินเทอร์เน็ตภายในคณะฯ เท่านั้น">LAN</span>
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-door-closed" aria-hidden="true"></i></div>
@@ -532,7 +536,7 @@
                 <div class="card-desc">ระบบเปิดประตู</div>
             </a>
 
-            <a href="http://10.6.155.226/" class="card" data-name="ประตูออก LAB 226" data-keywords="ประตู ออก lab 226 door" target="_blank" rel="noopener noreferrer">
+            <a href="http://10.6.155.226/" class="card lan-only" data-name="ประตูออก LAB 226" data-keywords="ประตู ออก lab 226 door" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ประตูออก LAB 226 (เฉพาะเครือข่ายภายใน)">
                 <span class="badge-lan" title="ใช้งานได้เฉพาะเครือข่ายอินเทอร์เน็ตภายในคณะฯ เท่านั้น">LAN</span>
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-door-open" style="transform: scaleX(-1);" aria-hidden="true"></i></div>
@@ -544,7 +548,7 @@
 
         <div class="section-title theme-hr"><i class="fa-solid fa-user-tie" aria-hidden="true"></i> HR & บุคลากร</div>
         <div class="grid" id="grid-hr">
-            <a href="http://n-rfid.rama.mahidol.ac.th/Time/Login" class="card" data-name="รายงานตอกบัตร" data-keywords="เข้างาน รูดบัตร rfid สาย ขาด" target="_blank" rel="noopener noreferrer">
+            <a href="http://n-rfid.rama.mahidol.ac.th/Time/Login" class="card lan-only" data-name="รายงานตอกบัตร" data-keywords="เข้างาน รูดบัตร rfid สาย ขาด" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: รายงานตอกบัตร RFID (เฉพาะเครือข่ายภายใน)">
                 <span class="badge-lan" title="ใช้งานได้เฉพาะเครือข่ายอินเทอร์เน็ตภายในคณะฯ เท่านั้น">LAN</span>
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-id-card" aria-hidden="true"></i></div>
@@ -552,29 +556,29 @@
                 <div class="card-desc">RFID เข้า-ออกงาน</div>
             </a>
             
-            <a href="https://www3.ra.mahidol.ac.th/leaveRama/index.jsp" class="card" data-name="ลาออนไลน์" data-keywords="ลาป่วย พักร้อน leave ลากิจ" target="_blank" rel="noopener noreferrer">
+            <a href="https://www3.ra.mahidol.ac.th/leaveRama/index.jsp" class="card" data-name="ลาออนไลน์" data-keywords="ลาป่วย พักร้อน leave ลากิจ" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ระบบลาออนไลน์ คณะแพทยศาสตร์โรงพยาบาลรามาธิบดี">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-calendar-xmark" aria-hidden="true"></i></div>
                 <div class="card-title">ลาออนไลน์ คณะฯ</div>
                 <div class="card-desc">ระบบลาป่วย/ลาพักร้อน</div>
             </a>
             
-            <a href="https://mypms.mahidol.ac.th/" class="card" data-name="ระบบ PMS" data-keywords="ประเมิน ผลงาน pms เลื่อนขั้น เงินเดือน" target="_blank" rel="noopener noreferrer">
+            <a href="https://mypms.mahidol.ac.th/" class="card" data-name="ระบบ PMS" data-keywords="ประเมิน ผลงาน pms เลื่อนขั้น เงินเดือน" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ระบบประเมินผลปฏิบัติงาน PMS">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-star" aria-hidden="true"></i></div>
                 <div class="card-title">ระบบ PMS</div>
                 <div class="card-desc">ประเมินผลปฏิบัติงาน</div>
             </a>
 
-            <!-- หมายเหตุ: แนะนำให้เปลี่ยน URL นี้เป็นหน้า Landing ของระบบ Flexible Benefit หากมี แทนการใส่ลิงก์ ADFS ที่มี Token ยาวๆ ซึ่งอาจหมดอายุได้ -->
-            <a href="https://idp.mahidol.ac.th/adfs/oauth2/authorize/?client_id=c3dd06c3-cd83-4783-a570-38232c6ce67d&response_type=code&redirect_uri=https%3A%2F%2Fmuhr.mahidol.ac.th%2Fhrconnect%2Flogin%2Flogin_adfs.php&response_mode=form_post&resource=5a49fab9-0be8-4f73-95c8-0d357d99fde9&scope=allatclaims&state=5588578c346e7842b6f01f35d644dfa18aacc6e5dfdd9205f7eea223ff6c60b5" class="card" data-name="Flexible Benefit" data-keywords="สวัสดิการ เบิก จ่าย flexible benefit" target="_blank" rel="noopener noreferrer">
+            <!-- เปลี่ยน URL จาก Token ADFS ไปเป็นหน้า Landing Page ของ HR Connect ป้องกันปัญหาลิงก์หมดอายุ -->
+            <a href="https://muhr.mahidol.ac.th/hrconnect/" class="card" data-name="Flexible Benefit" data-keywords="สวัสดิการ เบิก จ่าย flexible benefit" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ระบบ Flexible Benefit สวัสดิการบุคลากร">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i></div>
                 <div class="card-title">Flexible Benefit</div>
                 <div class="card-desc">สวัสดิการบุคลากร</div>
             </a>
 
-            <a href="http://hs03.rama.mahidol.ac.th/ramahealth/" class="card" data-name="ฐานข้อมูลสุขภาพบุคลากร" data-keywords="สุขภาพ ตรวจสุขภาพ health บุคลากร" target="_blank" rel="noopener noreferrer">
+            <a href="http://hs03.rama.mahidol.ac.th/ramahealth/" class="card lan-only" data-name="ฐานข้อมูลสุขภาพบุคลากร" data-keywords="สุขภาพ ตรวจสุขภาพ health บุคลากร" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ฐานข้อมูลสุขภาพบุคลากร (เฉพาะเครือข่ายภายใน)">
                 <span class="badge-lan" title="ใช้งานได้เฉพาะเครือข่ายอินเทอร์เน็ตภายในคณะฯ เท่านั้น">LAN</span>
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-notes-medical" aria-hidden="true"></i></div>
@@ -582,7 +586,7 @@
                 <div class="card-desc">ประวัติสุขภาพ</div>
             </a>
 
-            <a href="https://intra9.rama.mahidol.ac.th/hc/" class="card" data-name="ฝ่ายบริหารทุนมนุษย์" data-keywords="ทุนมนุษย์ hr บุคคล intra9" target="_blank" rel="noopener noreferrer">
+            <a href="https://intra9.rama.mahidol.ac.th/hc/" class="card lan-only" data-name="ฝ่ายบริหารทุนมนุษย์" data-keywords="ทุนมนุษย์ hr บุคคล intra9" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ฝ่ายบริหารทุนมนุษย์ (เฉพาะเครือข่ายภายใน)">
                 <span class="badge-lan" title="ใช้งานได้เฉพาะเครือข่ายอินเทอร์เน็ตภายในคณะฯ เท่านั้น">LAN</span>
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-users-gear" aria-hidden="true"></i></div>
@@ -590,7 +594,7 @@
                 <div class="card-desc">ลิงก์ต่างๆ ของคณะฯ</div>
             </a>
 
-            <a href="https://sites.google.com/view/rc-rama" class="card" data-name="ธุรการ หน่วยบริหารทั่วไป" data-keywords="ธุรการ บริหารทั่วไป เอกสาร" target="_blank" rel="noopener noreferrer">
+            <a href="https://sites.google.com/view/rc-rama" class="card" data-name="ธุรการ หน่วยบริหารทั่วไป" data-keywords="ธุรการ บริหารทั่วไป เอกสาร" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: ธุรการ หน่วยบริหารทั่วไป สำนักงานวิจัย">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-folder-open" aria-hidden="true"></i></div>
                 <div class="card-title">ธุรการ หน่วยบริหารทั่วไป</div>
@@ -601,21 +605,21 @@
 
         <div class="section-title theme-fun"><i class="fa-icons" aria-hidden="true"></i> บันเทิง</div>
         <div class="grid" id="grid-fun">
-            <a href="https://www.appsheet.com/start/5a0dbaf8-5f2f-43c4-8b1a-482728632309" class="card" data-name="Movie Anime" data-keywords="หนัง อนิเมะ ดูหนัง netflix ภาพยนตร์" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.appsheet.com/start/5a0dbaf8-5f2f-43c4-8b1a-482728632309" class="card" data-name="Movie Anime" data-keywords="หนัง อนิเมะ ดูหนัง netflix ภาพยนตร์" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: แอปพลิเคชัน Movie & Anime">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-play" aria-hidden="true"></i></div>
                 <div class="card-title">Movie & Anime</div>
                 <div class="card-desc">BY KYO GI</div>
             </a>
             
-            <a href="https://script.google.com/macros/s/AKfycbz7ShCyT1GzwMtKdJUyGLJTBFKEjR-_axTuUkK1D4jDpYzbLzHCneFncu5wRwt1kRNmNA/exec" class="card" data-name="วงล้อเสี่ยงโชค" data-keywords="เกม สุ่ม หมุน game ลุ้น จับสลาก" target="_blank" rel="noopener noreferrer">
+            <a href="https://script.google.com/macros/s/AKfycbz7ShCyT1GzwMtKdJUyGLJTBFKEjR-_axTuUkK1D4jDpYzbLzHCneFncu5wRwt1kRNmNA/exec" class="card" data-name="วงล้อเสี่ยงโชค" data-keywords="เกม สุ่ม หมุน game ลุ้น จับสลาก" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: กิจกรรมวงล้อเสี่ยงโชค">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-rotate" aria-hidden="true"></i></div>
                 <div class="card-title">วงล้อเสี่ยงโชค</div>
                 <div class="card-desc">กิจกรรมเสี่ยงดวง</div>
             </a>
 
-            <a href="https://script.google.com/a/macros/mahidol.ac.th/s/AKfycbws9LKwF_WssZCVV5x_dK1xkGRy3_Cecpz7MGPDi4uLJ7d22OgNIsJjbaDrBtZOfYv8vA/exec" class="card" data-name="เลขพารวย Pro" data-keywords="หวย เลข ลอตเตอรี่ รวย เสี่ยงโชค" target="_blank" rel="noopener noreferrer">
+            <a href="https://script.google.com/a/macros/mahidol.ac.th/s/AKfycbws9LKwF_WssZCVV5x_dK1xkGRy3_Cecpz7MGPDi4uLJ7d22OgNIsJjbaDrBtZOfYv8vA/exec" class="card" data-name="เลขพารวย Pro" data-keywords="หวย เลข ลอตเตอรี่ รวย เสี่ยงโชค" target="_blank" rel="noopener noreferrer" aria-label="เปิดหน้าต่างใหม่: กิจกรรมเลขพารวย Pro">
                 <div class="pin">★</div>
                 <div class="icon-circle"><i class="fa-solid fa-money-bill-trend-up" aria-hidden="true"></i></div>
                 <div class="card-title">KYO GI เลขพารวย Pro</div>
