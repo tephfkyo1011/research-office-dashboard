@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <!-- บังคับไม่ให้เบราว์เซอร์จำ Cache หน้า HTML นี้ -->
+    <!-- บังคับไม่ให้เบราว์เซอร์จำ Cache หน้า HTML นี้เด็ดขาด -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -27,7 +27,6 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
 
-        /* หน้า Loading ระหว่างรอข้ามหน้า */
         .loader-box { text-align: center; color: #333; }
         .spinner {
             width: 45px; height: 45px;
@@ -39,7 +38,6 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* สไตล์ของปุ่มติดตั้งแอป (Android/PC) */
         #installAppBtn {
             display: none;
             position: fixed;
@@ -62,7 +60,6 @@
             background-color: #1d4ed8;
         }
 
-        /* กล่องคำแนะนำสำหรับ iOS */
         #iosInstallPrompt {
             display: none;
             position: fixed;
@@ -97,7 +94,6 @@
 </head>
 <body>
 
-    <!-- หน้า Loading แสดงสถานะแทน iframe -->
     <div class="loader-box">
         <div class="spinner"></div>
         <h3 style="margin: 0; color: #1e293b;">กำลังนำคุณเข้าสู่ระบบ LMS Lab...</h3>
@@ -121,14 +117,11 @@
             
             if (isLine) {
                 var currentFullUrl = window.location.href;
-                
-                // สำหรับ Android: บังคับเด้งออกไป Chrome โดยตรง
                 if (/android/i.test(ua)) {
                     var chromeIntent = "intent://" + currentFullUrl.replace(/^https?:\/\//, '') + 
                                        "#Intent;scheme=https;package=com.android.chrome;end;";
                     window.location.href = chromeIntent;
                 } 
-                // สำหรับ iOS: ใส่พารามิเตอร์ openExternalBrowser=1
                 else if (/iphone|ipad|ipod/i.test(ua)) {
                     if (currentFullUrl.indexOf('openExternalBrowser=1') === -1) {
                         var joinChar = currentFullUrl.indexOf('?') > -1 ? '&' : '?';
@@ -139,7 +132,25 @@
         })();
 
         // ==========================================
-        // 🔥 2. Redirect ตรงไปยัง Apps Script Web App (พร้อมส่งต่อ Parameter)
+        // 🧹 2. ยกเลิกและสั่งถอดถอน Service Worker / ล้าง Cache เก่าออกทันที
+        // ==========================================
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for (let registration of registrations) {
+                    registration.unregister();
+                }
+            });
+        }
+        if ('caches' in window) {
+            caches.keys().then(function(names) {
+                for (let name of names) {
+                    caches.delete(name);
+                }
+            });
+        }
+
+        // ==========================================
+        // 🔥 3. Redirect ตรงไปยัง Apps Script Web App แบบการันตีไร้ Cache
         // ==========================================
         const baseUrl = "https://script.google.com/macros/s/AKfycbxZtGFYX2PnHWwNRY5INba6-65Yu5gylqKySJFgJYTufIVOU76Iieo41ANHI6mZ0DKWeQ/exec";
         const searchParams = window.location.search;
@@ -148,10 +159,10 @@
 
         setTimeout(() => {
             window.location.replace(targetUrl);
-        }, 600);
+        }, 300);
 
         // ==========================================
-        // 3. PWA Dynamic Manifest และ Service Worker
+        // 4. PWA Dynamic Manifest
         // ==========================================
         const currentUrl = window.location.origin + window.location.pathname;
 
@@ -177,13 +188,8 @@
         const base64Manifest = btoa(unescape(encodeURIComponent(JSON.stringify(manifestData))));
         document.getElementById('dynamic-manifest').href = 'data:application/manifest+json;base64,' + base64Manifest;
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js')
-            .catch(err => console.log('Service Worker Error:', err));
-        }
-
         // ==========================================
-        // 4. การจัดการปุ่มติดตั้งแอป (Android & iOS)
+        // 5. การจัดการปุ่มติดตั้งแอป (Android & iOS)
         // ==========================================
         let deferredPrompt;
         const installBtn = document.getElementById('installAppBtn');
